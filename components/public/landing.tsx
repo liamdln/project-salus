@@ -1,7 +1,5 @@
 import type { NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
-import Head from "next/head";
-import Image from "next/image";
 import React, { useState } from "react";
 
 const Landing: NextPage = () => {
@@ -9,9 +7,20 @@ const Landing: NextPage = () => {
     const [signInButtonLoading, setSignInButtonLoading] = useState(false);
     const [signOutButtonLoading, setSignOutButtonLoading] = useState(false);
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    function redirectAfterLogin() {
+        // will route to the authorized only area.
+        // if route === auth then push "/authorized" or "/dashboard"
+    }
+
     function login() {
+        console.log(email);
+        console.log(password);
         setSignInButtonLoading(true);
-        signIn("credentials", { callbackUrl: '/' })
+        const loginRes: any = signIn("credentials", { email, password, redirect: false, callbackUrl: "/" });
+        loginRes.error ? console.log(loginRes.error) : redirectAfterLogin();
     }
 
     function logout() {
@@ -26,7 +35,6 @@ const Landing: NextPage = () => {
     if (session.status === "authenticated") {
         signInHtml = (
             <>
-                <div className="text-white fs-5 fw-bold mb-3">Logged in as SOMEONE</div>
                 <button type="button" onClick={() => { logout() }} className={signOutButtonLoading ? "btn btn-primary me-10 disabled" : "btn btn-primary me-10"}>
                     {!signOutButtonLoading ? (
                         <span>
@@ -56,13 +64,13 @@ const Landing: NextPage = () => {
                 <button type="button" onClick={() => { login() }} className={signInButtonLoading ? "btn btn-primary me-10 disabled" : "btn btn-primary me-10"}>
                     {!signInButtonLoading ? (
                         <span>
-                            Login with VATSIM
+                            Sign In
                         </span>
                     ) : (
                         <span>
                             Please wait... <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
                         </span>
-                    ) }
+                    )}
                 </button>
             </>
         )
@@ -71,13 +79,24 @@ const Landing: NextPage = () => {
     return (
         <>
             <main>
-                <div>
-                { signInHtml }
+                <div className="container">
+                    <div style={{ width: "25%" }}>
+                        <form>
+                            <div className="mb-3">
+                                <label htmlFor="emailBox" className="form-label">Email</label>
+                                <input type="email" value={email} onChange={(e) => { setEmail(e.currentTarget.value) }} className="form-control" id="emailBox" required />
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="passwordBox" className="form-label">Password</label>
+                                <input type="password" value={password} onChange={(e) => { setPassword(e.currentTarget.value) }} className="form-control" id="passwordBox" required />
+                            </div>
+                            {signInHtml}
+                        </form>
+                    </div>
+                    <div>
+                        <p>{JSON.stringify(session)}</p>
+                    </div>
                 </div>
-                <div>
-                {JSON.stringify(session)}
-                </div>
-            
             </main>
         </>
     );
