@@ -6,7 +6,6 @@ import dbConnect from "../../../lib/dbConnect";
 import User from "../../../model/user";
 import { compare } from "bcrypt";
 
-const jwtSecret = process.env.JWT_SECRET;
 const incorrectDetailsMessage = "Email or password incorrect."
 
 export default NextAuth({
@@ -29,7 +28,7 @@ export default NextAuth({
                     console.log("Error connecting to the database.")
                     throw new Error("Could not connect to the database.");
                 }
-                
+
                 const user = await User.findOne({
                     email
                 });
@@ -40,7 +39,11 @@ export default NextAuth({
                     throw new Error(incorrectDetailsMessage);
                 }
 
-                const passwordCorrect = await compare(password, user.encryptedPassword);
+                // Compare the password to an encrypted version
+                // const passwordCorrect = await compare(password, user.encryptedPassword);
+
+                // Not secure, only for development.
+                const passwordCorrect = password === user.encryptedPassword;
 
                 // Password incorrect
                 if (!passwordCorrect) {
@@ -54,15 +57,16 @@ export default NextAuth({
         })
     ],
     callbacks: {
+        async jwt({ token }) {
+            token.userName = "admin"
+            return token
+        }
     },
     session: {
         strategy: 'jwt'
     },
-    jwt: {
-        secret: jwtSecret,
-    },
     pages: {
-        signIn: '/',
+        signIn: "/auth/login",
     },
     debug: process.env.NODE_ENV === "development",
 })
