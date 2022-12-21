@@ -2,6 +2,7 @@ import "next-auth/jwt"
 
 declare module "next-auth/jwt" {
   interface JWT {
-    userName: String
+    name: string,
+    email: string
   }
 }

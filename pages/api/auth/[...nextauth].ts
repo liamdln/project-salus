@@ -58,7 +58,7 @@ export default NextAuth({
     ],
     callbacks: {
         async jwt({ token }) {
-            token.userName = "admin"
+            token.name = "admin"
             return token
         }
     },
