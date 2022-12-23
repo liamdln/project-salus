@@ -16,15 +16,18 @@ const Login: NextPage = () => {
     const router = useRouter();
     const session = useSession();
 
+    const callback = router.query?.callbackUrl ? router.query.callbackUrl : null;
+    const callbackUrl = callback && typeof callback === "string" ? callback : "/dashboard";
+
     // preload operations 
     if (session.status === "authenticated") {
-        router.push("/dashboard");
+        router.push(callbackUrl);
     }
 
     // functions
     function login() {
         setSignInButtonLoading(true);
-        const loginRes: any = signIn("credentials", { email, password, redirect: false, callbackUrl: "/dashboard" });
+        const loginRes: any = signIn("credentials", { email, password, redirect: false, callbackUrl: callbackUrl });
         if (loginRes.error) {
             console.log(loginRes.error)
         }
@@ -32,23 +35,6 @@ const Login: NextPage = () => {
 
     let loginForm;
 
-    // if (session.status === "authenticated") {
-    //     loginForm = (
-    //         <>
-    //             <button type="button" onClick={() => { logout() }} className={signOutButtonLoading ? "btn btn-primary me-10 disabled" : "btn btn-primary me-10"}>
-    //                 {!signOutButtonLoading ? (
-    //                     <span>
-    //                         Sign Out
-    //                     </span>
-    //                 ) : (
-    //                     <span>
-    //                         Please wait... <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
-    //                     </span>
-    //                 )}
-    //             </button>
-    //         </>
-    //     )
-    // }
     if (session.status === "loading") {
         loginForm = (
             <>

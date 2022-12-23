@@ -5,12 +5,11 @@ import React from "react";
 import Layout from "../../components/layout";
 import { readSettings } from "../../config/settings";
 import { capitalizeFirstLetter } from "../../lib/utils";
-import "../../styles/Login.module.css"
 
 const Dashboard: NextPage = (props: any) => {
 
     const session = useSession();
-    const userName = session.data?.user?.name;
+    const userName = session.data?.user?.name || "";
 
     if (session.status === "loading") {
         return (

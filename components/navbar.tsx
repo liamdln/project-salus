@@ -8,6 +8,7 @@ export default function Header() {
     const name = session.data?.user?.name || "Profile";
 
     let profileButton;
+    let reportsButton;
     if (session.status === "authenticated") {
         profileButton = (
             <>
@@ -16,10 +17,25 @@ export default function Header() {
                         { capitalizeFirstLetter(name) }
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a className="dropdown-item" href="#">Action</a></li>
-                        <li><a className="dropdown-item" href="#">Another action</a></li>
+                        <li><a className="dropdown-item" href="#">Profile</a></li>
+                        <li><a className="dropdown-item" href="#">Orgnization</a></li>
                         <li><hr className="dropdown-divider" /></li>
                         <li><a className="dropdown-item" onClick={() => signOut()} style={{ cursor: "pointer" }}>Logout</a></li>
+                    </ul>
+                </li>
+            </>
+        )
+        reportsButton = (
+            <>
+                <li className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style={{ cursor: "pointer" }}>
+                        Reports
+                    </a>
+                    <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><Link className="dropdown-item" href="/dashboard/create">Create Report</Link></li>
+                        <li><Link className="dropdown-item" href="/dashboard/reports?filter=own">View Your Reports</Link></li>
+                        <li><Link className="dropdown-item" href="/dashboard/reports">View All Reports</Link></li>
+                        <li><Link className="dropdown-item" href="/dashboard/audit">Statistics and Auditing</Link></li>
                     </ul>
                 </li>
             </>
@@ -45,6 +61,7 @@ export default function Header() {
                             <li className="nav-item">
                                 <Link className="nav-link" href={ session.status === "authenticated" ? "/dashboard" : "/" }>{ session.status === "authenticated" ? "Dashboard" : "Home" }</Link>
                             </li>
+                            { reportsButton }
                             {profileButton}
                         </ul>
                     </div>

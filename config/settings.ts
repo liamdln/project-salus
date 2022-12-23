@@ -9,9 +9,9 @@ export var settings: Settings = {
     }
 }
 
-export async function readSettings(filter?: string): Promise<Settings> {
+export async function readSettings(returnFilter?: string): Promise<Settings> {
 
-    return await SettingsData.find({}, filter).then((res: any) => {
+    return await SettingsData.find({}, returnFilter).then((res: any) => {
         settings = res;
         return res;
     }).catch(err => {
