@@ -3,12 +3,20 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React from "react";
 import Layout from "../../../components/layout";
+import { getReportsAsync } from "../../../lib/reports";
 
 const Reports: NextPage = ({ reports }: any) => {
+
+    reports = JSON.parse(reports);
 
     const session = useSession();
     const router = useRouter()
     const query = router.query;
+
+    console.log(reports)
+    function refreshReports() {
+        router.replace(router.asPath);
+    }
 
     return (
         <Layout>
@@ -19,7 +27,6 @@ const Reports: NextPage = ({ reports }: any) => {
                     <>
                         <div className="mt-3">
                             <span style={{ display: "block" }}>No reports have been made.</span>
-                            <button className="btn btn-primary mt-2">Check Again</button>
                         </div>
                     </>
                     :
@@ -40,21 +47,21 @@ const Reports: NextPage = ({ reports }: any) => {
                                 const tableColour = report.severity === 1 ? "table-warning" : report.severity === 2 ? "table-danger" : ""
                                 return (
                                     <tr key={index} className={tableColour}>
-                                        <th scope="row">{report.id}</th>
+                                        <th scope="row">{report._id}</th>
                                         <td>
-                                        { report.severity === 1 ? 
-                                            <>
-                                                { report.type } <br />
-                                                <strong>(Danger to Operations)</strong>
-                                            </> : report.severity === 2 ?
-                                            <>
-                                                { report.type } <br />
-                                                <strong>(Danger to Life)</strong>
-                                            </> :
-                                            <>
-                                                { report.type }
-                                            </>
-                                        }
+                                            {report.severity === 1 ?
+                                                <>
+                                                    {report.type} <br />
+                                                    <strong>(Danger to Operations)</strong>
+                                                </> : report.severity === 2 ?
+                                                    <>
+                                                        {report.type} <br />
+                                                        <strong>(Danger to Life)</strong>
+                                                    </> :
+                                                    <>
+                                                        {report.type}
+                                                    </>
+                                            }
                                         </td>
                                         <td>{report.description}</td>
                                         <td>{report.author}</td>
@@ -65,8 +72,8 @@ const Reports: NextPage = ({ reports }: any) => {
                             })}
                         </tbody>
                     </table>
-
                 }
+                <button className="btn btn-primary mt-2" onClick={() => refreshReports()}>Refresh</button>
             </div>
         </Layout>
     );
@@ -74,31 +81,9 @@ const Reports: NextPage = ({ reports }: any) => {
 
 export async function getServerSideProps() {
     // get reports
-    const reports = [{
-        id: 1,
-        type: "TEST",
-        severity: 0,
-        description: "Test report",
-        author: "Liam P",
-        location: "some_location",
-    },
-    {
-        id: 2,
-        type: "WILDLIFE",
-        severity: 1,
-        description: "Birds spotted parallel to 04/22 about halfway down.",
-        author: "Liam P",
-        location: "co-ords-1",
-    },
-    {
-        id: 3,
-        type: "FOD",
-        severity: 2,
-        description: "Stranded OPS vehicle near threshold 10.",
-        author: "Liam P",
-        location: "co-ords-2",
-    }]
-    // const reports: any[] = [];
+    const rawReports = await getReportsAsync();
+    // parse the result of the db call into a string and remove the [] brackets around the object.
+    const reports = JSON.stringify(rawReports);
     return { props: { reports } }
 }
 

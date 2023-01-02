@@ -32,10 +32,10 @@ export default function Header() {
                         Reports
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><Link className="dropdown-item" href="/dashboard/create">Create Report</Link></li>
+                        <li><Link className="dropdown-item" href="/dashboard/reports/create">Create Report</Link></li>
                         <li><Link className="dropdown-item" href="/dashboard/reports?filter=own">View Your Reports</Link></li>
                         <li><Link className="dropdown-item" href="/dashboard/reports">View All Reports</Link></li>
-                        <li><Link className="dropdown-item" href="/dashboard/audit">Statistics and Auditing</Link></li>
+                        <li><Link className="dropdown-item" href="/dashboard/reports/audit">Statistics and Auditing</Link></li>
                     </ul>
                 </li>
             </>
