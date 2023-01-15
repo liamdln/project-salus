@@ -11,5 +11,11 @@ Liam Pickering's dissertation project for Swansea University.
 Create a `.env.local` file in the root directory of the project with the following template:
 
 ```txt
-JWT_SECRET=secret_here
+MONGODB_URI=
+MONGODB_NAME=
+
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=
+
+NODE_ENV=development
 ```
