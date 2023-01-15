@@ -28,7 +28,6 @@ export default NextAuth({
                     console.log("Error connecting to the database.")
                     throw new Error("Could not connect to the database.");
                 }
-
                 const user = await User.findOne({
                     email
                 });
@@ -39,11 +38,14 @@ export default NextAuth({
                     throw new Error(incorrectDetailsMessage);
                 }
 
-                // Compare the password to an encrypted version
-                // const passwordCorrect = await compare(password, user.encryptedPassword);
-
-                // Not secure, only for development.
-                const passwordCorrect = password === user.encryptedPassword;
+                let passwordCorrect = false;
+                if (process.env.NODE_ENV === "development") {
+                    // Not secure, only for development.
+                    passwordCorrect = password === user.encryptedPassword;
+                } else {
+                    // Compare the password to an encrypted version
+                    passwordCorrect = await compare(password, user.encryptedPassword);
+                }
 
                 // Password incorrect
                 if (!passwordCorrect) {

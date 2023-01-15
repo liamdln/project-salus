@@ -1,15 +1,18 @@
 // Taken from https://github.com/vercel/next.js/blob/canary/examples/with-mongodb-mongoose/lib/dbConnect.js
 // Adapted by Liam Pickering
 
-import mongoose from 'mongoose'
+import mongoose, { ConnectOptions } from 'mongoose'
 
 if (!process.env.MONGODB_URI) {
-    throw new Error(
-        'Please define the MONGODB_URI environment variable inside .env.local'
-    )
+    throw new Error("Please define the MONGODB_URI environment variable inside .env.local")
+}
+
+if (!process.env.MONGODB_NAME) {
+    throw new Error("Please define the MONGODB_NAME environment variable inside .env.local")
 }
 
 const MONGODB_URI: string = process.env.MONGODB_URI;
+const MONGODB_NAME: string = process.env.MONGODB_NAME;
 
 /**
  * Global is used here to maintain a cached connection across hot reloads
@@ -28,8 +31,9 @@ async function dbConnect() {
     }
 
     if (!cached.promise) {
-        const opts = {
+        const opts: ConnectOptions = {
             bufferCommands: false,
+            dbName: MONGODB_NAME
         }
 
         cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
