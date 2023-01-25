@@ -1,4 +1,5 @@
 export type Report = {
+    _id: any,
     id: number,
     type: string,
     severity: number,

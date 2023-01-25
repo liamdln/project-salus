@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import Layout from "../../../components/layout";
 import { getReportsAsync } from "../../../lib/reports";
+import { Report } from "../../../types/reports";
 
 const Reports: NextPage = ({ reports }: any) => {
 
@@ -43,7 +44,7 @@ const Reports: NextPage = ({ reports }: any) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {reports.map((report: any, index: number) => {
+                            {reports.map((report: Report, index: number) => {
                                 const tableColour = report.severity === 1 ? "table-warning" : report.severity === 2 ? "table-danger" : ""
                                 return (
                                     <tr key={index} className={tableColour}>

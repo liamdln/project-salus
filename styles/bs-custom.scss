@@ -1,0 +1,18 @@
+
+// global
+$body-bg: #121212;
+$body-color: #FBFAF3;
+
+// backgrounds
+$dark: #1E1E1E;
+
+// navbar
+$navbar-dark-color: $body-color;
+$navbar-dark-hover-color: rgba($body-color, .75);
+$navbar-dark-active-color: $body-color;
+
+// colours
+$min-contrast-ratio: 3;
+$primary: #A370F7;
+
+@import "node_modules/bootstrap/scss/bootstrap";

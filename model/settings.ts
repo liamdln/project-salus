@@ -5,28 +5,27 @@ const settings = new mongoose.Schema({
         zoomLevel: {
             type: Number,
             required: true,
-            unique: false
         },
         xAxisCenter: {
             type: Number,
             required: true,
-            unique: false
         },
         yAxisCenter: {
             type: Number,
             required: true,
-            unique: false
+        },
+        circleRadius: {
+            type: Number,
+            required: true,
         },
         config: { 
             minZoomLevel: {
                 type: Number,
                 required: false,
-                unique: false
             },
             maxZoomLevel: {
                 type: Number,
                 required: false,
-                unique: false
             }
         }
     }

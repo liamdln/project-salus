@@ -3,9 +3,9 @@ import { Settings } from "../types/settings";
 
 export var settings: Settings = {
     map: {
-        zoomLevel: 15,
-        xAxisCenter: 51.6,
-        yAxisCenter: -4.1
+        zoomLevel: 0,
+        xAxisCenter: 0,
+        yAxisCenter: 0
     }
 }
 

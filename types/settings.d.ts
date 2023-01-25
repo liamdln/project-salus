@@ -3,6 +3,7 @@ export type Settings = {
         zoomLevel: number,
         xAxisCenter: number,
         yAxisCenter: number,
+        circleRadius: number,
         config?: {
             minZoomLevel?: number,
             maxZoomLevel?: number

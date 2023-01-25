@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import "../../styles/Login.module.css"
 
 const Login: NextPage = () => {
 
@@ -48,7 +47,7 @@ const Login: NextPage = () => {
     } else {
         loginForm = (
             <>
-                <button type="button" onClick={() => { login() }} className={signInButtonLoading ? "btn btn-primary me-10 disabled" : "btn btn-primary me-10"}>
+                <button type="button" onClick={() => { login() }} className={signInButtonLoading ? "btn btn-primary me-10 w-100 disabled" : "btn btn-primary w-100 me-10"}>
                     {!signInButtonLoading ? (
                         <span>
                             Sign In
@@ -85,7 +84,7 @@ const Login: NextPage = () => {
         <>
             {session.status === "loading" ? <><div className="container text-center"><span>Loading...</span></div></> : <>
                 <main>
-                    <div className="container text-center mt-5 pb-2" style={{ backgroundColor: "#957dad", color: "white", borderRadius: "25px" }}>
+                    <div className="container text-center mt-5 pb-3 bg-dark" style={{ borderRadius: "25px" }}>
                         <div className="pt-3">
                             <h1>Login - Salus</h1>
                             {session.status === "unauthenticated" ? <><h2 style={{ fontSize: "24px" }}>Please login below:</h2></> : <></>}

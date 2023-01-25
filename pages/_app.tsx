@@ -1,5 +1,6 @@
 import '../styles/globals.css'
 import 'bootstrap/dist/css/bootstrap.css'
+import '../styles/bs-custom.scss'
 import type { AppProps } from 'next/app'
 import { SessionProvider } from "next-auth/react"
 import { useEffect } from 'react'

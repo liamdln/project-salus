@@ -1,24 +1,41 @@
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../../../components/layout";
+import { MapMarker } from "../../../types/map";
 
 const CreateReport: NextPage = () => {
-
-    const router = useRouter()
 
     const Map = dynamic(
         () => import("../../../components/map"),
         { ssr: false }
     )
 
+    // const [userLocation, setUserLocation] = useState({ lat: "", lng: "" });
+    const [marker, setMarker] = useState({} as MapMarker)
+
+    // if we are on server (typeof window will = undefined), set true to keep className prop the same on both,
+    // else, check if the browser supports handing us the user's location
+    const getLocButton = typeof window !== "undefined" ? "geolocation" in navigator : true;
+
+    function getUserLocation() {
+        // get the location
+        navigator.geolocation.getCurrentPosition((location: Record<string, any>) => {
+            const lat = location.coords.latitude;
+            const lng = location.coords.longitude;
+            // setUserLocation({ lat, lng })
+            setMarker({lat, lng, message: "Your approx location."})
+        })
+
+    }
+
+
     return (
         <Layout>
             <div className="container text-center">
                 <h1>Create a Report</h1>
-                <div className="text-start" style={{ width: "50%", margin: "auto" }}>
-                    <div className="card mt-3">
+                <div className="text-start" style={{ width: "75%", margin: "auto" }}>
+                    <div className="card mt-3 mb-3 bg-dark">
                         <div className="card-body">
                             <form>
                                 <div className="mb-3">
@@ -42,7 +59,10 @@ const CreateReport: NextPage = () => {
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label">Location</label>
-                                    <Map />
+                                    <button type="button" onClick={() => getUserLocation()} className={getLocButton ? "btn btn-primary mb-3" : "d-none"} style={{ display: "block" }}>Get current location</button>
+                                    <Map>
+
+                                    </Map>
                                 </div>
                                 <button type="submit" className="btn btn-primary">Submit</button>
                             </form>
