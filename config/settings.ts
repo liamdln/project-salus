@@ -5,19 +5,22 @@ export var settings: Settings = {
     map: {
         zoomLevel: 0,
         xAxisCenter: 0,
-        yAxisCenter: 0
+        yAxisCenter: 0,
+        circleRadius: 0
     }
 }
 
-export async function readSettings(returnFilter?: string): Promise<Settings> {
+export async function readSettings(returnFilter?: string) {
 
-    return await SettingsData.find({}, returnFilter).then((res: any) => {
-        settings = res;
-        return res;
-    }).catch(err => {
-        console.log(err);
-        throw new Error("Settings could not be read.");
-    });
+    return await SettingsData.find({}, returnFilter)
+        .lean()
+        .then((res: any) => {
+            settings = res;
+            return res[0];
+        }).catch(err => {
+            console.log(err);
+            throw new Error("Settings could not be read.");
+        });
 
 }
 

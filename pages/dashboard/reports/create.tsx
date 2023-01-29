@@ -1,30 +1,53 @@
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import Layout from "../../../components/layout";
-import { MapMarker } from "../../../types/map";
+import { MapArea, MapMarker } from "../../../types/map";
+import { readSettings, settings } from "../../../config/settings";
 
-const CreateReport: NextPage = () => {
+const Map = dynamic(
+    () => import("../../../components/map"),
+    { ssr: false }
+)
 
-    const Map = dynamic(
-        () => import("../../../components/map"),
-        { ssr: false }
-    )
+const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
 
-    // const [userLocation, setUserLocation] = useState({ lat: "", lng: "" });
-    const [marker, setMarker] = useState({} as MapMarker)
+    const airportMarker: MapMarker = { lat: props.marker.lat, lng: props.marker.lng, draggable: true }
+    const [userLocArea, setUserLocArea] = useState({} as MapArea)
+    const [getUserLocBtnBusy, setUserLocBtnBusy] = useState(false);
+    const [getUserLocBtnEnabled, setGetUserLocBtnEnabled] = useState(false);
+    const reportPostApiUri = "/api/reports/"
 
-    // if we are on server (typeof window will = undefined), set true to keep className prop the same on both,
-    // else, check if the browser supports handing us the user's location
-    const getLocButton = typeof window !== "undefined" ? "geolocation" in navigator : true;
+    useEffect(() => {
+        setGetUserLocBtnEnabled("geolocation" in navigator)
+    })
 
     function getUserLocation() {
+        // set the button to loading
+        setUserLocBtnBusy(true)
         // get the location
-        navigator.geolocation.getCurrentPosition((location: Record<string, any>) => {
-            const lat = location.coords.latitude;
-            const lng = location.coords.longitude;
-            // setUserLocation({ lat, lng })
-            setMarker({lat, lng, message: "Your approx location."})
+        navigator.geolocation.getCurrentPosition(({ coords }: Record<string, any>) => {
+            const centerLat = coords.latitude;
+            const centerLng = coords.longitude;
+            const radius = coords.accuracy;
+            setUserLocArea({
+                centerLat,
+                centerLng,
+                message: `Your approximate location (accurate to within ${Math.ceil(coords.accuracy)} meters).`,
+                fillColour: "red",
+                borderColour: "none",
+                radius,
+                stroke: false
+            })
+            setUserLocBtnBusy(false)
+        }, error => {
+            Swal.fire({
+                icon: "error",
+                title: "That hasn't gone well!",
+                text: "You need to allow access to your location to use this feature.",
+                // footer: `Browser returned: ${error.message}`
+            })
         })
 
     }
@@ -37,7 +60,7 @@ const CreateReport: NextPage = () => {
                 <div className="text-start" style={{ width: "75%", margin: "auto" }}>
                     <div className="card mt-3 mb-3 bg-dark">
                         <div className="card-body">
-                            <form>
+                            <form action={reportPostApiUri} method="POST">
                                 <div className="mb-3">
                                     <label htmlFor="severity-select" className="form-label">Severity</label>
                                     <select className="form-select" id="severity-select" aria-label="Severity level">
@@ -55,14 +78,15 @@ const CreateReport: NextPage = () => {
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="description" className="form-label">Description</label>
-                                    <textarea className="form-control" id="description" rows={3} defaultValue={""} />
+                                    <textarea className="form-control" id="description" rows={3} defaultValue={""} required />
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label">Location</label>
-                                    <button type="button" onClick={() => getUserLocation()} className={getLocButton ? "btn btn-primary mb-3" : "d-none"} style={{ display: "block" }}>Get current location</button>
-                                    <Map>
-
-                                    </Map>
+                                    {getUserLocBtnBusy ?
+                                        <button type="button" className={getUserLocBtnEnabled ? "btn btn-primary mb-3 disabled" : "d-none"} style={{ display: "block" }}>Please wait...</button> :
+                                        <button type="button" onClick={() => getUserLocation()} className={getUserLocBtnEnabled ? "btn btn-primary mb-3" : "d-none"} style={{ display: "block" }}>Get current location</button>
+                                    }
+                                    {userLocArea.centerLat && userLocArea.centerLng ? <Map markers={[airportMarker]} areas={[userLocArea]} /> : <Map markers={[airportMarker]} /> }
                                 </div>
                                 <button type="submit" className="btn btn-primary">Submit</button>
                             </form>
@@ -73,5 +97,11 @@ const CreateReport: NextPage = () => {
         </Layout>
     );
 };
+
+export async function getServerSideProps() {
+    const mapSettings = await readSettings("map");
+    const marker: MapMarker = { lat: mapSettings.map.xAxisCenter, lng: mapSettings.map.yAxisCenter }
+    return { props: { marker } }
+}
 
 export default CreateReport;

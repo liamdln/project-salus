@@ -7,6 +7,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <div className="d-flex flex-column min-vh-100">
         <header><Navbar /></header>
         <main className="mt-3">{children}</main>
+        {/* TODO: Footer */}
         <footer className="mt-auto text-center pb-2 pt-2 bg-dark">Footer</footer>
       </div>
     </>

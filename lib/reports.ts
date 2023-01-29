@@ -17,7 +17,10 @@ export async function getReportsAsync(filter?: Record<string, any>, returnFilter
 export function submitReport(report: Report) {
     const newReport = new ReportModel(report);
     return newReport.save((err: any) => {
-        if (err) { return false; }
+        if (err) {
+            console.log(err);
+            throw new Error("Report could not be saved.");
+        }
         return true;
     });
 }

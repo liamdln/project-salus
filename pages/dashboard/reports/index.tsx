@@ -10,7 +10,6 @@ const Reports: NextPage = ({ reports }: any) => {
 
     reports = JSON.parse(reports);
 
-    const session = useSession();
     const router = useRouter()
     const query = router.query;
 
@@ -83,7 +82,7 @@ const Reports: NextPage = ({ reports }: any) => {
 export async function getServerSideProps() {
     // get reports
     const rawReports = await getReportsAsync();
-    // parse the result of the db call into a string and remove the [] brackets around the object.
+    // parse the result of the db call into a string.
     const reports = JSON.stringify(rawReports);
     return { props: { reports } }
 }
