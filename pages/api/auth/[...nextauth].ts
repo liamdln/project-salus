@@ -6,7 +6,9 @@ import dbConnect from "../../../lib/dbConnect";
 import User from "../../../model/user";
 import { compare } from "bcrypt";
 
-const incorrectDetailsMessage = "Email or password incorrect."
+export enum LoginError {
+    INVALID_CREDENTIALS = 0
+}
 
 export default NextAuth({
     adapter: MongoDBAdapter(clientPromise),
@@ -35,7 +37,7 @@ export default NextAuth({
                 // Email not found
                 if (!user) {
                     console.log("NO USER");
-                    throw new Error(incorrectDetailsMessage);
+                    throw new Error(JSON.stringify({ error: LoginError.INVALID_CREDENTIALS }));
                 }
 
                 let passwordCorrect = false;
@@ -50,7 +52,7 @@ export default NextAuth({
                 // Password incorrect
                 if (!passwordCorrect) {
                     console.log("NO PASSWORD");
-                    throw new Error(incorrectDetailsMessage);
+                    throw new Error(JSON.stringify({ error: LoginError.INVALID_CREDENTIALS }));
                 }
 
                 return user;

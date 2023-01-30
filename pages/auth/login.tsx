@@ -12,6 +12,8 @@ const Login: NextPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const [invalidLogin, setInvalidLogin] = useState(false);
+
     const router = useRouter();
     const session = useSession();
 
@@ -26,10 +28,14 @@ const Login: NextPage = () => {
     // functions
     function login() {
         setSignInButtonLoading(true);
-        const loginRes: any = signIn("credentials", { email, password, redirect: false, callbackUrl: callbackUrl });
-        if (loginRes.error) {
-            console.log(loginRes.error)
-        }
+        signIn("credentials", { email, password, redirect: false, callbackUrl: callbackUrl }).then((res: any) => {
+            if (!res.ok) {
+                setInvalidLogin(true);
+                setSignInButtonLoading(false);
+                setEmail("");
+                setPassword("");
+            }
+        });
     }
 
     let loginForm;
@@ -65,7 +71,7 @@ const Login: NextPage = () => {
     let signInHtml = (
         <>
             <div className="d-flex justify-content-center">
-                <form className="pt-3" style={{ width: "50%" }}>
+                <form style={{ width: "50%" }}>
                     <div className="mb-3">
                         <label htmlFor="emailBox" className="form-label">Email</label>
                         <input type="email" value={email} onChange={(e) => { setEmail(e.currentTarget.value) }} className="form-control" id="emailBox" required />
@@ -88,6 +94,9 @@ const Login: NextPage = () => {
                         <div className="pt-3">
                             <h1>Login - Salus</h1>
                             {session.status === "unauthenticated" ? <><h2 style={{ fontSize: "24px" }}>Please login below:</h2></> : <></>}
+                            <div className={invalidLogin ? "alert alert-danger mx-auto mt-3" : "d-none"} style={{ width: "50%" }} role="alert">
+                                The username or password that you entered is incorrect.
+                            </div>
                         </div>
                         {signInHtml}
                     </div>
