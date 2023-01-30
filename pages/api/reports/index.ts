@@ -19,11 +19,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 console.log(e);
                 res.status(500).json({ status: "error", message: "Could not create report." })
             }
+            break;
             
         case "GET":
         default:
             const reports = await getReportsAsync();
             res.status(200).json(reports);
+            break;
 
     }
 

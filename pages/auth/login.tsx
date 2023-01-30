@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import Loading from "../../components/loading";
 
 const Login: NextPage = () => {
 
@@ -13,6 +14,7 @@ const Login: NextPage = () => {
     const [password, setPassword] = useState("");
 
     const [invalidLogin, setInvalidLogin] = useState(false);
+    const [loginError, setLoginError] = useState("");
 
     const router = useRouter();
     const session = useSession();
@@ -30,6 +32,16 @@ const Login: NextPage = () => {
         setSignInButtonLoading(true);
         signIn("credentials", { email, password, redirect: false, callbackUrl: callbackUrl }).then((res: any) => {
             if (!res.ok) {
+                switch (JSON.parse(res.error).errorCode) {
+                    case 1:
+                        setLoginError("There's been an error connecting to the database. Please report this to the site admin.")
+                        break;
+                    case 0:
+                    default:
+                        setLoginError("The username or password that you entered is incorrect.")
+                        break;
+
+                }
                 setInvalidLogin(true);
                 setSignInButtonLoading(false);
                 setEmail("");
@@ -53,7 +65,7 @@ const Login: NextPage = () => {
     } else {
         loginForm = (
             <>
-                <button type="button" onClick={() => { login() }} className={signInButtonLoading ? "btn btn-primary me-10 w-100 disabled" : "btn btn-primary w-100 me-10"}>
+                <button type="button" onClick={() => { login() }} className={signInButtonLoading ? "btn btn-primary me-10 w-50 disabled" : "btn btn-primary w-50 me-10"}>
                     {!signInButtonLoading ? (
                         <span>
                             Sign In
@@ -88,14 +100,14 @@ const Login: NextPage = () => {
 
     return (
         <>
-            {session.status === "loading" ? <><div className="container text-center"><span>Loading...</span></div></> : <>
+            {session.status === "loading" ? <><div className="container text-center"><Loading /></div></> : <>
                 <main>
-                    <div className="container text-center mt-5 pb-3 bg-dark" style={{ borderRadius: "25px" }}>
-                        <div className="pt-3">
+                    <div className="container text-center mt-5 p-3 bg-dark" style={{ borderRadius: "25px" }}>
+                        <div>
                             <h1>Login - Salus</h1>
                             {session.status === "unauthenticated" ? <><h2 style={{ fontSize: "24px" }}>Please login below:</h2></> : <></>}
                             <div className={invalidLogin ? "alert alert-danger mx-auto mt-3" : "d-none"} style={{ width: "50%" }} role="alert">
-                                The username or password that you entered is incorrect.
+                                { loginError }
                             </div>
                         </div>
                         {signInHtml}
