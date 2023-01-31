@@ -62,10 +62,10 @@ export default NextAuth({
         })
     ],
     callbacks: {
-        async jwt({ token }) {
-            token.name = "admin"
+        async jwt({ token, user }) {
+            token.name = user?.name || "Unknown"
             return token
-        }
+        },
     },
     session: {
         strategy: 'jwt'

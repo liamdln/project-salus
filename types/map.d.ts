@@ -1,7 +1,9 @@
 export type MapProps = {
     showHeatmap?: Boolean,
     markers?: MapMarker[],
-    areas?: MapArea[]
+    areas?: MapArea[],
+    reportMarker?: MapMarker,
+    userArea?: MapArea
 }
 
 export type MapMarker = {

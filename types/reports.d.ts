@@ -6,5 +6,5 @@ export type Report = {
     description: string,
     author: string,
     status: number,
-    location: string
+    location: number[]
 }

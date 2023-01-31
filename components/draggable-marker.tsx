@@ -20,7 +20,7 @@ export default function DraggableMarker(props: { marker: MapMarker }) {
     )
 
     return (
-        <Marker draggable={true} position={markerLocation} eventHandlers={eventHandlers}>
+        <Marker draggable={true} position={markerLocation} eventHandlers={eventHandlers} ref={markerRef}>
             <Popup>
                 Location of the Report
             </Popup>
