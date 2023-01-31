@@ -14,5 +14,11 @@ $navbar-dark-active-color: $body-color;
 // colours
 $min-contrast-ratio: 3;
 $primary: #A370F7;
+$danger: #dc3545;
+
+// alerts
+$alert-bg-scale: 0;
+$alert-border-scale: 0;
+$alert-color-scale: -100;
 
 @import "node_modules/bootstrap/scss/bootstrap";
