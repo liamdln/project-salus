@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             const body = req.body;
             console.log(body);
             try {
-                submitReport(body);
+                await submitReport(body);
                 res.status(200).json({ status: "success" })
             } catch (e) {
                 console.log(e);

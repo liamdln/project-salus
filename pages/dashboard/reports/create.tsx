@@ -5,6 +5,8 @@ import Swal from "sweetalert2";
 import Layout from "../../../components/layout";
 import { MapArea, MapMarker } from "../../../types/map";
 import { readSettings, settings } from "../../../config/settings";
+import { Report } from "../../../types/reports";
+import { useSession } from "next-auth/react";
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -17,7 +19,7 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
     const [userLocArea, setUserLocArea] = useState({} as MapArea)
     const [getUserLocBtnBusy, setUserLocBtnBusy] = useState(false);
     const [getUserLocBtnEnabled, setGetUserLocBtnEnabled] = useState(false);
-    const reportPostApiUri = "/api/reports/"
+    const session = useSession();
 
     useEffect(() => {
         setGetUserLocBtnEnabled("geolocation" in navigator)
@@ -52,6 +54,24 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
 
     }
 
+    // form data
+    const [severity, setSeverity] = useState("");
+    const [type, setType] = useState("");
+    const [description, setDescription] = useState("");
+    const [location, setLocation] = useState("");
+
+    function submitReport() {
+        const report: Report = {
+            severity: +severity,
+            type,
+            description,
+            author: session.data?.user?.name || "Unknown",
+            status: 0,
+            location
+        }
+        console.log(report)
+    }
+
 
     return (
         <Layout>
@@ -60,10 +80,10 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
                 <div className="text-start" style={{ width: "75%", margin: "auto" }}>
                     <div className="card mt-3 mb-3 bg-dark">
                         <div className="card-body">
-                            <form action={reportPostApiUri} method="POST">
+                            <form>
                                 <div className="mb-3">
                                     <label htmlFor="severity-select" className="form-label">Severity</label>
-                                    <select className="form-select" id="severity-select" aria-label="Severity level">
+                                    <select onChange={(e) => setSeverity(e.currentTarget.value)} className="form-select" id="severity-select" aria-label="Severity level">
                                         <option value="0">None Threatening</option>
                                         <option value="1">Danger to Operations</option>
                                         <option value="2">Danger to Life</option>
@@ -71,14 +91,14 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="type-select" className="form-label">Type</label>
-                                    <select className="form-select" id="type-select" aria-label="Type">
+                                    <select onChange={(e) => setType(e.currentTarget.value)} className="form-select" id="type-select" aria-label="Type">
                                         <option value="fod">Foreign Object Debris (FOD)</option>
                                         <option value="wildlife">Wildlife</option>
                                     </select>
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="description" className="form-label">Description</label>
-                                    <textarea className="form-control" id="description" rows={3} defaultValue={""} required />
+                                    <textarea onChange={(e) => setDescription(e.currentTarget.value)} className="form-control" id="description" rows={3} defaultValue={""} required />
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label">Location</label>

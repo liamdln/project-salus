@@ -1,6 +1,6 @@
 export type Report = {
-    _id: any,
-    id: number,
+    _id?: any,
+    id?: number, // remove
     type: string,
     severity: number,
     description: string,

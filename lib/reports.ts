@@ -14,7 +14,7 @@ export async function getReportsAsync(filter?: Record<string, any>, returnFilter
     });
 }
 
-export function submitReport(report: Report) {
+export async function submitReport(report: Report) {
     const newReport = new ReportModel(report);
     return newReport.save((err: any) => {
         if (err) {
