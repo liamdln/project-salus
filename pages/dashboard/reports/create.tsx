@@ -7,7 +7,6 @@ import { MapArea, MapMarker } from "../../../types/map";
 import { readSettings } from "../../../config/settings";
 import { Report } from "../../../types/reports";
 import { useSession } from "next-auth/react";
-import { Marker, Popup } from "react-leaflet";
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -16,7 +15,7 @@ const Map = dynamic(
 
 const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
 
-    const reportMarker: MapMarker = { lat: props.marker.lat, lng: props.marker.lng, draggable: true }
+    const [reportMarker, setReportMarker] = useState({ lat: props.marker.lat, lng: props.marker.lng, draggable: true } as MapMarker)
     const [userLocArea, setUserLocArea] = useState({} as MapArea)
     const [getUserLocBtnBusy, setUserLocBtnBusy] = useState(false);
     const [getUserLocBtnEnabled, setGetUserLocBtnEnabled] = useState(false);
@@ -64,39 +63,18 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
             description: event.target.description.value,
             author: session.data?.user?.name || "Unknown",
             status: 0,
-            location: [reportMarker.lat, reportMarker.lng]
+            lat: reportMarker.lat,
+            lng: reportMarker.lng
         }
-        console.log(report)
+        fetch("/api/reports", {
+            method: "POST",
+            body: JSON.stringify(report)
+        }).then((res) => {
+            console.log(res)
+        }).catch((err) => {
+            console.log(err)
+        })
     }
-
-    function ReportMarker() {
-        if (props.reportMarker) {
-            const markerRef = useRef()
-            const eventHandlers = useMemo(
-                () => ({
-                    dragend() {
-                        const marker = markerRef.current
-                        if (marker != null) {
-                            // TODO: fix
-                            console.log(marker.getLatLng())
-                            // setMarkerLocation(marker.getLatLng())
-                        }
-                    },
-                }),
-                [],
-            )
-            return (
-                <Marker draggable={true} position={[reportMarker.lat, reportMarker.lng]} eventHandlers={eventHandlers} ref={markerRef}>
-                    <Popup>
-                        Location of the Report
-                    </Popup>
-                </Marker>
-            )
-        } else {
-            return (<></>)
-        }
-    }
-
 
     return (
         <Layout>
@@ -131,7 +109,7 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
                                         <button type="button" className={getUserLocBtnEnabled ? "btn btn-primary mb-3 disabled" : "d-none"} style={{ display: "block" }}>Please wait...</button> :
                                         <button type="button" onClick={() => getUserLocation()} className={getUserLocBtnEnabled ? "btn btn-primary mb-3" : "d-none"} style={{ display: "block" }}>Get current location</button>
                                     }
-                                    {userLocArea.centerLat && userLocArea.centerLng ? <Map reportMarker={reportMarker} userArea={userLocArea} /> : <Map reportMarker={reportMarker} /> }
+                                    {userLocArea.centerLat && userLocArea.centerLng ? <Map reportMarker={reportMarker} userArea={userLocArea} updateMarkerPosFunction={setReportMarker} /> : <Map reportMarker={reportMarker} updateMarkerPosFunction={setReportMarker} /> }
                                 </div>
                                 <button type="submit" className="btn btn-primary">Submit</button>
                             </form>

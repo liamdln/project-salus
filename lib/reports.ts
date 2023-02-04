@@ -16,11 +16,9 @@ export async function getReportsAsync(filter?: Record<string, any>, returnFilter
 
 export async function submitReport(report: Report) {
     const newReport = new ReportModel(report);
-    return newReport.save((err: any) => {
-        if (err) {
-            console.log(err);
-            throw new Error("Report could not be saved.");
-        }
-        return true;
-    });
+    try {
+        await newReport.save()
+    } catch (e) {
+        throw new Error(`Report could not be saved! Stack:\n${e}`)
+    }
 }

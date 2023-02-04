@@ -3,7 +3,8 @@ export type MapProps = {
     markers?: MapMarker[],
     areas?: MapArea[],
     reportMarker?: MapMarker,
-    userArea?: MapArea
+    userArea?: MapArea,
+    updateMarkerPosFunction?: any
 }
 
 export type MapMarker = {

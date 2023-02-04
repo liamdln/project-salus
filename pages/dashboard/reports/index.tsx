@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React from "react";
 import Layout from "../../../components/layout";
@@ -16,6 +15,44 @@ const Reports: NextPage = ({ reports }: any) => {
     console.log(reports)
     function refreshReports() {
         router.replace(router.asPath);
+    }
+
+    function Type(props: { type: string }) {
+        if (props.type === "fod") {
+            return (
+                <span>Foreign Object Debris</span>
+            )
+        } else if (props.type === "wildlife") {
+            return (
+                <span>Wildlife</span>
+            )
+        } else {
+            return (<></>)
+        }
+    }
+
+    function TypeAndSeverity(props: { severity: number, type: string }) {
+        if (props.severity === 1) {
+            return (
+                <div className="d-flex flex-column">
+                    <Type type={props.type} />
+                    <strong>(Danger to Operations)</strong>
+                </div>
+            )
+        } else if (props.severity === 2) {
+            return (
+                <div className="d-flex flex-column">
+                    <Type type={props.type} />
+                    <strong>(Danger to Life)</strong>
+                </div>
+            )
+        } else {
+            return (
+                <div className="d-flex flex-column">
+                    <Type type={props.type} />
+                </div>
+            )
+        }
     }
 
     return (
@@ -49,23 +86,11 @@ const Reports: NextPage = ({ reports }: any) => {
                                     <tr key={index} className={tableColour}>
                                         <th scope="row">{report._id}</th>
                                         <td>
-                                            {report.severity === 1 ?
-                                                <>
-                                                    {report.type} <br />
-                                                    <strong>(Danger to Operations)</strong>
-                                                </> : report.severity === 2 ?
-                                                    <>
-                                                        {report.type} <br />
-                                                        <strong>(Danger to Life)</strong>
-                                                    </> :
-                                                    <>
-                                                        {report.type}
-                                                    </>
-                                            }
+                                            <TypeAndSeverity severity={report.severity} type={report.type} />
                                         </td>
                                         <td>{report.description}</td>
                                         <td>{report.author}</td>
-                                        <td>{report.location}</td>
+                                        <td>{report.lat}, {report.lng}</td>
                                         <td>Open</td>
                                     </tr>
                                 );

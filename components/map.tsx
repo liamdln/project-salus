@@ -3,7 +3,8 @@ import 'leaflet/dist/leaflet.css'
 import useSWR from "swr";
 import { fetcher } from "../lib/utils"
 import { MapProps } from '../types/map';
-import L from "leaflet";
+import L, { Marker as LeafletMarker } from "leaflet";
+import { useMemo, useRef } from 'react';
 
 export default function Map(props: MapProps) {
 
@@ -62,6 +63,33 @@ export default function Map(props: MapProps) {
             }
         }
 
+        const ReportMarker = () => {
+            if (props.reportMarker) {
+                const markerRef = useRef<LeafletMarker>(null)
+                const eventHandlers = useMemo(
+                    () => ({
+                        dragend() {
+                            const marker = markerRef.current
+                            if (marker != null) {
+                                console.log(marker.getLatLng())
+                                props.updateMarkerPosFunction(marker.getLatLng())
+                            }
+                        },
+                    }),
+                    [],
+                )
+                return (
+                    <Marker draggable={true} position={[props.reportMarker.lat, props.reportMarker.lng]} eventHandlers={eventHandlers} ref={markerRef}>
+                        <Popup>
+                            Location of the Report
+                        </Popup>
+                    </Marker>
+                )
+            } else {
+                return (<></>)
+            }
+        }
+
         return (
             <>
                 <MapContainer center={[mapSettings.xAxisCenter, mapSettings.yAxisCenter]} zoom={mapSettings.zoomLevel} scrollWheelZoom={true} style={{ height: 600, width: "100%", margin: "auto", color: "#000" }}>
@@ -80,6 +108,7 @@ export default function Map(props: MapProps) {
                     {/* End User Area */}
 
                     {/* Report Marker */}
+                    <ReportMarker />
                     {/* <ReportMarker /> */}
                     {/* End Report Marker */}
 
