@@ -2,9 +2,9 @@ import { MapContainer, TileLayer, Circle, Marker, Popup, FeatureGroup } from 're
 import 'leaflet/dist/leaflet.css'
 import useSWR from "swr";
 import { fetcher } from "../lib/utils"
-import L from 'leaflet';
-import { MapArea, MapMarker, MapProps } from '../types/map';
-import DraggableMarker from "./draggable-marker";
+import { MapProps } from '../types/map';
+import L, { Marker as LeafletMarker } from "leaflet";
+import { useMemo, useRef } from 'react';
 
 export default function Map(props: MapProps) {
 
@@ -36,6 +36,60 @@ export default function Map(props: MapProps) {
         });
         L.Marker.prototype.options.icon = DefaultIcon;
 
+        const UserArea = () => {
+            if (props.userArea) {
+                return (
+                    // Group the circle and popup
+                    <FeatureGroup pathOptions={{ fillColor: props.userArea.fillColour, color: props.userArea.borderColour }}>
+                        {/* Render the circle */}
+                        <Circle
+                            center={[props.userArea.centerLat, props.userArea.centerLng]}
+                            radius={props.userArea.radius}
+                            stroke={props.userArea.stroke}
+                        />
+                        {/* End render circle */}
+                        {/* Render the popup if there is a message */}
+                        {props.userArea.message ?
+                            <Popup>
+                                {props.userArea.message}
+                            </Popup>
+                            : <></>}
+                        {/* End render popup */}
+                    </FeatureGroup>
+                    // End group and circle popup
+                )
+            } else {
+                return (<></>)
+            }
+        }
+
+        const ReportMarker = () => {
+            if (props.reportMarker) {
+                const markerRef = useRef<LeafletMarker>(null)
+                const eventHandlers = useMemo(
+                    () => ({
+                        dragend() {
+                            const marker = markerRef.current
+                            if (marker != null) {
+                                console.log(marker.getLatLng())
+                                props.updateMarkerPosFunction(marker.getLatLng())
+                            }
+                        },
+                    }),
+                    [],
+                )
+                return (
+                    <Marker draggable={true} position={[props.reportMarker.lat, props.reportMarker.lng]} eventHandlers={eventHandlers} ref={markerRef}>
+                        <Popup>
+                            Location of the Report
+                        </Popup>
+                    </Marker>
+                )
+            } else {
+                return (<></>)
+            }
+        }
+
         return (
             <>
                 <MapContainer center={[mapSettings.xAxisCenter, mapSettings.yAxisCenter]} zoom={mapSettings.zoomLevel} scrollWheelZoom={true} style={{ height: 600, width: "100%", margin: "auto", color: "#000" }}>
@@ -47,52 +101,16 @@ export default function Map(props: MapProps) {
 
                     {/* Circle the airport */}
                     <Circle center={[mapSettings.xAxisCenter, mapSettings.yAxisCenter]} pathOptions={{ color: "green" }} radius={mapSettings.circleRadius} />
+                    {/* End airport circle */}
 
                     {/* User Location Area (approx) */}
-                    {props.areas ? props.areas.map((area: MapArea, index: number) => {
-                        return (
-                            // Group the circle and popup
-                            <FeatureGroup pathOptions={{ fillColor: area.fillColour, color: area.borderColour }}>
-                                {/* Render the circle */}
-                                <Circle
-                                    key={index}
-                                    center={[area.centerLat, area.centerLng]}
-                                    radius={area.radius}
-                                    stroke={area.stroke}
-                                />
-                                {/* End render circle */}
-                                {/* Render the popup if there is a message */}
-                                {area.message ?
-                                    <Popup>
-                                        {area.message}
-                                    </Popup>
-                                    : <></>}
-                                {/* End render popup */}
-                            </FeatureGroup>
-                            // End group and circle popup
-                        )
-                    })
-                        : <></>}
+                    <UserArea />
+                    {/* End User Area */}
 
-                    {/* Markers */}
-                    {props.markers ? props.markers.map((marker: MapMarker, index: number) => {
-                        if (marker.draggable) {
-                            return (
-                                <DraggableMarker key={index} marker={marker} />
-                            )
-                        } else {
-                            return (
-                                <Marker key={index} position={[marker.lat, marker.lng]}>
-                                    {marker.popupMessage ?
-                                        <Popup>
-                                            {marker.popupMessage}
-                                        </Popup>
-                                        : <></>}
-                                </Marker>
-                            )
-                        }
-                    })
-                        : <></>}
+                    {/* Report Marker */}
+                    <ReportMarker />
+                    {/* <ReportMarker /> */}
+                    {/* End Report Marker */}
 
                 </MapContainer>
             </>

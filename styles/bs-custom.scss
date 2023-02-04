@@ -15,9 +15,17 @@ $navbar-dark-active-color: #9faec1;
 
 // colours
 $min-contrast-ratio: 3;
+
 $primary: #1F2937;
+$danger: #dc3545;
+
+// alerts
+$alert-bg-scale: 0;
+$alert-border-scale: 0;
+$alert-color-scale: -100;
 
 // cards
 $card-border-width: 0;
+
 
 @import "node_modules/bootstrap/scss/bootstrap";

@@ -1,10 +1,10 @@
 export type Report = {
-    _id: any,
-    id: number,
+    _id?: any,
     type: string,
     severity: number,
     description: string,
     author: string,
     status: number,
-    location: string
+    lat: number,
+    lng: number
 }

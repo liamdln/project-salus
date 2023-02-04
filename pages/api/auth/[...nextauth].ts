@@ -6,7 +6,10 @@ import dbConnect from "../../../lib/dbConnect";
 import User from "../../../model/user";
 import { compare } from "bcrypt";
 
-const incorrectDetailsMessage = "Email or password incorrect."
+export enum LoginError {
+    INVALID_CREDENTIALS = 0,
+    DATABASE_CONNECTION_FAILED = 1
+}
 
 export default NextAuth({
     adapter: MongoDBAdapter(clientPromise),
@@ -26,7 +29,7 @@ export default NextAuth({
                     await dbConnect();
                 } catch (e) {
                     console.log("Error connecting to the database.")
-                    throw new Error("Could not connect to the database.");
+                    throw new Error(JSON.stringify({ errorCode: LoginError.DATABASE_CONNECTION_FAILED }));
                 }
                 const user = await User.findOne({
                     email
@@ -35,7 +38,7 @@ export default NextAuth({
                 // Email not found
                 if (!user) {
                     console.log("NO USER");
-                    throw new Error(incorrectDetailsMessage);
+                    throw new Error(JSON.stringify({ errorCode: LoginError.INVALID_CREDENTIALS }));
                 }
 
                 let passwordCorrect = false;
@@ -50,7 +53,7 @@ export default NextAuth({
                 // Password incorrect
                 if (!passwordCorrect) {
                     console.log("NO PASSWORD");
-                    throw new Error(incorrectDetailsMessage);
+                    throw new Error(JSON.stringify({ errorCode: LoginError.INVALID_CREDENTIALS }));
                 }
 
                 return user;
@@ -59,10 +62,21 @@ export default NextAuth({
         })
     ],
     callbacks: {
-        async jwt({ token }) {
-            token.name = "admin"
+        async session({ session, token }) {
+            session.user = {
+                name: token.name,
+                email: token.email,
+                id: token.user["_id"],
+                roles: [],
+            }
+            return session;
+        },
+        async jwt({ token, user }) {
+            if (user) {
+                token.user = user;
+            }
             return token
-        }
+        },
     },
     session: {
         strategy: 'jwt'

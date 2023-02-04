@@ -1,11 +1,6 @@
 import mongoose from "mongoose";
 
 const report = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true,
-        unique: true
-    },
     type: {
         type: String,
         required: true
@@ -26,8 +21,12 @@ const report = new mongoose.Schema({
         type: Number,
         required: true
     },
-    location: {
-        type: String,
+    lat: {
+        type: Number,
+        required: true
+    },
+    lng: {
+        type: Number,
         required: true
     }
 }); 
