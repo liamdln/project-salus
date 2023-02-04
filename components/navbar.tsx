@@ -50,9 +50,9 @@ export default function Header() {
 
     return (
         <>
-            <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+            <nav className="navbar navbar-expand-lg navbar-dark navbar-blue">
                 <div className="container">
-                    <a className="navbar-brand" href="#">Salus</a>
+                    <a className="navbar-brand" href="/" style={{ color: "#e9ecef" }}>Project<strong>Salus</strong></a>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon" />
                     </button>
