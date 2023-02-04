@@ -92,7 +92,7 @@ const Login: NextPage = () => {
                         <label htmlFor="passwordBox" className="form-label">Password</label>
                         <input type="password" value={password} onChange={(e) => { setPassword(e.currentTarget.value) }} className="form-control" id="passwordBox" required />
                     </div>
-                    { loginForm }
+                    {loginForm}
                 </form>
             </div>
         </>
@@ -102,15 +102,16 @@ const Login: NextPage = () => {
         <>
             {session.status === "loading" ? <><div className="container text-center"><Loading /></div></> : <>
                 <main>
-                    <div className="container text-center mt-5 p-3 bg-dark" style={{ borderRadius: "25px" }}>
-                        <div>
-                            <h1>Login - Salus</h1>
-                            {session.status === "unauthenticated" ? <><h2 style={{ fontSize: "24px" }}>Please login below:</h2></> : <></>}
-                            <div className={invalidLogin ? "alert alert-danger mx-auto mt-3" : "d-none"} style={{ width: "50%" }} role="alert">
-                                { loginError }
+                    <div className="container text-center mt-5 pb-3">
+                        <div className="card salus-card">
+                            <div className="card-header">
+                                <h1>Login to Salus</h1>
+                            </div>
+                            <div className="card-body">
+                                <h2>Please login below:</h2>
+                                {signInHtml}
                             </div>
                         </div>
-                        {signInHtml}
                     </div>
                 </main>
             </>}

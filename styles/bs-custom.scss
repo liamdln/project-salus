@@ -1,24 +1,31 @@
 
 // global
-$body-bg: #121212;
-$body-color: #FBFAF3;
+// $body-bg: #121212;
+// $body-color: #FBFAF3;
+$body-bg: #EBEEF2;
+$body-color: #0e0e0e;
 
 // backgrounds
 $dark: #1E1E1E;
 
 // navbar
-$navbar-dark-color: $body-color;
-$navbar-dark-hover-color: rgba($body-color, .75);
-$navbar-dark-active-color: $body-color;
+$navbar-dark-color: #9faec1;
+$navbar-dark-hover-color: rgba($body-bg, .75);
+$navbar-dark-active-color: #9faec1;
 
 // colours
 $min-contrast-ratio: 3;
-$primary: #A370F7;
+
+$primary: #1F2937;
 $danger: #dc3545;
 
 // alerts
 $alert-bg-scale: 0;
 $alert-border-scale: 0;
 $alert-color-scale: -100;
+
+// cards
+$card-border-width: 0;
+
 
 @import "node_modules/bootstrap/scss/bootstrap";

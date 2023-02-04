@@ -81,7 +81,7 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
             <div className="container text-center">
                 <h1>Create a Report</h1>
                 <div className="text-start" style={{ width: "75%", margin: "auto" }}>
-                    <div className="card mt-3 mb-3 bg-dark">
+                    <div className="card mt-3 mb-3">
                         <div className="card-body">
                             <form onSubmit={(e) => submitReport(e)}>
                                 <div className="mb-3">

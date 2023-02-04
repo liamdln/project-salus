@@ -16,7 +16,7 @@ export default function Home() {
 
 
                     <div className="container text-center">
-                        <h1>Welcome</h1>
+                        <h1>Welcome to Salus</h1>
                     </div>
                 </div>
             </Layout>
