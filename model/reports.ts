@@ -28,6 +28,10 @@ const report = new mongoose.Schema({
     lng: {
         type: Number,
         required: true
+    },
+    date: {
+        type: Date,
+        required: true
     }
 }); 
 

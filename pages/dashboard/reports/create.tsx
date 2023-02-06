@@ -1,12 +1,13 @@
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
-import React, { RefAttributes, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Layout from "../../../components/layout";
 import { MapArea, MapMarker } from "../../../types/map";
 import { readSettings } from "../../../config/settings";
 import { Report } from "../../../types/reports";
 import { useSession } from "next-auth/react";
+import { useRouter } from 'next/router'
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -19,7 +20,9 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
     const [userLocArea, setUserLocArea] = useState({} as MapArea)
     const [getUserLocBtnBusy, setUserLocBtnBusy] = useState(false);
     const [getUserLocBtnEnabled, setGetUserLocBtnEnabled] = useState(false);
+    const [submitButtonLoading, setSubmitButtonLoading] = useState(false);
     const session = useSession();
+    const router = useRouter();
 
     useEffect(() => {
         setGetUserLocBtnEnabled("geolocation" in navigator)
@@ -50,6 +53,7 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
                 text: "You need to allow access to your location to use this feature.",
                 // footer: `Browser returned: ${error.message}`
             })
+            setUserLocBtnBusy(false);
         })
 
     }
@@ -57,6 +61,7 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
     // form data
     async function submitReport(event: any) {
         event.preventDefault();
+        setSubmitButtonLoading(true);
         const report: Report = {
             severity: +event.target["severity-select"].value,
             type: event.target["type-select"].value,
@@ -64,15 +69,34 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
             author: session.data?.user?.name || "Unknown",
             status: 0,
             lat: reportMarker.lat,
-            lng: reportMarker.lng
+            lng: reportMarker.lng,
+            date: new Date()
         }
         fetch("/api/reports", {
             method: "POST",
             body: JSON.stringify(report)
         }).then((res) => {
-            console.log(res)
+            Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "The report has been submitted!",
+                confirmButtonText: "Done",
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    setSubmitButtonLoading(false);
+                    router.reload();
+                }
+            })
         }).catch((err) => {
             console.log(err)
+            setSubmitButtonLoading(false);
+            Swal.fire({
+                icon: "error",
+                title: "That hasn't gone well!",
+                text: "We could not submit this report. Please try again later or contact the website administrator.",
+                // footer: `Browser returned: ${error.message}`
+            })
         })
     }
 
@@ -109,9 +133,9 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
                                         <button type="button" className={getUserLocBtnEnabled ? "btn btn-primary mb-3 disabled" : "d-none"} style={{ display: "block" }}>Please wait...</button> :
                                         <button type="button" onClick={() => getUserLocation()} className={getUserLocBtnEnabled ? "btn btn-primary mb-3" : "d-none"} style={{ display: "block" }}>Get current location</button>
                                     }
-                                    {userLocArea.centerLat && userLocArea.centerLng ? <Map reportMarker={reportMarker} userArea={userLocArea} updateMarkerPosFunction={setReportMarker} /> : <Map reportMarker={reportMarker} updateMarkerPosFunction={setReportMarker} /> }
+                                    {userLocArea.centerLat && userLocArea.centerLng ? <Map reportMarker={reportMarker} userArea={userLocArea} updateMarkerPosFunction={setReportMarker} mapHeightPx={500} /> : <Map reportMarker={reportMarker} updateMarkerPosFunction={setReportMarker} mapHeightPx={500} /> }
                                 </div>
-                                <button type="submit" className="btn btn-primary">Submit</button>
+                                <button type="submit" className={submitButtonLoading ? "btn btn-primary disabled" : "btn btn-primary"}>{ submitButtonLoading ? <>Please wait...</> : <>Submit</> }</button>
                             </form>
                         </div>
                     </div>

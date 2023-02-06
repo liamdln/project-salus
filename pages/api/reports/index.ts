@@ -18,7 +18,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
         case "POST":
             const body = JSON.parse(req.body);
-            console.log(body);
             try {
                 submitReport(body);
                 res.status(200).json({ status: "success" })

@@ -1,10 +1,11 @@
-import { MapContainer, TileLayer, Circle, Marker, Popup, FeatureGroup } from 'react-leaflet'
+import { MapContainer, TileLayer, Circle, Marker, Popup, FeatureGroup, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import useSWR from "swr";
 import { fetcher } from "../lib/utils"
-import { MapProps } from '../types/map';
-import L, { Marker as LeafletMarker } from "leaflet";
-import { useMemo, useRef } from 'react';
+import { MapMarker, MapProps } from '../types/map';
+import L, { HeatLatLngTuple, LatLng, Marker as LeafletMarker } from "leaflet";
+import { useEffect, useMemo, useRef } from 'react';
+import "leaflet.heat";
 
 export default function Map(props: MapProps) {
 
@@ -71,7 +72,6 @@ export default function Map(props: MapProps) {
                         dragend() {
                             const marker = markerRef.current
                             if (marker != null) {
-                                console.log(marker.getLatLng())
                                 props.updateMarkerPosFunction(marker.getLatLng())
                             }
                         },
@@ -90,9 +90,50 @@ export default function Map(props: MapProps) {
             }
         }
 
+        const CustomMarkers = () => {
+            if (!props.markers) {
+                return (<></>)
+            }
+            return (
+                <>
+                    {props.markers.map((marker: MapMarker, index: number) => {
+                        return (
+                            <Marker key={index} position={[marker.lat, marker.lng]}>
+                                {marker.popupMessage ?
+                                    <>
+                                        <Popup>
+                                            {marker.popupMessage}
+                                        </Popup>
+                                    </>
+                                    :
+                                    null
+                                }
+                            </Marker>
+                        )
+                    })}
+                </>
+            )
+        }
+
+        const HeatmapLayer = () => {
+            const map = useMap();
+            useEffect(() => {
+                if (!props.showHeatmap || !props.heatmapPoints) {
+                    return;
+                }
+                const points: (LatLng | HeatLatLngTuple)[] = [];
+                for (const node of props.heatmapPoints) {
+                    points.push([node.lat, node.lng, node.intensity])
+                }
+
+                L.heatLayer(points, { radius: 15 }).addTo(map);
+            }, [])
+            return (<></>)
+        }
+
         return (
             <>
-                <MapContainer center={[mapSettings.xAxisCenter, mapSettings.yAxisCenter]} zoom={mapSettings.zoomLevel} scrollWheelZoom={true} style={{ height: 600, width: "100%", margin: "auto", color: "#000" }}>
+                <MapContainer center={[mapSettings.xAxisCenter, mapSettings.yAxisCenter]} zoom={mapSettings.zoomLevel} scrollWheelZoom={true} style={{ height: `${props.mapHeightPx || `900`}px`, width: "100%", margin: "auto", color: "#000" }}>
                     {/* Map Tiles */}
                     <TileLayer
                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -100,7 +141,7 @@ export default function Map(props: MapProps) {
                     />
 
                     {/* Circle the airport */}
-                    <Circle center={[mapSettings.xAxisCenter, mapSettings.yAxisCenter]} pathOptions={{ color: "green" }} radius={mapSettings.circleRadius} />
+                    <Circle center={[mapSettings.xAxisCenter, mapSettings.yAxisCenter]} pathOptions={{ color: "green", fillColor: "none" }} radius={mapSettings.circleRadius} />
                     {/* End airport circle */}
 
                     {/* User Location Area (approx) */}
@@ -110,6 +151,14 @@ export default function Map(props: MapProps) {
                     {/* Report Marker */}
                     <ReportMarker />
                     {/* <ReportMarker /> */}
+
+                    {/* Custom markers */}
+                    <CustomMarkers />
+                    {/* End custom markers */}
+
+                    {/* Heatmap */}
+                    <HeatmapLayer />
+                    {/* End Heatmap */}
                     {/* End Report Marker */}
 
                 </MapContainer>
