@@ -8,6 +8,7 @@ import { readSettings } from "../../../config/settings";
 import { Report } from "../../../types/reports";
 import { useSession } from "next-auth/react";
 import { useRouter } from 'next/router'
+import Loading from "../../../components/loading";
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -16,12 +17,12 @@ const Map = dynamic(
 
 const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
 
+    const session = useSession();
     const [reportMarker, setReportMarker] = useState({ lat: props.marker.lat, lng: props.marker.lng, draggable: true } as MapMarker)
     const [userLocArea, setUserLocArea] = useState({} as MapArea)
     const [getUserLocBtnBusy, setUserLocBtnBusy] = useState(false);
     const [getUserLocBtnEnabled, setGetUserLocBtnEnabled] = useState(false);
     const [submitButtonLoading, setSubmitButtonLoading] = useState(false);
-    const session = useSession();
     const router = useRouter();
 
     useEffect(() => {

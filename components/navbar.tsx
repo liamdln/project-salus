@@ -17,8 +17,8 @@ export default function Header() {
                         { capitalizeFirstLetter(name) }
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a className="dropdown-item" href="#">Profile</a></li>
-                        <li><a className="dropdown-item" href="#">Orgnization</a></li>
+                        <li><Link className="dropdown-item" href="/user/profile">Profile</Link></li>
+                        <li><Link className="dropdown-item" href="/user/organisation">Organisation</Link></li>
                         <li><hr className="dropdown-divider" /></li>
                         <li><a className="dropdown-item" onClick={() => signOut()} style={{ cursor: "pointer" }}>Logout</a></li>
                     </ul>

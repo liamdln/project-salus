@@ -3,18 +3,14 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import Loading from "../../components/loading";
+import Swal from "sweetalert2";
 
 const Login: NextPage = () => {
 
     // variables
     const [signInButtonLoading, setSignInButtonLoading] = useState(false);
-    // const [signOutButtonLoading, setSignOutButtonLoading] = useState(false);
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
-    const [invalidLogin, setInvalidLogin] = useState(false);
-    const [loginError, setLoginError] = useState("");
 
     const router = useRouter();
     const session = useSession();
@@ -34,15 +30,24 @@ const Login: NextPage = () => {
             if (!res.ok) {
                 switch (JSON.parse(res.error).errorCode) {
                     case 1:
-                        setLoginError("There's been an error connecting to the database. Please report this to the site admin.")
+                        Swal.fire({
+                            icon: "error",
+                            title: "That hasn't gone well!",
+                            text: "There's been an error connecting to the database. Please report this to the site admin.",
+                            // footer: `Browser returned: ${error.message}`
+                        })
                         break;
                     case 0:
                     default:
-                        setLoginError("The username or password that you entered is incorrect.")
+                        Swal.fire({
+                            icon: "error",
+                            title: "That hasn't gone well!",
+                            text: "Invalid username or password.",
+                            // footer: `Browser returned: ${error.message}`
+                        })
                         break;
 
                 }
-                setInvalidLogin(true);
                 setSignInButtonLoading(false);
                 setEmail("");
                 setPassword("");

@@ -2,6 +2,8 @@ import Navbar from "./navbar"
 import type { ReactNode } from "react"
 
 export default function Layout({ children }: { children: ReactNode }) {
+  
+  
   return (
     <>
       <div className="d-flex flex-column min-vh-100">

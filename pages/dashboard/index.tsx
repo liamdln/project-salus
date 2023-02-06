@@ -3,7 +3,6 @@ import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import React from "react";
 import Layout from "../../components/layout";
-import Loading from "../../components/loading";
 import LoadingMap from "../../components/loading-map";
 import { capitalizeFirstLetter } from "../../lib/utils";
 import { getReportsAsync } from "../../lib/reports";
@@ -20,12 +19,6 @@ const Dashboard: NextPage = ({ reports }: any) => {
 
     const session = useSession();
     const userName = session.data?.user?.name || "";
-
-    if (session.status === "loading") {
-        return (
-            <Loading />
-        )
-    }
 
     const heatmapPoints: HeatmapNode[] = [];
     JSON.parse(reports).forEach((report: Report) => {

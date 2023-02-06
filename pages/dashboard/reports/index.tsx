@@ -7,6 +7,7 @@ import { Report } from "../../../types/reports";
 import { useSession } from "next-auth/react";
 import moment from "moment";
 import dynamic from "next/dynamic";
+import Loading from "../../../components/loading";
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -15,10 +16,11 @@ const Map = dynamic(
 
 const Reports: NextPage = ({ reports }: any) => {
 
+    const session = useSession();
+
     reports = JSON.parse(reports);
 
     const router = useRouter()
-    const session = useSession();
     const query = router.query;
 
     function refreshReports() {
