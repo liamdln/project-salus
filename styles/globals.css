@@ -18,7 +18,7 @@ a {
 
 .navbar-blue {
     background-color: #1F2937 !important;
-    color: var(--bs-body-bg);
+    color: rgb(233, 236, 239);
 }
 
 .salus-card {

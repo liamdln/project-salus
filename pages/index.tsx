@@ -8,13 +8,12 @@ import { useRouter } from "next/router";
 export default function Home() {
 
     const session = useSession();
+    const router = useRouter();
     if (session.status === "loading") {
-        return (
-            <Loading />
-        )
+        return (<Loading />);
     } else if (session.status === "authenticated") {
-        const router = useRouter();
-        router.push("/dashboard");
+        console.log(router.basePath + "/dashboard")
+        router.push(router.basePath + "/dashboard");
     } else {
         return (
             <>
@@ -37,3 +36,4 @@ export default function Home() {
         )
     }
 }
+

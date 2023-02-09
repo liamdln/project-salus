@@ -1,4 +1,9 @@
 export type Settings = {
+    airport: {
+        name: string,
+        icao: string,
+        iata: string
+    }
     map: {
         zoomLevel: number,
         xAxisCenter: number,

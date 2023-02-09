@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <header><Navbar /></header>
         <main className="mt-3 mb-3">{children}</main>
         {/* TODO: Footer */}
-        <footer className="mt-auto text-center pb-2 pt-2 navbar-blue">Copyright &copy; Liam Pickering 2023 | Demonstration Product Only</footer>
+        <footer className="mt-auto text-center pb-2 pt-2 navbar-blue">Copyright &copy; Liam P 2023 | Demonstration Product</footer>
       </div>
     </>
   )

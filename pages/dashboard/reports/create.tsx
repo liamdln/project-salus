@@ -17,17 +17,21 @@ const Map = dynamic(
 
 const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
 
-    const session = useSession();
+    const router = useRouter();
     const [reportMarker, setReportMarker] = useState({ lat: props.marker.lat, lng: props.marker.lng, draggable: true } as MapMarker)
     const [userLocArea, setUserLocArea] = useState({} as MapArea)
     const [getUserLocBtnBusy, setUserLocBtnBusy] = useState(false);
     const [getUserLocBtnEnabled, setGetUserLocBtnEnabled] = useState(false);
     const [submitButtonLoading, setSubmitButtonLoading] = useState(false);
-    const router = useRouter();
 
     useEffect(() => {
         setGetUserLocBtnEnabled("geolocation" in navigator)
     })
+
+    const session = useSession();
+    if (session.status === "loading") {
+        return (<Loading />);
+    }
 
     function getUserLocation() {
         // set the button to loading

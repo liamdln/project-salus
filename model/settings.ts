@@ -1,6 +1,20 @@
 import mongoose from "mongoose";
 
 const settings = new mongoose.Schema({
+    airport: {
+        name: {
+            type: String,
+            required: true
+        },
+        icao: {
+            type: String,
+            required: true
+        },
+        iata: {
+            type: String,
+            required: true
+        }
+    },
     map: { 
         zoomLevel: {
             type: Number,

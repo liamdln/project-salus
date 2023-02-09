@@ -14,25 +14,21 @@ function MyApp({ Component, pageProps }: AppProps) {
         typeof document !== undefined ? require('bootstrap/dist/js/bootstrap') : null
     })
 
-    const [pageLoading, setPageLoading] = useState(false);
-    Router.events.on('routeChangeStart', () => {
-        setPageLoading(true);
-    });
-    Router.events.on('routeChangeComplete', () => {
-        setPageLoading(false);
-    });
+    // const [pageLoading, setPageLoading] = useState(false);
+    // Router.events.on('routeChangeStart', () => {
+    //     setPageLoading(true);
+    // });
+    // Router.events.on('routeChangeComplete', () => {
+    //     setPageLoading(false);
+    // });
 
-    if (pageLoading) {
-        return (
-            <Loading />
-        )
-    } else {
-        return (
-            <SessionProvider session={pageProps.session}>
-                <Component {...pageProps} />
-            </SessionProvider>
-        );
-    }
+
+    return (
+        <SessionProvider session={pageProps.session}>
+            <Component {...pageProps} />
+        </SessionProvider>
+    );
+
 }
 
 export default MyApp

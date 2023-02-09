@@ -17,14 +17,16 @@ const Map = dynamic(
 const Reports: NextPage = ({ reports }: any) => {
 
     const session = useSession();
+    if (session.status === "loading") {
+        return (<Loading />);
+    }
 
+    const router = useRouter();
     reports = JSON.parse(reports);
-
-    const router = useRouter()
     const query = router.query;
 
     function refreshReports() {
-        router.replace(router.asPath);
+        router.push(router.asPath);
     }
 
     function Type(props: { type: string }) {

@@ -1,13 +1,14 @@
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
-import React from "react";
-import Layout from "../../components/layout";
+import React, { useState } from "react";
 import LoadingMap from "../../components/loading-map";
-import { capitalizeFirstLetter } from "../../lib/utils";
 import { getReportsAsync } from "../../lib/reports";
 import { Report } from "../../types/reports";
-import { HeatmapNode } from "../../types/map";
+import Layout from "../../components/layout";
+import { capitalizeFirstLetter } from "../../lib/utils";
+import Loading from "../../components/loading";
+import { HeatLatLngTuple, LatLng } from "leaflet";
 
 
 const Map = dynamic(
@@ -17,22 +18,30 @@ const Map = dynamic(
 
 const Dashboard: NextPage = ({ reports }: any) => {
 
+    const [heatmapPointsAdded, setHeatmapPointsAdded] = useState(false)
+
     const session = useSession();
+    if (session.status === "loading") {
+        return (<Loading />);
+    }
+
     const userName = session.data?.user?.name || "";
 
-    const heatmapPoints: HeatmapNode[] = [];
+    // const heatmapPoints: { point: HeatLatLngTuple[], pointAdded: boolean }[] = [];
+    const heatmapPoints: (LatLng | HeatLatLngTuple)[] = [];
     JSON.parse(reports).forEach((report: Report) => {
-        heatmapPoints.push({ lat: report.lat, lng: report.lng, intensity: 1 })
+        const intensity = ((report.severity + 1) / 2);
+        // lat, lng, intensity
+        heatmapPoints.push([report.lat, report.lng, intensity])
     })
 
     return (
         <Layout>
             <div className="container text-center">
                 <h1>Hello { capitalizeFirstLetter(userName) }!</h1>
-                <Map showHeatmap={true} heatmapPoints={heatmapPoints} />
+                <Map showHeatmap={true} heatmapPoints={heatmapPoints} headMapPointsAdded={ heatmapPointsAdded } setHeatmapPointsAdded={ setHeatmapPointsAdded } />
             </div>
         </Layout>
-
     );
 };
 

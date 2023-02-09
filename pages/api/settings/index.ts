@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getToken } from 'next-auth/jwt'
-import { readSettings } from '../../../config/settings'
+import { readSettings, saveSettings, settings as defaultSettings } from '../../../config/settings'
 import dbConnect from '../../../lib/dbConnect'
 import { Settings } from '../../../types/settings'
 

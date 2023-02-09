@@ -1,21 +1,26 @@
 import { SettingsData } from "../model/settings";
 import { Settings } from "../types/settings";
 
-export var settings: Settings = {
-    map: {
-        zoomLevel: 0,
-        xAxisCenter: 0,
-        yAxisCenter: 0,
-        circleRadius: 0
-    }
-}
+// export let settings: Settings = {
+//     airport: {
+//         name: "",
+//         icao: "",
+//         iata: ""
+//     },
+//     map: {
+//         zoomLevel: 0,
+//         xAxisCenter: 0,
+//         yAxisCenter: 0,
+//         circleRadius: 0
+//     }
+// }
 
 export async function readSettings(returnFilter?: string) {
 
     return await SettingsData.find({}, returnFilter)
         .lean()
         .then((res: any) => {
-            settings = res;
+            // settings = res;
             return res[0];
         }).catch(err => {
             console.log(err);

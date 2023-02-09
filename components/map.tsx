@@ -3,7 +3,7 @@ import 'leaflet/dist/leaflet.css'
 import useSWR from "swr";
 import { fetcher } from "../lib/utils"
 import { MapMarker, MapProps } from '../types/map';
-import L, { HeatLatLngTuple, LatLng, Marker as LeafletMarker } from "leaflet";
+import L, { Marker as LeafletMarker } from "leaflet";
 import { useEffect, useMemo, useRef } from 'react';
 import "leaflet.heat";
 
@@ -115,25 +115,26 @@ export default function Map(props: MapProps) {
             )
         }
 
+        const handleHeatmapPointsAddedState = () => {
+            props.setHeatmapPointsAdded(true);
+        }
+
         const HeatmapLayer = () => {
             const map = useMap();
             useEffect(() => {
-                if (!props.showHeatmap || !props.heatmapPoints) {
+                if (!props.showHeatmap || !props.heatmapPoints || props.headMapPointsAdded) {
                     return;
+                } else {
+                    L.heatLayer(props.heatmapPoints, { radius: 15 }).addTo(map);
+                    handleHeatmapPointsAddedState();
                 }
-                const points: (LatLng | HeatLatLngTuple)[] = [];
-                for (const node of props.heatmapPoints) {
-                    points.push([node.lat, node.lng, node.intensity])
-                }
-
-                L.heatLayer(points, { radius: 15 }).addTo(map);
             }, [])
             return (<></>)
         }
 
         return (
             <>
-                <MapContainer center={[mapSettings.xAxisCenter, mapSettings.yAxisCenter]} zoom={mapSettings.zoomLevel} scrollWheelZoom={true} style={{ height: `${props.mapHeightPx || `900`}px`, width: "100%", margin: "auto", color: "#000" }}>
+                <MapContainer center={[mapSettings.xAxisCenter, mapSettings.yAxisCenter]} zoom={mapSettings.zoomLevel} scrollWheelZoom={true} style={{ height: `${props.mapHeightPx || `700`}px`, width: "100%", margin: "auto", color: "#000" }}>
                     {/* Map Tiles */}
                     <TileLayer
                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

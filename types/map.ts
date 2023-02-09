@@ -1,18 +1,16 @@
+import { HeatLatLngTuple, LatLng } from "leaflet";
+
 export type MapProps = {
     showHeatmap?: Boolean,
-    heatmapPoints?: HeatmapNode[],
+    heatmapPoints?: (LatLng | HeatLatLngTuple)[],
+    headMapPointsAdded?: boolean,
+    setHeatmapPointsAdded?: any,
     markers?: MapMarker[],
     areas?: MapArea[],
     reportMarker?: MapMarker,
     userArea?: MapArea,
     updateMarkerPosFunction?: any
-    mapHeightPx?: number; 
-}
-
-export type HeatmapNode = {
-    lat: number,
-    lng: number,
-    intensity: number
+    mapHeightPx?: number;
 }
 
 export type MapMarker = {
