@@ -26,7 +26,7 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
 
     useEffect(() => {
         setGetUserLocBtnEnabled("geolocation" in navigator)
-    })
+    }, [])
 
     const session = useSession();
     if (session.status === "loading") {
@@ -81,6 +81,9 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
             method: "POST",
             body: JSON.stringify(report)
         }).then((res) => {
+            if (!res.ok) {
+                throw new Error(`Posting report was not successful. Server returned: ${res.status}.`)
+            }
             Swal.fire({
                 icon: "success",
                 title: "Success!",

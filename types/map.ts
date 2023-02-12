@@ -6,6 +6,7 @@ export type MapProps = {
     headMapPointsAdded?: boolean,
     setHeatmapPointsAdded?: any,
     markers?: MapMarker[],
+    mapCenter?: { lat: number, lng: number }
     areas?: MapArea[],
     reportMarker?: MapMarker,
     userArea?: MapArea,

@@ -12,8 +12,8 @@ export default function Home() {
     if (session.status === "loading") {
         return (<Loading />);
     } else if (session.status === "authenticated") {
-        console.log(router.basePath + "/dashboard")
-        router.push(router.basePath + "/dashboard");
+        router.push("/dashboard");
+        return (<Loading />);
     } else {
         return (
             <>

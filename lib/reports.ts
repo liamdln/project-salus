@@ -1,11 +1,13 @@
 import { ReportModel } from "../model/reports";
 import { Report } from "../types/reports";
+import dbConnect from "./dbConnect";
 
 export async function getReports(filter?: Record<string, any>, returnFilter?: string): Promise<Report[]> {
     return ReportModel.find(filter || {}, returnFilter)
 }
 
 export async function getReportsAsync(filter?: Record<string, any>, returnFilter?: string): Promise<Report[]> {
+    await dbConnect();
     return await ReportModel.find(filter || {}, returnFilter).then((res: any) => {
         return res;
     }).catch(err => {
@@ -15,6 +17,7 @@ export async function getReportsAsync(filter?: Record<string, any>, returnFilter
 }
 
 export async function submitReport(report: Report) {
+    await dbConnect();
     const newReport = new ReportModel(report);
     try {
         await newReport.save()

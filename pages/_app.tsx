@@ -3,9 +3,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import '../styles/bs-custom.scss'
 import type { AppProps } from 'next/app'
 import { SessionProvider } from "next-auth/react"
-import { useEffect, useState } from 'react'
-import { Router } from "next/router"
-import Loading from "../components/loading"
+import { useEffect } from 'react'
+import dbConnect from "../lib/dbConnect"
 
 function MyApp({ Component, pageProps }: AppProps) {
 
@@ -30,5 +29,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     );
 
 }
+
+export async function getServerSideProps() {
+    await dbConnect();
+    return;
+} 
 
 export default MyApp

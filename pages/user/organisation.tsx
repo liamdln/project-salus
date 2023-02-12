@@ -6,9 +6,12 @@ import { useRouter } from "next/router";
 
 const Organisation: NextPage = () => {
 
+    const router = useRouter();
     const session = useSession();
     if (session.status === "loading") {
         return (<Loading />);
+    } else if (session.status === "unauthenticated") {
+        router.push("/auth/login");
     }
 
     return (

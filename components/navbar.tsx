@@ -20,7 +20,7 @@ export default function Header() {
                         <li><Link className="dropdown-item" href="/user/profile">Profile</Link></li>
                         <li><Link className="dropdown-item" href="/user/organisation">Organisation</Link></li>
                         <li><hr className="dropdown-divider" /></li>
-                        <li><a className="dropdown-item" onClick={() => signOut()} style={{ cursor: "pointer" }}>Logout</a></li>
+                        <li><Link href="" type="button" className="dropdown-item" onClick={() => signOut()} style={{ cursor: "pointer" }}>Logout</Link></li>
                     </ul>
                 </li>
             </>
@@ -28,9 +28,9 @@ export default function Header() {
         reportsButton = (
             <>
                 <li className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style={{ cursor: "pointer" }}>
+                    <Link href="" type="button" className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style={{ cursor: "pointer" }}>
                         Reports
-                    </a>
+                    </Link>
                     <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><Link className="dropdown-item" href="/dashboard/reports/create">Create Report</Link></li>
                         <li><Link className="dropdown-item" href="/dashboard/reports?filter=own">View Your Reports</Link></li>
@@ -52,7 +52,7 @@ export default function Header() {
         <>
             <nav className="navbar navbar-expand-lg navbar-dark navbar-blue">
                 <div className="container">
-                    <a className="navbar-brand" href="/" style={{ color: "#e9ecef" }}>Project<strong>Salus</strong></a>
+                    <Link className="navbar-brand" href="/" style={{ color: "#e9ecef" }}>Project<strong>Salus</strong></Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon" />
                     </button>

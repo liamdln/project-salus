@@ -9,6 +9,19 @@ import "leaflet.heat";
 
 export default function Map(props: MapProps) {
 
+    const markerRef = useRef<LeafletMarker>(null)
+    const eventHandlers = useMemo(
+        () => ({
+            dragend() {
+                const marker = markerRef.current
+                if (marker != null) {
+                    props.updateMarkerPosFunction(marker.getLatLng())
+                }
+            },
+        }),
+        [],
+    )
+
     // TODO: only get map settings?
     const { data, error } = useSWR('/api/settings', fetcher)
 
@@ -66,18 +79,6 @@ export default function Map(props: MapProps) {
 
         const ReportMarker = () => {
             if (props.reportMarker) {
-                const markerRef = useRef<LeafletMarker>(null)
-                const eventHandlers = useMemo(
-                    () => ({
-                        dragend() {
-                            const marker = markerRef.current
-                            if (marker != null) {
-                                props.updateMarkerPosFunction(marker.getLatLng())
-                            }
-                        },
-                    }),
-                    [],
-                )
                 return (
                     <Marker draggable={true} position={[props.reportMarker.lat, props.reportMarker.lng]} eventHandlers={eventHandlers} ref={markerRef}>
                         <Popup>
@@ -134,7 +135,7 @@ export default function Map(props: MapProps) {
 
         return (
             <>
-                <MapContainer center={[mapSettings.xAxisCenter, mapSettings.yAxisCenter]} zoom={mapSettings.zoomLevel} scrollWheelZoom={true} style={{ height: `${props.mapHeightPx || `700`}px`, width: "100%", margin: "auto", color: "#000" }}>
+                <MapContainer center={[props.mapCenter?.lat || mapSettings.xAxisCenter, props.mapCenter?.lng || mapSettings.yAxisCenter]} zoom={mapSettings.zoomLevel} scrollWheelZoom={true} style={{ height: `${props.mapHeightPx || `700`}px`, width: "100%", margin: "auto", color: "#000" }}>
                     {/* Map Tiles */}
                     <TileLayer
                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
