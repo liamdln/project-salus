@@ -1,6 +1,6 @@
-import { Report } from "../types/reports";
+import { AnonymousReport, Report } from "../types/reports";
 
-export function getCardColourAndSeverity(report: Report) {
+export function getCardColourAndSeverity(report: Report | AnonymousReport) {
     let cardColour = "";
     let severity = "";
     switch (report.severity) {
@@ -52,8 +52,15 @@ export function getStatus(status: number, useDefaultColourAssignment?: boolean, 
     // 1: In review
     // 2: Closed
     // 3: Archived
+    // 4: Revoked
     // for custom colours: https://getbootstrap.com/docs/5.0/utilities/colors/
     switch (status) {
+        case 4:
+            if (useDefaultColourAssignment) {
+                return { className: "text-secondary", content: "Revoked" }
+            } else {
+                return { className: `text-${customColour || "black"}`, content: "Revoked" }
+            }
         case 3:
             if (useDefaultColourAssignment) {
                 return { className: "text-secondary", content: "Archived" }
@@ -63,7 +70,7 @@ export function getStatus(status: number, useDefaultColourAssignment?: boolean, 
 
         case 2:
             if (useDefaultColourAssignment) {
-                return { className: "text-danger", content: "Closed" }
+                return { className: "text-success", content: "Closed" }
             } else {
                 return { className: `text-${customColour || "black"}`, content: "Closed" }
             }
@@ -78,7 +85,7 @@ export function getStatus(status: number, useDefaultColourAssignment?: boolean, 
         case 0:
         default:
             if (useDefaultColourAssignment) {
-                return { className: "text-success", content: "Open" }
+                return { className: "text-danger", content: "Open" }
             } else {
                 return { className: `text-${customColour || "black"}`, content: "Open" }
             }

@@ -23,6 +23,7 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
     const [getUserLocBtnBusy, setUserLocBtnBusy] = useState(false);
     const [getUserLocBtnEnabled, setGetUserLocBtnEnabled] = useState(false);
     const [submitButtonLoading, setSubmitButtonLoading] = useState(false);
+    const [submitAnonymously, setSubmitAnonymously] = useState(false);
 
     useEffect(() => {
         setGetUserLocBtnEnabled("geolocation" in navigator)
@@ -66,17 +67,37 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
     // form data
     async function submitReport(event: any) {
         event.preventDefault();
+        let anonReport = false;
         setSubmitButtonLoading(true);
-        const report: Report = {
+        let report: Report;
+
+        if (!session.data?.user) {
+            Swal.fire({
+                icon: "error",
+                title: "That hasn't gone well!",
+                text: "We could not submit this report. Please try again later or contact the website administrator.",
+                footer: "Error: No user in session."
+            })
+            throw new Error("No user in session.")
+        }
+
+        report = {
             severity: +event.target["severity-select"].value,
             type: event.target["type-select"].value,
             description: event.target.description.value,
-            author: session.data?.user?.name || "Unknown",
+            authorId: "",
             status: 0,
             lat: reportMarker.lat,
             lng: reportMarker.lng,
             date: new Date()
         }
+
+        if (submitAnonymously) {
+            report.authorId = "anon"
+        } else {
+            report.authorId = session.data.user.id;
+        }
+
         fetch("/api/reports", {
             method: "POST",
             body: JSON.stringify(report)
@@ -103,7 +124,7 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
                 icon: "error",
                 title: "That hasn't gone well!",
                 text: "We could not submit this report. Please try again later or contact the website administrator.",
-                // footer: `Browser returned: ${error.message}`
+                footer: "Error: Failed to POST."
             })
         })
     }
@@ -141,9 +162,17 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
                                         <button type="button" className={getUserLocBtnEnabled ? "btn btn-primary mb-3 disabled" : "d-none"} style={{ display: "block" }}>Please wait...</button> :
                                         <button type="button" onClick={() => getUserLocation()} className={getUserLocBtnEnabled ? "btn btn-primary mb-3" : "d-none"} style={{ display: "block" }}>Get current location</button>
                                     }
-                                    {userLocArea.centerLat && userLocArea.centerLng ? <Map reportMarker={reportMarker} userArea={userLocArea} updateMarkerPosFunction={setReportMarker} mapHeightPx={500} /> : <Map reportMarker={reportMarker} updateMarkerPosFunction={setReportMarker} mapHeightPx={500} /> }
+                                    {userLocArea.centerLat && userLocArea.centerLng ? <Map reportMarker={reportMarker} userArea={userLocArea} updateMarkerPosFunction={setReportMarker} mapHeightPx={500} /> : <Map reportMarker={reportMarker} updateMarkerPosFunction={setReportMarker} mapHeightPx={500} />}
                                 </div>
-                                <button type="submit" className={submitButtonLoading ? "btn btn-primary disabled" : "btn btn-primary"}>{ submitButtonLoading ? <>Please wait...</> : <>Submit</> }</button>
+                                <span className="d-block mb-3">
+                                    <div className="form-check">
+                                        <input onChange={() => setSubmitAnonymously(!submitAnonymously)} className="form-check-input" type="checkbox" value="" id="anon-submit-check" />
+                                        <label className="form-check-label" htmlFor="anon-submit-check">
+                                            Submit anonymously
+                                        </label>
+                                    </div>
+                                </span>
+                                <button type="submit" className={submitButtonLoading ? "btn btn-primary disabled" : "btn btn-primary"}>{submitButtonLoading ? <>Please wait...</> : <>Submit</>}</button>
                             </form>
                         </div>
                     </div>

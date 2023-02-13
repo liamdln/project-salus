@@ -3,6 +3,7 @@ import { Report } from "../types/reports";
 import dbConnect from "./dbConnect";
 
 export async function getReports(filter?: Record<string, any>, returnFilter?: string): Promise<Report[]> {
+    await dbConnect();
     return ReportModel.find(filter || {}, returnFilter)
 }
 
@@ -24,4 +25,14 @@ export async function submitReport(report: Report) {
     } catch (e) {
         throw new Error(`Report could not be saved! Stack:\n${e}`)
     }
+}
+
+export async function updateReportStatus(reportId: string, update: { status: number }) {
+    await dbConnect();
+    return await ReportModel.findByIdAndUpdate(reportId, update).then((res: any) => {
+        return res;
+    }).catch((err) => {
+        console.log(err);
+        throw new Error("Could not update report status.")
+    })
 }

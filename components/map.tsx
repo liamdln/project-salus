@@ -23,14 +23,14 @@ export default function Map(props: MapProps) {
     )
 
     // TODO: only get map settings?
-    const { data, error } = useSWR('/api/settings', fetcher)
+    const { data, error, isLoading } = useSWR('/api/settings', fetcher)
 
     // error getting the data
     if (error) {
         // TODO: swal
         return <div>Failed to load the map. Please report this to the web administrator.</div>
     }
-    else if (!data) {
+    else if (isLoading) {
         // waiting for data
         return (
             <div className="spinner-border" role="status">

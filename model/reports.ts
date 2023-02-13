@@ -13,7 +13,7 @@ const report = new mongoose.Schema({
         type: String,
         required: true
     },
-    author: {
+    authorId: {
         type: String,
         required: true
     },
@@ -32,8 +32,25 @@ const report = new mongoose.Schema({
     date: {
         type: Date,
         required: true
+    },
+    comments: {
+        type: {
+            authorId: {
+                type: String,
+                required: false
+            },
+            content: {
+                type: String,
+                required: true
+            },
+            date: {
+                type: Date,
+                required: true
+            }
+        },
+        required: false
     }
-}); 
+});
 
 export const ReportModel = mongoose.models.Report || mongoose.model("Report", report);
 

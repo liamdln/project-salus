@@ -3,11 +3,11 @@ export type Report = {
     type: string,
     severity: number,
     description: string,
-    author: string,
     status: number,
     lat: number,
     lng: number,
-    date: Date
+    date: Date,
+    authorId: String,
 }
 
 // Severity:
@@ -20,3 +20,4 @@ export type Report = {
 // 1: In review
 // 2: Closed
 // 3: Archived
+// 4: Revoked

@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { User } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import dbConnect from "../../../lib/dbConnect";
-import { getReportsAsync } from '../../../lib/reports';
-import { Report } from '../../../types/reports';
+import { getUsers } from '../../../lib/users';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Report | { status: string, message?: string } | { error: string }>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<User | { status: string, message?: string } | { error: string }>) {
 
     const token = await getToken({ req })
     if (!token) {
@@ -20,10 +20,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         default:
             const query = req.query
             try {
-                const report = await getReportsAsync({ id: query.id });
-                return res.status(200).json(report[0]);
+                const user = await getUsers({ id: query.id });
+                return res.status(200).json(user[0]);
             } catch (e) {
-                return res.status(404).json({ status: "error", message: `Could not find report id ${query.id}` })
+                return res.status(404).json({ status: "error", message: `Could not find user with id ${query.id}` })
             }
 
     }

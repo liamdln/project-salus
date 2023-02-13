@@ -9,7 +9,10 @@ import moment from "moment";
 import dynamic from "next/dynamic";
 import Loading from "../../../components/loading";
 import Link from "next/link";
-import {displayMessage, getCardColourAndSeverity, getStatus, getType} from "../../../lib/reportCards";
+import { displayMessage, getCardColourAndSeverity, getStatus, getType } from "../../../lib/reportCards";
+import useSWR from "swr";
+import { fetcher } from "../../../lib/utils";
+import { User } from "next-auth";
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -55,7 +58,7 @@ const Reports: NextPage = ({ reports }: any) => {
         } else {
             return (
                 <div className="d-flex flex-column">
-                    { getType(props.type) }
+                    {getType(props.type)}
                 </div>
             )
         }
@@ -109,27 +112,43 @@ const Reports: NextPage = ({ reports }: any) => {
     //     )
     // }
 
+    function getReportUsers() {
+
+    }
+
     function ReportCards(props: { reports: Report[] }) {
         return (
-            <div className="row row-cols-1 row-cols-md-3 g-4">
+            <div className="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
                 {props.reports.map((report: Report, index: number) => {
+                    let author: User | { name: "Anonymous" } = {} as User
+                    console.log("Will get users")
+                    // make one api request with a bunch of ids and get all users who have made reports
+                    const { data, error, isLoading } = useSWR(`/api/users/${report.authorId}`, fetcher);
+
+                    if (error) {
+                        author.name = "Anonymous";
+                    } else if (isLoading) {
+                        author.name = "Getting data..."
+                    } else {
+                        author = data;
+                    }
                     const cardDetails = getCardColourAndSeverity(report)
-                    const reportStatus = getStatus(report.status, false, "white")
-                    return (
-                        <div key={index} className="col">
-                            <div className={`card h-100 bg-${cardDetails.cardColour} text-white`}>
-                                <div className="card-body d-flex flex-column justify-content-center">
-                                    <h1 className="mb-0" style={{ fontSize: "20px" }}><strong>{getType(report.type)} Report</strong></h1>
-                                    <span>Submitted by: {report.author}</span>
-                                    <span>on {moment(report.date).format("DD/MM/YYYY")} at {moment(report.date).format("HH:mm") }</span>
-                                    <p className="mt-3 mb-0">{displayMessage(report.description, messageLimit)}</p>
-                                    <span className="mt-3 mb-0">Status: <strong><span className={reportStatus.className}>{ reportStatus.content }</span></strong></span>
-                                    {cardDetails.severity ? <p className="text-white mb-0">Severity: <strong>{cardDetails.severity}</strong></p> : <></>}
-                                    <Link href={`/dashboard/reports/${report._id}`} className={`btn btn-${cardDetails.cardColour} mt-3 text-white`}>View Report</Link>
+                        const reportStatus = getStatus(report.status, false, "white")
+                        return (
+                            <div key={index} className="col">
+                                <div className={`card h-100 bg-${cardDetails.cardColour} text-white`}>
+                                    <div className="card-body d-flex flex-column justify-content-center">
+                                        <h1 className="mb-0" style={{ fontSize: "20px" }}><strong>{getType(report.type)} Report</strong></h1>
+                                        <span>Submitted by: {author.name}</span>
+                                        <span>on {moment(report.date).format("DD/MM/YYYY")} at {moment(report.date).format("HH:mm")}</span>
+                                        <p className="mt-3 mb-0">{displayMessage(report.description, messageLimit)}</p>
+                                        <span className="mt-3 mb-0">Status: <strong><span className={reportStatus.className}>{reportStatus.content}</span></strong></span>
+                                        {cardDetails.severity ? <p className="text-white mb-0">Severity: <strong>{cardDetails.severity}</strong></p> : <></>}
+                                        <Link href={`/dashboard/reports/${report._id}`} className={`btn btn-${cardDetails.cardColour} mt-3 text-white`}>View Report</Link>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )
+                        )
                 })}
 
             </div>
@@ -140,8 +159,16 @@ const Reports: NextPage = ({ reports }: any) => {
         <Layout>
             <div className="container text-center">
                 {query.filter ? <h1>Your Reports</h1> : <h1>All Reports</h1>}
-                <ReportCards reports={query.filter ? reports.filter((report: Report) => report.author === session.data?.user.name) : reports} />
-                {/* <ReportsTable reports={query.filter ? reports.filter((report: Report) => report.author === session.data?.user.name) : reports} /> */}
+                {!reports || reports.length < 1 ?
+                    <>
+                        <div className="mt-3">
+                            {query.filter ? <span style={{ display: "block" }}>You have not made any reports.</span> : <span style={{ display: "block" }}>No reports have been made.</span>}
+                        </div>
+                    </>
+                    :
+                    <ReportCards reports={query.filter ? reports.filter((report: Report) => report.authorId === session.data?.user.id) : reports} />
+                }
+
                 <button className="btn btn-primary mt-3" onClick={() => refreshReports()}>Refresh</button>
             </div>
         </Layout>

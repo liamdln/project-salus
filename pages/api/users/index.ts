@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { User } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import dbConnect from "../../../lib/dbConnect";
-import { getReportsAsync, submitReport } from '../../../lib/reports';
-import { Report } from '../../../types/reports';
+import { createUser, getUsers } from '../../../lib/users';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Report[] | Report | { status: string, message?: string } | { error: string }>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<User[] | User | { status: string, message?: string } | { error: string }>) {
 
     const token = await getToken({ req })
     if (!token) {
@@ -19,17 +19,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         case "POST":
             const body = JSON.parse(req.body);
             try {
-                await submitReport(body);
+                await createUser(body);
                 return res.status(200).json({ status: "success" })
             } catch (e) {
                 console.log("Error: ", e);
-                return res.status(500).json({ status: "error", message: "Could not create report." })
+                return res.status(500).json({ status: "error", message: "Could not create user." })
             }
             
         case "GET":
         default:
-            const reports = await getReportsAsync();
-            return res.status(200).json(reports);
+            const users = await getUsers();
+            return res.status(200).json(users);
 
     }
 
