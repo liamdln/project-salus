@@ -85,7 +85,9 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
             severity: +event.target["severity-select"].value,
             type: event.target["type-select"].value,
             description: event.target.description.value,
-            authorId: "",
+            author: {
+                name: ""
+            },
             status: 0,
             lat: reportMarker.lat,
             lng: reportMarker.lng,
@@ -93,9 +95,10 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
         }
 
         if (submitAnonymously) {
-            report.authorId = "anon"
+            report.author.name = "Anonymous";
         } else {
-            report.authorId = session.data.user.id;
+            report.author.id = session.data.user.id;
+            report.author.name = session.data.user.name || "Unknown";
         }
 
         fetch("/api/reports", {

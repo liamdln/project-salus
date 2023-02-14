@@ -6,10 +6,12 @@ import { fetcher } from "../../../lib/utils"
 import Swal from "sweetalert2";
 import Loading from "../../../components/loading";
 import { getCardColourAndSeverity, getStatus, getType } from "../../../lib/reportCards";
-import { AnonymousReport, Report as ReportType } from "../../../types/reports";
+import { Comment, Report as ReportType } from "../../../types/reports";
 import moment from "moment";
 import dynamic from "next/dynamic";
 import LoadingMap from "../../../components/loading-map";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -18,8 +20,13 @@ const Map = dynamic(
 
 const Report: NextPage = () => {
 
+    const [postAnonymously, setPostAnonymously] = useState(false);
+    const [commentContent, setCommentContent] = useState("");
+
     const router = useRouter()
+    const session = useSession();
     const query = router.query;
+
     const { data, error, isLoading } = useSWR(`/api/reports/${query.id}`, fetcher)
 
     // error getting the data
@@ -29,7 +36,10 @@ const Report: NextPage = () => {
             title: "That hasn't gone well!",
             text: `The report with ID ${query.id || "Unknown"} does not exist.`,
         })
-        router.push("/dashboard/reports");
+        router.push(`/dashboard/reports${query.filter ? "?filter=own" : ""}`)
+        return (
+            <Loading />
+        )
     }
     else if (isLoading) {
         return (
@@ -37,14 +47,70 @@ const Report: NextPage = () => {
         )
     }
 
-    const report: ReportType | AnonymousReport = data[0];
+    const report: ReportType = data;
     const reportDetails = getCardColourAndSeverity(report)
     const reportStatus = getStatus(report.status, true);
-    console.log(report)
+
+    function postComment() {
+        const comment: Comment = {
+            author: {
+                name: postAnonymously ? "Anonymous" : session.data?.user.name || "Unknown",
+                id: postAnonymously ? "" : session.data?.user.id,
+            },
+            content: commentContent,
+            date: new Date()
+        }
+
+        fetch(`/api/reports/${report._id}?&context=comment`, {
+            method: "POST",
+            body: JSON.stringify(comment)
+        }).then((res) => {
+            if (!res.ok) {
+                throw new Error(`Posting comment was not successful. Server returned: ${res.status}.`)
+            }
+            setCommentContent("")
+            report.comments = [...report.comments || [], comment]
+        }).catch((err) => {
+            console.log(err)
+            Swal.fire({
+                icon: "error",
+                title: "That hasn't gone well!",
+                text: "Your comment could not be posted. Please try again later or contact the website administrator.",
+                footer: "Error: Failed to POST."
+            })
+        })
+    }
+
+    function Comments(props: { comments: Comment[] }) {
+        // comment ids need to be returned by the server
+        return (
+            <>
+                {props.comments.map((comment: Comment, index: number) => {
+                    return (
+                        <div className="card card-body mb-3" key={index} id={comment._id}>
+                            <div className="row">
+                                <div className="col">
+                                    <div className="text-start d-flex flex-column ps-3">
+                                        <span>#{comment._id}</span>
+                                        <span>{comment.content}</span>
+                                        <span className="fst-italic text-secondary">- {comment.author.name}, {moment(report.date).format("DD/MM/YYYY")} at {moment(report.date).format("HH:mm")}</span>
+                                    </div>
+                                </div>
+                                <div className="col-auto d-flex flex-column justify-content-center">
+                                    <button type="button" className="btn btn-secondary me-3">Reply</button>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })
+                }
+            </>
+        )
+    }
 
     return (
         <Layout>
-            <div className="container text-center">
+            <div className="container text-center mb-3">
                 <div className="card">
                     <div className={`card-header bg-${reportDetails.cardColour || "primary"} text-white text-start d-flex justify-content-between`}>
                         <div className="my-3">
@@ -52,7 +118,7 @@ const Report: NextPage = () => {
                             <h2 style={{ fontSize: "16px" }} className="mb-0">Submitted by {report.author.name} on {moment(report.date).format("DD/MM/YYYY")} at {moment(report.date).format("HH:mm")} </h2>
                         </div>
                         <div className="d-flex flex-column justify-content-center">
-                            <button onClick={() => { router.back() }} className={`btn btn-${reportDetails.cardColour} text-white`} style={{ width: "200px", height: "100%" }}>Back to Reports</button>
+                            <button onClick={() => { router.push(`/dashboard/reports${query.filter ? "?filter=own" : ""}`) }} className={`btn btn-${reportDetails.cardColour} text-white`} style={{ width: "200px", height: "100%" }}>Back to Reports</button>
                         </div>
                     </div>
                     <div className="card-body">
@@ -69,15 +135,35 @@ const Report: NextPage = () => {
                 <hr />
                 <div>
                     <h3 style={{ fontSize: "24px" }}>Comments</h3>
-                    <section id="3333">
-                    <div className="card card-body">
-                        <div className="text-start d-flex flex-column px-3">
-                            <span>#3333</span>
-                            <span>Some comment</span>
-                            <span className="fst-italic text-secondary">- Person, 13/02/2023 at 11:13</span>
+                    {report.comments && report.comments.length > 0 ?
+                        <div className="mb-3">
+                            <Comments comments={report.comments} />
                         </div>
+                        :
+                        <div className="mb-3">
+                            <span>No one has commented.</span>
+                        </div>
+                    }
+                    <div className="card card-body">
+                        <div className="text-start">
+                            <textarea onChange={(e) => setCommentContent(e.currentTarget.value)} value={commentContent} className="form-control" id="comment-box" placeholder="Enter a comment..." rows={3} defaultValue={""} />
+                        </div>
+                        <div className="row">
+                            <div className="col">
+                                <div className="text-start">
+                                    <div className="form-check">
+                                        <input onChange={() => setPostAnonymously(!postAnonymously)} className="form-check-input" type="checkbox" value="" id="anon-post-check" />
+                                        <label className="form-check-label text-secondary fst-italic" htmlFor="anon-post-check">
+                                            Post Anonymously
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-auto d-flex flex-column justify-content-center">
+                                <button onClick={() => postComment()} className={commentContent ? "btn btn-primary mt-2" : "btn btn-primary mt-2 disabled"} type="button" style={{ width: "20rem" }}>{ postAnonymously ? "Post Comment Anonymously" : "Post Comment" }</button>
+                            </div>
+                        </div>   
                     </div>
-                    </section>
                 </div>
             </div>
         </Layout>

@@ -13,8 +13,18 @@ const report = new mongoose.Schema({
         type: String,
         required: true
     },
-    authorId: {
-        type: String,
+    author: {
+        type: {
+            name: {
+                type: String,
+                required: true
+            },
+            id: {
+                type: String,
+                default: "",
+                required: false
+            }
+        },
         required: true
     },
     status: {
@@ -34,10 +44,20 @@ const report = new mongoose.Schema({
         required: true
     },
     comments: {
-        type: {
-            authorId: {
-                type: String,
-                required: false
+        type: [{
+            author: {
+                type: {
+                    name: {
+                        type: String,
+                        required: true
+                    },
+                    id: {
+                        type: String,
+                        default: "",
+                        required: false
+                    }
+                },
+                required: true
             },
             content: {
                 type: String,
@@ -47,7 +67,8 @@ const report = new mongoose.Schema({
                 type: Date,
                 required: true
             }
-        },
+        }],
+        default: [],
         required: false
     }
 });

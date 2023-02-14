@@ -1,6 +1,6 @@
-import { AnonymousReport, Report } from "../types/reports";
+import { Report } from "../types/reports";
 
-export function getCardColourAndSeverity(report: Report | AnonymousReport) {
+export function getCardColourAndSeverity(report: Report) {
     let cardColour = "";
     let severity = "";
     switch (report.severity) {

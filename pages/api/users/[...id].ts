@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         default:
             const query = req.query
             try {
-                const user = await getUsers({ id: query.id });
+                const user = await getUsers({ _id: query.id });
                 return res.status(200).json(user[0]);
             } catch (e) {
                 return res.status(404).json({ status: "error", message: `Could not find user with id ${query.id}` })

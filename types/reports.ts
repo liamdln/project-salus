@@ -7,7 +7,20 @@ export type Report = {
     lat: number,
     lng: number,
     date: Date,
-    authorId: String,
+    author: ReportAuthor,
+    comments?: Comment[]
+}
+
+export type Comment = {
+    _id?: any,
+    author: ReportAuthor,
+    content: string,
+    date: Date
+}
+
+export type ReportAuthor = {
+    name: string
+    id?: string
 }
 
 // Severity:
