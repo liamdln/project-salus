@@ -10,7 +10,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     if (!token) {
         return res.status(401).json({ error: "You are not logged in." })
     }
-    // check perms
 
     // connect to the database
     await dbConnect();

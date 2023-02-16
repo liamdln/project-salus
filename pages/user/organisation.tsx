@@ -3,6 +3,7 @@ import Layout from "../../components/layout";
 import { useSession } from "next-auth/react";
 import Loading from "../../components/loading";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const Organisation: NextPage = () => {
 
@@ -15,9 +16,15 @@ const Organisation: NextPage = () => {
     }
 
     return (
-        <Layout>
-            <h1>Organisation</h1>
-        </Layout>
+        <>
+            <Head>
+                <title>Organisation - ProjectSalus</title>
+            </Head>
+            <Layout>
+                <h1>Organisation</h1>
+            </Layout>
+        </>
+        
 
     );
 };

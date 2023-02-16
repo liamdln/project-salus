@@ -29,7 +29,7 @@ export async function submitReport(report: Report) {
 
 export async function updateReportStatus(reportId: string | string[], update: { status: number }) {
     await dbConnect();
-    return await ReportModel.findByIdAndUpdate({ _id: reportId }, { $push: update }, { new: true }).then((res: any) => {
+    return await ReportModel.findByIdAndUpdate({ _id: reportId }, { $set: update }, { new: true }).then((res: any) => {
         return res;
     }).catch((err) => {
         console.log(err);
@@ -39,7 +39,7 @@ export async function updateReportStatus(reportId: string | string[], update: { 
 
 export async function updateReportSeverity(reportId: string | string[], update: { severity: number }) {
     await dbConnect();
-    return await ReportModel.findByIdAndUpdate({ _id: reportId }, { $push: update }, { new: true }).then((res: any) => {
+    return await ReportModel.findByIdAndUpdate({ _id: reportId }, { $set: update }, { new: true }).then((res: any) => {
         return res;
     }).catch((err) => {
         console.log(err);

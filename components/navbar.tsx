@@ -1,11 +1,19 @@
 import Link from "next/link"
 import { signOut, useSession } from "next-auth/react"
 import { capitalizeFirstLetter } from "../lib/utils";
+import { useRouter } from "next/router";
 
 export default function Header() {
 
     const session = useSession();
+    const router = useRouter();
     const name = session.data?.user?.name || "Profile";
+
+    function logout(e: any) {
+        e.preventDefault();
+        signOut();
+        router.push("/auth/logout")
+    }
 
     let profileButton;
     let reportsButton;
@@ -20,7 +28,7 @@ export default function Header() {
                         <li><Link className="dropdown-item" href="/user/profile">Profile</Link></li>
                         <li><Link className="dropdown-item" href="/user/organisation">Organisation</Link></li>
                         <li><hr className="dropdown-divider" /></li>
-                        <li><Link href="" type="button" className="dropdown-item" onClick={() => signOut()} style={{ cursor: "pointer" }}>Logout</Link></li>
+                        <li><Link href="" type="button" className="dropdown-item" onClick={(e) => logout(e)} style={{ cursor: "pointer" }}>Logout</Link></li>
                     </ul>
                 </li>
             </>

@@ -8,7 +8,8 @@ import { compare } from "bcrypt";
 
 export enum LoginError {
     INVALID_CREDENTIALS = 0,
-    DATABASE_CONNECTION_FAILED = 1
+    DATABASE_CONNECTION_FAILED = 1,
+    ACCOUNT_DISABLED = 2
 }
 
 export default NextAuth({
@@ -37,8 +38,11 @@ export default NextAuth({
 
                 // Email not found
                 if (!user) {
-                    console.log("NO USER");
                     throw new Error(JSON.stringify({ errorCode: LoginError.INVALID_CREDENTIALS }));
+                }
+
+                if (!user.enabled || (user.devAccount && process.env.NODE_ENV !== "development")) {
+                    throw new Error(JSON.stringify({ errorCode: LoginError.ACCOUNT_DISABLED }));
                 }
 
                 let passwordCorrect = false;
@@ -52,7 +56,6 @@ export default NextAuth({
 
                 // Password incorrect
                 if (!passwordCorrect) {
-                    console.log("NO PASSWORD");
                     throw new Error(JSON.stringify({ errorCode: LoginError.INVALID_CREDENTIALS }));
                 }
 
@@ -63,17 +66,26 @@ export default NextAuth({
     ],
     callbacks: {
         async session({ session, token }) {
+            console.log(token);
             session.user = {
                 name: token.name,
                 email: token.email,
-                id: token.user["_id"],
-                roles: [],
+                id: token.sub || "unknown",
+                roles: token.userRoles,
+                maxPower: token.userPower
             }
+            console.log(session.user)
             return session;
         },
         async jwt({ token, user }) {
             if (user) {
-                token.user = user;
+                const rolePowers: number[] = []
+                for (const role of user.roles) {
+                    rolePowers.push(role.power || 0);
+                }
+                const maxPower = Math.max(...rolePowers)
+                token.userRoles = user.roles
+                token.userPower = maxPower
             }
             return token
         },

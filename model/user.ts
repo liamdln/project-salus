@@ -16,8 +16,29 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 8
     },
+    enabled: {
+        type: Boolean,
+        required: true
+    },
+    devAccount: {
+        type: Boolean,
+        required: false
+    },
     roles: {
-        type: Array,
+        type: [{
+            name: {
+                type: String,
+                required: true
+            },
+            colour: {
+                type: String,
+                required: true
+            },
+            power: {
+                type: Number,
+                required: true
+            }
+        }],
         required: true,
     }
 });

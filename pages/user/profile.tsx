@@ -5,24 +5,7 @@ import Loading from "../../components/loading";
 import { readSettings } from "../../config/settings";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
-
-// fake data
-const fakeData = {
-    roles: [
-        {
-            name: "Administrator",
-            colour: "red",
-        },
-        {
-            name: "Manager",
-            colour: "green",
-        },
-        {
-            name: "Member",
-            colour: "blue",
-        }
-    ]
-}
+import Head from "next/head";
 
 const Profile: NextPage = ({ settingsStr }: any) => {
 
@@ -36,10 +19,14 @@ const Profile: NextPage = ({ settingsStr }: any) => {
 
     const userName = session.data?.user?.name || "";
     const settings = JSON.parse(settingsStr);
+    const roles = session.data?.user.roles || [];
+
+    console.log(session.data?.user)
 
     function isAdmin() {
-        for (const role of fakeData.roles) {
-            if (role.name === "Administrator") {
+        if (!session.data) { return false; }
+        for (const role of session.data.user.roles) {
+            if (role.name === "Admin") {
                 return true;
             }
         }
@@ -69,40 +56,48 @@ const Profile: NextPage = ({ settingsStr }: any) => {
     }
 
     return (
-        <Layout>
-            <div className="text-center">
-                <h1>Profile</h1>
-                <div className="card" style={{ width: "50%", margin: "auto" }}>
-                    <div className="card-body">
-                        <div>
+        <>
+            <Head>
+                <title>Profile - ProjectSalus</title>
+            </Head>
+            <Layout>
+                <div className="text-center">
+                    <h1>Profile</h1>
+                    <div className="card" style={{ width: "50%", margin: "auto" }}>
+                        <div className="card-body">
                             <div>
-                                <p className="mb-0" style={{ fontSize: "32px" }}>{userName}</p>
-                                <p className="mb-2">{settings.airport.name}</p>
+                                <div>
+                                    <p className="mb-0" style={{ fontSize: "32px" }}>{userName}</p>
+                                    <p className="mb-2">{settings.airport.name}</p>
+                                </div>
+                                <div className="d-grid gap-2 d-md-flex justify-content-md-center mb-1">
+                                    {roles.length < 1 ?
+                                        <span>User does not belong to any roles.</span>
+                                        :
+                                        roles.map((role, index) => {
+                                            let colour = "";
+                                            switch (role.colour) {
+                                                case "red":
+                                                    colour = "danger";
+                                                    break;
+
+                                                case "green":
+                                                    colour = "success";
+                                                    break;
+
+                                                case "blue":
+                                                default:
+                                                    colour = "primary";
+
+                                            }
+                                            return (
+                                                <span key={index} className={`badge rounded-pill bg-${colour}`}>{role.name}</span>
+                                            )
+                                        })}
+                                </div>
                             </div>
-                            <div className="d-grid gap-2 d-md-flex justify-content-md-center mb-4">
-                                {fakeData.roles.map((role, index) => {
-                                    let colour = "";
-                                    switch (role.colour) {
-                                        case "red":
-                                            colour = "danger";
-                                            break;
-
-                                        case "green":
-                                            colour = "success";
-                                            break;
-
-                                        default:
-                                            colour = "primary";
-
-                                    }
-                                    return (
-                                        <span key={index} className={`badge rounded-pill bg-${colour}`}>{role.name}</span>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                        <div>
-                            {/* <h2 style={{ fontSize: "24px" }}>Actions</h2>
+                            <div>
+                                {/* <h2 style={{ fontSize: "24px" }}>Actions</h2>
                             <div>
                                 <div className="d-grid gap-2 d-md-flex justify-content-md-center mt-3">
                                     <button type="button" className="btn btn-primary">Change Name</button>
@@ -110,12 +105,12 @@ const Profile: NextPage = ({ settingsStr }: any) => {
                                     <button type="button" className="btn btn-danger" onClick={() => deleteAccount()}>Delete Account</button>
                                 </div>
                             </div> */}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </Layout>
-
+            </Layout>
+        </>
     );
 };
 

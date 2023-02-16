@@ -2,15 +2,21 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getToken } from 'next-auth/jwt';
 import dbConnect from "../../../lib/dbConnect";
 import { getReportsAsync, postComment, updateReportSeverity, updateReportStatus } from '../../../lib/reports';
-import { Comment, Report } from '../../../types/reports';
+import { Report } from '../../../types/reports';
+import { UserPower } from "../../../lib/utils";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Report | { status: string, body?: string } | { error: string, message?: string }>) {
 
+    // check logged in
     const token = await getToken({ req })
     if (!token) {
         return res.status(401).json({ error: "You are not logged in." })
     }
-    // check perms
+
+    // permissions
+    if (token.userPower < UserPower.MEMBER) {
+        return res.status(403).json({ error: "You are not authorized to access this endpoint." })
+    }
 
     await dbConnect();
     const query = req.query

@@ -9,6 +9,7 @@ import { Report } from "../../../types/reports";
 import { useSession } from "next-auth/react";
 import { useRouter } from 'next/router'
 import Loading from "../../../components/loading";
+import Head from "next/head";
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -133,55 +134,60 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
     }
 
     return (
-        <Layout>
-            <div className="container text-center">
-                <h1>Create a Report</h1>
-                <div className="text-start" style={{ width: "75%", margin: "auto" }}>
-                    <div className="card mt-3 mb-3">
-                        <div className="card-body">
-                            <form onSubmit={(e) => submitReport(e)}>
-                                <div className="mb-3">
-                                    <label htmlFor="severity-select" className="form-label">Severity</label>
-                                    <select className="form-select" id="severity-select" aria-label="Severity level">
-                                        <option value="0">None Threatening</option>
-                                        <option value="1">Danger to Operations</option>
-                                        <option value="2">Danger to Life</option>
-                                    </select>
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="type-select" className="form-label">Type</label>
-                                    <select className="form-select" id="type-select" aria-label="Type">
-                                        <option value="fod">Foreign Object Debris (FOD)</option>
-                                        <option value="wildlife">Wildlife</option>
-                                    </select>
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="description" className="form-label">Description</label>
-                                    <textarea className="form-control" id="description" rows={3} defaultValue={""} required />
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label">Location</label>
-                                    {getUserLocBtnBusy ?
-                                        <button type="button" className={getUserLocBtnEnabled ? "btn btn-primary mb-3 disabled" : "d-none"} style={{ display: "block" }}>Please wait...</button> :
-                                        <button type="button" onClick={() => getUserLocation()} className={getUserLocBtnEnabled ? "btn btn-primary mb-3" : "d-none"} style={{ display: "block" }}>Get current location</button>
-                                    }
-                                    {userLocArea.centerLat && userLocArea.centerLng ? <Map reportMarker={reportMarker} userArea={userLocArea} updateMarkerPosFunction={setReportMarker} mapHeightPx={500} /> : <Map reportMarker={reportMarker} updateMarkerPosFunction={setReportMarker} mapHeightPx={500} />}
-                                </div>
-                                <span className="d-block mb-3">
-                                    <div className="form-check">
-                                        <input onChange={() => setSubmitAnonymously(!submitAnonymously)} className="form-check-input" type="checkbox" value="" id="anon-submit-check" />
-                                        <label className="form-check-label" htmlFor="anon-submit-check">
-                                            Submit anonymously
-                                        </label>
+        <>
+            <Head>
+                <title>Create Report - ProjectSalus</title>
+            </Head>
+            <Layout>
+                <div className="container text-center">
+                    <h1>Create a Report</h1>
+                    <div className="text-start" style={{ width: "75%", margin: "auto" }}>
+                        <div className="card mt-3 mb-3">
+                            <div className="card-body">
+                                <form onSubmit={(e) => submitReport(e)}>
+                                    <div className="mb-3">
+                                        <label htmlFor="severity-select" className="form-label">Severity</label>
+                                        <select className="form-select" id="severity-select" aria-label="Severity level">
+                                            <option value="0">None Threatening</option>
+                                            <option value="1">Danger to Operations</option>
+                                            <option value="2">Danger to Life</option>
+                                        </select>
                                     </div>
-                                </span>
-                                <button type="submit" className={submitButtonLoading ? "btn btn-primary disabled" : "btn btn-primary"}>{submitButtonLoading ? <>Please wait...</> : <>Submit</>}</button>
-                            </form>
+                                    <div className="mb-3">
+                                        <label htmlFor="type-select" className="form-label">Type</label>
+                                        <select className="form-select" id="type-select" aria-label="Type">
+                                            <option value="fod">Foreign Object Debris (FOD)</option>
+                                            <option value="wildlife">Wildlife</option>
+                                        </select>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="description" className="form-label">Description</label>
+                                        <textarea className="form-control" id="description" rows={3} defaultValue={""} required />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Location</label>
+                                        {getUserLocBtnBusy ?
+                                            <button type="button" className={getUserLocBtnEnabled ? "btn btn-primary mb-3 disabled" : "d-none"} style={{ display: "block" }}>Please wait...</button> :
+                                            <button type="button" onClick={() => getUserLocation()} className={getUserLocBtnEnabled ? "btn btn-primary mb-3" : "d-none"} style={{ display: "block" }}>Get current location</button>
+                                        }
+                                        {userLocArea.centerLat && userLocArea.centerLng ? <Map reportMarker={reportMarker} userArea={userLocArea} updateMarkerPosFunction={setReportMarker} mapHeightPx={500} /> : <Map reportMarker={reportMarker} updateMarkerPosFunction={setReportMarker} mapHeightPx={500} />}
+                                    </div>
+                                    <span className="d-block mb-3">
+                                        <div className="form-check">
+                                            <input onChange={() => setSubmitAnonymously(!submitAnonymously)} className="form-check-input" type="checkbox" value="" id="anon-submit-check" />
+                                            <label className="form-check-label" htmlFor="anon-submit-check">
+                                                Submit anonymously
+                                            </label>
+                                        </div>
+                                    </span>
+                                    <button type="submit" className={submitButtonLoading ? "btn btn-primary disabled" : "btn btn-primary"}>{submitButtonLoading ? <>Please wait...</> : <>Submit</>}</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </Layout>
+            </Layout>
+        </>
     );
 };
 

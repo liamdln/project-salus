@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getToken } from 'next-auth/jwt';
 import dbConnect from "../../../lib/dbConnect";
+import { UserPower } from "../../../lib/utils";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Record<string, any>>) {
 
@@ -8,7 +9,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     if (!token) {
         return res.status(401).json({ error: "You are not logged in." })
     }
-    // check perms
+
+    const body = JSON.parse(req.body);
+    
+    // permissions, make sure user is either admin or the user themselves
+    if (token.userPower < UserPower.ADMIN || token.sub !== body.userId) {
+        return res.status(403).json({ error: "You are not authorized to access this endpoint." })
+    }
 
     await dbConnect();
 
@@ -16,7 +23,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
         case "POST":
         default:
-            const body = JSON.parse(req.body);
             try {
                 return res.status(200).json({ status: "success" })
             } catch (e) {

@@ -1,21 +1,15 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React from "react";
 import Layout from "../../../components/layout";
 import { getReportsAsync } from "../../../lib/reports";
 import { Report } from "../../../types/reports";
 import { useSession } from "next-auth/react";
 import moment from "moment";
-import dynamic from "next/dynamic";
 import Loading from "../../../components/loading";
 import Link from "next/link";
 import { displayMessage, getCardColourAndSeverity, getStatus, getType } from "../../../lib/reportCards";
-import { User } from "next-auth";
-
-const Map = dynamic(
-    () => import("../../../components/map"),
-    { ssr: false }
-)
+import Head from "next/head";
 
 const messageLimit = 200;
 
@@ -65,22 +59,28 @@ const Reports: NextPage = ({ reports }: any) => {
     }
 
     return (
-        <Layout>
-            <div className="container text-center">
-                {query.filter ? <h1>Your Reports</h1> : <h1>All Reports</h1>}
-                {!reports || reports.length < 1 ?
-                    <>
-                        <div className="mt-3">
-                            {query.filter ? <span style={{ display: "block" }}>You have not made any reports.</span> : <span style={{ display: "block" }}>No reports have been made.</span>}
-                        </div>
-                    </>
-                    :
-                    <ReportCards reports={query.filter ? reports.filter((report: Report) => (report.author.id || "") === session.data?.user.id) : reports} />
-                }
+        <>
+            <Head>
+                <title>{query.filter ? "Your Reports - Project Salus" : "All Reports - Project Salus"}</title>
+            </Head>
+            <Layout>
+                <div className="container text-center">
+                    {query.filter ? <h1>Your Reports</h1> : <h1>All Reports</h1>}
+                    {!reports || reports.length < 1 ?
+                        <>
+                            <div className="mt-3">
+                                {query.filter ? <span style={{ display: "block" }}>You have not made any reports.</span> : <span style={{ display: "block" }}>No reports have been made.</span>}
+                            </div>
+                        </>
+                        :
+                        <ReportCards reports={query.filter ? reports.filter((report: Report) => (report.author.id || "") === session.data?.user.id) : reports} />
+                    }
 
-                <button className="btn btn-primary mt-3" onClick={() => refreshReports()}>Refresh</button>
-            </div>
-        </Layout>
+                    <button className="btn btn-primary mt-3" onClick={() => refreshReports()}>Refresh</button>
+                </div>
+            </Layout>
+        </>
+
     );
 };
 

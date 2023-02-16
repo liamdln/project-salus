@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import Loading from "../../components/loading";
 import Swal from "sweetalert2";
+import Head from "next/head";
 
 const Login: NextPage = () => {
 
@@ -29,12 +30,18 @@ const Login: NextPage = () => {
         signIn("credentials", { email, password, redirect: false, callbackUrl: callbackUrl }).then((res: any) => {
             if (!res.ok) {
                 switch (JSON.parse(res.error).errorCode) {
+                    case 2:
+                        Swal.fire({
+                            icon: "error",
+                            title: "That hasn't gone well!",
+                            text: "This account is disabled. If you believe this is an error, please contact the site admin.",
+                        })
+                        break;
                     case 1:
                         Swal.fire({
                             icon: "error",
                             title: "That hasn't gone well!",
                             text: "There's been an error connecting to the database. Please report this to the site admin.",
-                            // footer: `Browser returned: ${error.message}`
                         })
                         break;
                     case 0:
@@ -43,7 +50,6 @@ const Login: NextPage = () => {
                             icon: "error",
                             title: "That hasn't gone well!",
                             text: "Invalid username or password.",
-                            // footer: `Browser returned: ${error.message}`
                         })
                         break;
 
@@ -105,12 +111,15 @@ const Login: NextPage = () => {
 
     return (
         <>
+            <Head>
+                <title>Auth - ProjectSalus</title>
+            </Head>
             {session.status === "loading" ? <><div className="container text-center"><Loading /></div></> : <>
                 <main>
                     <div className="container text-center mt-5 pb-3">
                         <div className="card salus-card">
-                            <div className="card-header">
-                                <h1>Login to Salus</h1>
+                            <div className="card-header bg-primary text-white">
+                                <h1 className="my-1">Project<strong>Salus</strong></h1>
                             </div>
                             <div className="card-body">
                                 <h2>Please login below:</h2>

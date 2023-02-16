@@ -1,5 +1,13 @@
 import axios from "axios";
 
+// power of roles.
+// if roles are added, be sure to give them a power here.
+export enum UserPower {
+    MEMBER = 10,
+    MANAGER = 50,
+    ADMIN = 100
+}
+
 export function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1)
 }

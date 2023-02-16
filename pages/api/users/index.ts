@@ -3,6 +3,7 @@ import { User } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import dbConnect from "../../../lib/dbConnect";
 import { createUser, getUsers } from '../../../lib/users';
+import { UserPower } from "../../../lib/utils";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<User[] | User | { status: string, message?: string } | { error: string }>) {
 
@@ -10,13 +11,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     if (!token) {
         return res.status(401).json({ error: "You are not logged in." })
     }
-    // check perms
+
+    // make sure not public
+    if (token.userPower < UserPower.MEMBER) {
+        return res.status(403).json({ error: "You are not authorized to access this endpoint." })
+    }
 
     await dbConnect();
 
     switch (req.method) {
 
         case "POST":
+            // only managers can create users
+            if (token.userPower < UserPower.MANAGER) {
+                return res.status(403).json({ error: "You are not authorized to access this endpoint." })
+            }
             const body = JSON.parse(req.body);
             try {
                 await createUser(body);

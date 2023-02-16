@@ -9,6 +9,7 @@ import Layout from "../../components/layout";
 import { capitalizeFirstLetter } from "../../lib/utils";
 import Loading from "../../components/loading";
 import { HeatLatLngTuple, LatLng } from "leaflet";
+import Head from "next/head";
 
 
 const Map = dynamic(
@@ -36,12 +37,18 @@ const Dashboard: NextPage = ({ reports }: any) => {
     })
 
     return (
-        <Layout>
-            <div className="container text-center">
-                <h1>Hello { capitalizeFirstLetter(userName) }!</h1>
-                <Map showHeatmap={true} heatmapPoints={heatmapPoints} headMapPointsAdded={ heatmapPointsAdded } setHeatmapPointsAdded={ setHeatmapPointsAdded } />
-            </div>
-        </Layout>
+        <>
+            <Head>
+                <title>Dashboard - ProjectSalus</title>
+            </Head>
+            <Layout>
+                <div className="container text-center">
+                    <h1>Hello {capitalizeFirstLetter(userName)}!</h1>
+                    <Map showHeatmap={true} heatmapPoints={heatmapPoints} headMapPointsAdded={heatmapPointsAdded} setHeatmapPointsAdded={setHeatmapPointsAdded} />
+                </div>
+            </Layout>
+        </>
+
     );
 };
 
