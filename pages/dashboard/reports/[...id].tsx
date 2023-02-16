@@ -12,6 +12,7 @@ import dynamic from "next/dynamic";
 import LoadingMap from "../../../components/loading-map";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import axios from "axios";
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -27,21 +28,20 @@ const Report: NextPage = () => {
     const session = useSession();
     const query = router.query;
 
-    const { data, error, isLoading } = useSWR(`/api/reports/${query.id}`, fetcher)
+    const { data, error, isLoading } = useSWR(query.id ? `/api/reports/${query.id}` : null, fetcher)
 
     // error getting the data
-    if (error) {
+    if (!router.isReady || (error && !router.isReady) || isLoading) {
+        return (
+            <Loading />
+        )
+    } else if (error && router.isReady) {
         Swal.fire({
             icon: "error",
             title: "That hasn't gone well!",
             text: `The report with ID ${query.id || "Unknown"} does not exist.`,
         })
         router.push(`/dashboard/reports${query.filter ? "?filter=own" : ""}`)
-        return (
-            <Loading />
-        )
-    }
-    else if (isLoading) {
         return (
             <Loading />
         )
@@ -61,15 +61,14 @@ const Report: NextPage = () => {
             date: new Date()
         }
 
-        fetch(`/api/reports/${report._id}?&context=comment`, {
+        axios({
             method: "POST",
-            body: JSON.stringify(comment)
+            url: `/api/reports/${report._id}?&context=comment`,
+            data: comment
         }).then((res) => {
-            if (!res.ok) {
-                throw new Error(`Posting comment was not successful. Server returned: ${res.status}.`)
-            }
             setCommentContent("")
-            report.comments = [...report.comments || [], comment]
+            const refreshedComments: Comment[] = res.data.body;
+            report.comments = refreshedComments;
         }).catch((err) => {
             console.log(err)
             Swal.fire({
@@ -93,11 +92,11 @@ const Report: NextPage = () => {
                                     <div className="text-start d-flex flex-column ps-3">
                                         <span>#{comment._id}</span>
                                         <span>{comment.content}</span>
-                                        <span className="fst-italic text-secondary">- {comment.author.name}, {moment(report.date).format("DD/MM/YYYY")} at {moment(report.date).format("HH:mm")}</span>
+                                        <span className="fst-italic text-secondary">- {comment.author.name}, {moment(comment.date).format("DD/MM/YYYY")} at {moment(comment.date).format("HH:mm")}</span>
                                     </div>
                                 </div>
                                 <div className="col-auto d-flex flex-column justify-content-center">
-                                    <button type="button" className="btn btn-secondary me-3">Reply</button>
+                                    {/* <button type="button" className="btn btn-secondary me-3">Reply</button> */}
                                 </div>
                             </div>
                         </div>
@@ -130,6 +129,27 @@ const Report: NextPage = () => {
                             <span><strong>Description: </strong></span>
                             <span>{report.description}</span>
                         </div>
+                        <div className="text-center mt-3">
+                            <h3>Actions</h3>
+                            <div className="mt-2 d-flex justify-content-center">
+                                <select className="form-select" aria-label="Change status" style={{ width: "25%" }}>
+                                    <option selected={report.status === 0 ? true : false} value="0">Open</option>
+                                    <option selected={report.status === 1 ? true : false} value="1">In Review</option>
+                                    <option selected={report.status === 2 ? true : false} value="2">Closed</option>
+                                    <option selected={report.status === 3 ? true : false} value="3">Archived</option>
+                                    <option selected={report.status === 4 ? true : false} value="4">Revoked</option>
+                                </select>
+                                <button className="btn btn-primary ms-2" style={{ width: "15%" }}>Update Status</button>
+                            </div>
+                            <div className="mt-2 d-flex justify-content-center">
+                                <select className="form-select" aria-label="Change severity" style={{ width: "25%" }}>
+                                    <option selected={report.severity === 0 ? true : false} value="0">None</option>
+                                    <option selected={report.severity === 1 ? true : false} value="1">Danger to Operations</option>
+                                    <option selected={report.severity === 2 ? true : false} value="2">Danger to Life</option>
+                                </select>
+                                <button className="btn btn-primary ms-2" style={{ width: "15%" }}>Update Urgency</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <hr />
@@ -146,7 +166,7 @@ const Report: NextPage = () => {
                     }
                     <div className="card card-body">
                         <div className="text-start">
-                            <textarea onChange={(e) => setCommentContent(e.currentTarget.value)} value={commentContent} className="form-control" id="comment-box" placeholder="Enter a comment..." rows={3} defaultValue={""} />
+                            <textarea onChange={(e) => setCommentContent(e.currentTarget.value)} value={commentContent} className="form-control" id="comment-box" placeholder="Enter a comment..." rows={3} />
                         </div>
                         <div className="row">
                             <div className="col">

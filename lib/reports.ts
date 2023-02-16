@@ -27,7 +27,7 @@ export async function submitReport(report: Report) {
     }
 }
 
-export async function updateReportStatus(reportId: string, update: { status: number }) {
+export async function updateReportStatus(reportId: string | string[], update: { status: number }) {
     await dbConnect();
     return await ReportModel.findByIdAndUpdate({ _id: reportId }, { $push: update }, { new: true }).then((res: any) => {
         return res;
@@ -37,9 +37,19 @@ export async function updateReportStatus(reportId: string, update: { status: num
     })
 }
 
-export async function postComment(reportId: string | string[], comment: string) {
+export async function updateReportSeverity(reportId: string | string[], update: { severity: number }) {
     await dbConnect();
-    return await ReportModel.findByIdAndUpdate({ _id: reportId }, { $push: { comments: JSON.parse(comment) } }, { new: true }).then((res: any) => {
+    return await ReportModel.findByIdAndUpdate({ _id: reportId }, { $push: update }, { new: true }).then((res: any) => {
+        return res;
+    }).catch((err) => {
+        console.log(err);
+        throw new Error("Could not update report severity.")
+    })
+}
+
+export async function postComment(reportId: string | string[], comment: Comment) {
+    await dbConnect();
+    return await ReportModel.findByIdAndUpdate({ _id: reportId }, { $push: { comments: comment } }, { new: true }).then((res: any) => {
         return res;
     }).catch((err) => {
         console.log(err);
