@@ -94,13 +94,13 @@ const Login: NextPage = () => {
     let signInHtml = (
         <>
             <div className="d-flex justify-content-center">
-                <form style={{ width: "50%" }}>
+                <form style={{ width: "75%" }}>
                     <div className="mb-3">
-                        <label htmlFor="emailBox" className="form-label">Email</label>
+                        <label htmlFor="emailBox" className="form-label mb-0">Email</label>
                         <input type="email" value={email} onChange={(e) => { setEmail(e.currentTarget.value) }} className="form-control" id="emailBox" required />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="passwordBox" className="form-label">Password</label>
+                        <label htmlFor="passwordBox" className="form-label mb-0">Password</label>
                         <input type="password" value={password} onChange={(e) => { setPassword(e.currentTarget.value) }} className="form-control" id="passwordBox" required />
                     </div>
                     {loginForm}
@@ -115,19 +115,21 @@ const Login: NextPage = () => {
                 <title>Auth - ProjectSalus</title>
             </Head>
             {session.status === "loading" ? <><div className="container text-center"><Loading /></div></> : <>
-                <main>
-                    <div className="container text-center mt-5 pb-3">
-                        <div className="card salus-card">
-                            <div className="card-header bg-primary text-white">
-                                <h1 className="my-1">Project<strong>Salus</strong></h1>
-                            </div>
-                            <div className="card-body">
-                                <h2>Please login below:</h2>
-                                {signInHtml}
+                <div style={{ backgroundImage: "url(/images/runway.jpg)", backgroundRepeat: "no-repeat", backgroundSize: "cover", height: "100vh" }}>
+                    <div style={{ backgroundColor: "rgba(0,0,0,0.6)", height: "100vh" }}>
+                        <div className="container d-flex flex-column justify-content-center text-center" style={{ height: "100vh" }}>
+                            <div className="card">
+                                {/* <div className="card-header bg-primary text-white">
+                                    <h1 className="my-1">Project<strong>Salus</strong></h1>
+                                </div> */}
+                                <div className="card-body">
+                                    <h2 className="mb-3">Login</h2>
+                                    {signInHtml}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </main>
+                </div>
             </>}
         </>
     );

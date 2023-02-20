@@ -30,7 +30,6 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
     "react-leaflet": "^4.2.0",
-    "recharts": "^2.4.3",
     "sass": "^1.57.1",
     "sweetalert2": "^11.6.16",
     "swr": "^2.0.0",
