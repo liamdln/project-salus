@@ -190,7 +190,7 @@ const Report: NextPage = () => {
                             <div className={report.author.id === session.data?.user.id || (session.data?.user.maxPower || 0) >= UserPower.MANAGER ? "text-center mt-3" : "d-none"} >
                                 <h3>Actions</h3>
                                 <div className="mt-2 d-flex justify-content-center">
-                                    <select onChange={(e) => setUpdatedStatus(+e.currentTarget.value)} value={report.status} className="form-select" aria-label="Change status" style={{ width: "25%" }}>
+                                    <select onChange={(e) => setUpdatedStatus(+e.currentTarget.value)} defaultValue={report.status} className="form-select" aria-label="Change status" style={{ width: "25%" }}>
                                         <option value="0">Open</option>
                                         <option value="1">In Review</option>
                                         <option value="2">Closed</option>
@@ -202,7 +202,7 @@ const Report: NextPage = () => {
                                     </button>
                                 </div>
                                 <div className="mt-2 d-flex justify-content-center">
-                                    <select onChange={(e) => setUpdatedSeverity(+e.currentTarget.value)} value={report.severity} className="form-select" aria-label="Change severity" style={{ width: "25%" }}>
+                                    <select onChange={(e) => setUpdatedSeverity(+e.currentTarget.value)} defaultValue={report.severity} className="form-select" aria-label="Change severity" style={{ width: "25%" }}>
                                         <option value="0">None</option>
                                         <option value="1">Danger to Operations</option>
                                         <option value="2">Danger to Life</option>

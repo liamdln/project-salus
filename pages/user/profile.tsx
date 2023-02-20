@@ -21,8 +21,6 @@ const Profile: NextPage = ({ settingsStr }: any) => {
     const settings = JSON.parse(settingsStr);
     const roles = session.data?.user.roles || [];
 
-    console.log(session.data?.user)
-
     function isAdmin() {
         if (!session.data) { return false; }
         for (const role of session.data.user.roles) {

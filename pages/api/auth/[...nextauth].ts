@@ -44,7 +44,7 @@ export default NextAuth({
                 if (!user.enabled || (user.devAccount && process.env.NODE_ENV !== "development")) {
                     throw new Error(JSON.stringify({ errorCode: LoginError.ACCOUNT_DISABLED }));
                 }
-
+ 
                 let passwordCorrect = false;
                 if (process.env.NODE_ENV === "development") {
                     // Not secure, only for development.
@@ -66,7 +66,6 @@ export default NextAuth({
     ],
     callbacks: {
         async session({ session, token }) {
-            console.log(token);
             session.user = {
                 name: token.name,
                 email: token.email,
@@ -74,7 +73,6 @@ export default NextAuth({
                 roles: token.userRoles,
                 maxPower: token.userPower
             }
-            console.log(session.user)
             return session;
         },
         async jwt({ token, user }) {
