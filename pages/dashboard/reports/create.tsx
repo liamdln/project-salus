@@ -83,7 +83,7 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
         }
 
         report = {
-            severity: +event.target["severity-select"].value,
+            severity: parseInt(event.target["severity-select"].value),
             type: event.target["type-select"].value,
             description: event.target.description.value,
             author: {

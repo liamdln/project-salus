@@ -31,27 +31,27 @@ const Profile: NextPage = ({ settingsStr }: any) => {
         return false;
     }
 
-    function deleteAccount() {
-        if (!isAdmin()) {
-            Swal.fire({
-                icon: "error",
-                title: "That hasn't gone well!",
-                text: "You cannot delete the admin account."
-            })
-        } else {
-            Swal.fire({
-                title: "Are you sure?",
-                text: "Once the account has been deleted, it cannot be recovered. All reports created by this account will persist as anonymous reports.",
-                showCancelButton: true,
-                confirmButtonText: "Delete Account",
-                confirmButtonColor: "#dc3545",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire('Saved!', '', 'success')
-                }
-            })
-        }
-    }
+    // function deleteAccount() {
+    //     if (!isAdmin()) {
+    //         Swal.fire({
+    //             icon: "error",
+    //             title: "That hasn't gone well!",
+    //             text: "You cannot delete the admin account."
+    //         })
+    //     } else {
+    //         Swal.fire({
+    //             title: "Are you sure?",
+    //             text: "Once the account has been deleted, it cannot be recovered. All reports created by this account will persist as anonymous reports.",
+    //             showCancelButton: true,
+    //             confirmButtonText: "Delete Account",
+    //             confirmButtonColor: "#dc3545",
+    //         }).then((result) => {
+    //             if (result.isConfirmed) {
+    //                 Swal.fire('Saved!', '', 'success')
+    //             }
+    //         })
+    //     }
+    // }
 
     return (
         <>

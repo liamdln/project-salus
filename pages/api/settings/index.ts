@@ -1,24 +1,52 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getToken } from 'next-auth/jwt'
-import { readSettings } from '../../../config/settings'
+import { readSettings, saveSettings } from '../../../config/settings'
 import dbConnect from '../../../lib/dbConnect'
 import { Settings } from '../../../types/settings'
+import { UserPower } from "../../../lib/utils"
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Settings | Record<string, string>>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Settings | Record<string, any>>) {
 
     const token = await getToken({ req })
     if (!token) {
         return res.status(401).json({ error: "You are not logged in." })
     }
+    // permissions
+    if (token.userPower < UserPower.MEMBER) {
+        return res.status(403).json({ error: "You are not authorized to access this endpoint." })
+    }
 
     // connect to the database
     await dbConnect();
+    
+    switch (req.method) {
 
-    const settings = await readSettings();
-    if (!settings) {
-        return res.status(400).json({ error: "Settings could not be loaded." })
-    }
+        case "POST":
+            if (token.userPower < UserPower.ADMIN) {
+                return res.status(403).json({ error: "You are not authorized to access this endpoint." })
+            }
 
-    return res.status(200).json(settings);
+            try {
+                const body = req.body;
+                if (!body.id || !body.payload) {
+                    return res.status(400).json({ error: "Either the document ID or settings were not sent. Structure must follow: { id: <mongodb document ID>, payload: <settings type payload> }" })
+                }
+                const newSettings = await saveSettings(body.id, body.payload);
+                return res.status(200).json({ status: "success", body: newSettings });
+            } catch (e) {
+                console.log(e);
+                return res.status(500).json({ error: "Could not post settings." })
+            }
+
+        case "GET":
+        default:
+            const settings = await readSettings();
+            if (!settings) {
+                return res.status(500).json({ error: "Settings could not be loaded." })
+            }
+
+            return res.status(200).json(settings);
+
+    }  
 
 }

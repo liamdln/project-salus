@@ -1,3 +1,4 @@
+import dbConnect from "../lib/dbConnect";
 import { SettingsData } from "../model/settings";
 import { Settings } from "../types/settings";
 
@@ -17,6 +18,7 @@ import { Settings } from "../types/settings";
 
 export async function readSettings(returnFilter?: string) {
 
+    await dbConnect();
     return await SettingsData.find({}, returnFilter)
         .lean()
         .then((res: any) => {
@@ -29,12 +31,13 @@ export async function readSettings(returnFilter?: string) {
 
 }
 
-export function saveSettings(settings: Settings): Boolean {
-
-    const allSettings = new SettingsData(settings);
-    return allSettings.save((err: any) => {
-        if (err) { return false; }
-        return true;
-    });
+export async function saveSettings(id: any, settings: Settings) {
+    await dbConnect();
+    return await SettingsData.findByIdAndUpdate({ _id: id }, { $set: settings }, { new: true }).then((res: any) => {
+        return res;
+    }).catch((err) => {
+        console.log(err);
+        throw new Error("Could not save settings.")
+    })
 
 }

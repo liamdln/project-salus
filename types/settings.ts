@@ -1,4 +1,5 @@
 export type Settings = {
+    _id?: any,
     airport: {
         name: string,
         icao: string,

@@ -22,12 +22,12 @@ export async function createUser(user: UserType) {
     }
 }
 
-export async function updateUser(userId: string, update: Record<string, any>) {
-    await dbConnect();
-    return await User.findByIdAndUpdate(userId, update).then((res: any) => {
-        return res;
-    }).catch((err) => {
-        console.log(err);
-        throw new Error("Could not update user.")
-    })
-}
+// export async function updateUser(userId: string, update: Record<string, any>) {
+//     await dbConnect();
+//     return await User.findByIdAndUpdate(userId, update).then((res: any) => {
+//         return res;
+//     }).catch((err) => {
+//         console.log(err);
+//         throw new Error("Could not update user.")
+//     })
+// }

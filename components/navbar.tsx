@@ -2,6 +2,7 @@ import Link from "next/link"
 import { signOut, useSession } from "next-auth/react"
 import { capitalizeFirstLetter } from "../lib/utils";
 import { useRouter } from "next/router";
+import { FormEvent } from "react";
 
 export default function Header() {
 
@@ -9,7 +10,7 @@ export default function Header() {
     const router = useRouter();
     const name = session.data?.user?.name || "Profile";
 
-    function logout(e: any) {
+    function logout(e: FormEvent) {
         e.preventDefault();
         signOut();
         router.push("/auth/logout")
