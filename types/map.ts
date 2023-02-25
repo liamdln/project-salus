@@ -1,4 +1,5 @@
 import { HeatLatLngTuple, LatLng } from "leaflet";
+import { ReactNode } from "react";
 
 export type MapProps = {
     showHeatmap?: Boolean,
@@ -17,7 +18,7 @@ export type MapProps = {
 export type MapMarker = {
     lat: number,
     lng: number,
-    popupMessage?: string,
+    popupMessage?: ReactNode,
     draggable?: boolean,
 }
 

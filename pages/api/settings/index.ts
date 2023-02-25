@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         return res.status(401).json({ error: "You are not logged in." })
     }
     // permissions
-    if (token.userPower < UserPower.MEMBER) {
+    if ((token.userPower || 0) < UserPower.MEMBER) {
         return res.status(403).json({ error: "You are not authorized to access this endpoint." })
     }
 
@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     switch (req.method) {
 
         case "POST":
-            if (token.userPower < UserPower.ADMIN) {
+            if ((token.userPower || 0) < UserPower.ADMIN) {
                 return res.status(403).json({ error: "You are not authorized to access this endpoint." })
             }
 

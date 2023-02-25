@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
     
     // permissions - make sure not public
-    if (token.userPower < UserPower.MEMBER) {
+    if ((token.userPower || 0) < UserPower.MEMBER) {
         return res.status(403).json({ error: "You are not authorized to access this endpoint." })
     }
 

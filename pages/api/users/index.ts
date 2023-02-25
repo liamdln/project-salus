@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     // make sure not public
-    if (token.userPower < UserPower.MEMBER) {
+    if ((token.userPower || 0) < UserPower.MEMBER) {
         return res.status(403).json({ error: "You are not authorized to access this endpoint." })
     }
 
@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
         case "POST":
             // only managers can create users
-            if (token.userPower < UserPower.MANAGER) {
+            if ((token.userPower || 0) < UserPower.MANAGER) {
                 return res.status(403).json({ error: "You are not authorized to access this endpoint." })
             }
             const body = JSON.parse(req.body);

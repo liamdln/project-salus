@@ -11,6 +11,7 @@ import LoadingMap from "../../components/loading-map";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { UserPower } from "../../lib/utils";
 
 const Map = dynamic(
     () => import("../../components/map"),
@@ -30,16 +31,6 @@ const Organisation: NextPage = ({ settingsStr }: any) => {
     }
 
     let settings: Settings = JSON.parse(settingsStr);
-
-    function isAdmin() {
-        if (!session.data) { return false; }
-        for (const role of session.data.user.roles) {
-            if (role.name === "Admin") {
-                return true;
-            }
-        }
-        return false;
-    }
 
     function saveSettings(e: any) {
         setSaveButtonLoading(true);
@@ -96,8 +87,8 @@ const Organisation: NextPage = ({ settingsStr }: any) => {
         })
     }
 
-    function ChangeSettingsCard(props: { settings: Settings }) {
-        if (!isAdmin) {
+    function ChangeSettingsCard({ settings }: any) {
+        if ((session.data?.user.maxPower || 0) < UserPower.ADMIN) {
             return (<></>)
         }
         return (

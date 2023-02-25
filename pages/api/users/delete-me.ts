@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const body = JSON.parse(req.body);
     
     // permissions, make sure user is either admin or the user themselves
-    if (token.userPower < UserPower.ADMIN || token.sub !== body.userId) {
+    if ((token.userPower || 0) < UserPower.ADMIN || token.sub !== body.userId) {
         return res.status(403).json({ error: "You are not authorized to access this endpoint." })
     }
 
