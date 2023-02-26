@@ -69,7 +69,7 @@ const Report: NextPage = () => {
 
         axios({
             method: "POST",
-            url: `/api/reports/${report._id}?&context=comment`,
+            url: `/api/reports/${report._id}`,
             data: comment
         }).then((res) => {
             setCommentContent("")
@@ -90,7 +90,7 @@ const Report: NextPage = () => {
         setUpdateStatusButtonLoading(true)
         const data = { status: updatedStatus }
         axios({
-            method: "POST",
+            method: "PATCH",
             url: `/api/reports/${report._id}?&context=status`,
             data
         }).then((res) => {
@@ -114,7 +114,7 @@ const Report: NextPage = () => {
         setUpdateSeverityButtonLoading(true);
         const data = { severity: updatedSeverity }
         axios({
-            method: "POST",
+            method: "PATCH",
             url: `/api/reports/${report._id}?&context=severity`,
             data
         }).then((res) => {

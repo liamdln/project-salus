@@ -22,18 +22,6 @@ export function getCardColourAndSeverity(report: Report) {
     return { cardColour, severity };
 }
 
-export function displayMessage(message: string, messageLimit: number) {
-    if (message.length > messageLimit) {
-        if (message.substring(messageLimit - 1, messageLimit) === " ") {
-            const newMessage = message.substring(0, messageLimit - 1);
-            return newMessage + "...";
-        }
-        return message.substring(0, messageLimit) + "...";
-    } else {
-        return message;
-    }
-}
-
 export function getType(type: string) {
     if (type === "fod") {
         return "Foreign Object Debris"

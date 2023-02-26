@@ -8,8 +8,9 @@ import { useSession } from "next-auth/react";
 import moment from "moment";
 import Loading from "../../../components/loading";
 import Link from "next/link";
-import { displayMessage, getCardColourAndSeverity, getStatus, getType } from "../../../lib/reportCards";
+import { getCardColourAndSeverity, getStatus, getType } from "../../../lib/reportCards";
 import Head from "next/head";
+import { shortenString } from "../../../lib/utils";
 
 const messageLimit = 200;
 
@@ -41,7 +42,7 @@ const Reports: NextPage = ({ reports }: any) => {
                                     <h1 className="mb-0" style={{ fontSize: "20px" }}><strong>{getType(report.type)} Report</strong></h1>
                                     <span>Submitted by: {report.author.name}</span>
                                     <span>on {moment(report.date).format("DD/MM/YYYY")} at {moment(report.date).format("HH:mm")}</span>
-                                    <p className="mt-3 mb-0">{displayMessage(report.description, messageLimit)}</p>
+                                    <p className="mt-3 mb-0">{shortenString(report.description, messageLimit)}</p>
                                     <span className="mt-3 mb-0">Status: <strong><span className={reportStatus.className}>{reportStatus.content}</span></strong></span>
                                     {cardDetails.severity ? <p className="text-white mb-0">Severity: <strong>{cardDetails.severity}</strong></p> : <></>}
                                     <Link href={{

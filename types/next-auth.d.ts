@@ -6,6 +6,8 @@ declare module "next-auth" {
         // TODO: make type for roles
         roles: Role[],
         maxPower: number,
+        enabled?: boolean,
+        _id?: string
     }
     interface Session extends DefaultSession {
         user: User;

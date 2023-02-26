@@ -24,20 +24,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     switch (req.method) {
 
         case "POST":
-            const context = query.context;
             if (!query.id) {
                 return res.status(400).json({ error: "No report ID was sent." })
             }
-            if (context === "comment") {
-                try {
-                    const body = req.body;
-                    const refreshedReport = await postComment(query.id, body);
-                    return res.status(200).json({ status: "success", body: refreshedReport.comments });
-                } catch (e) {
-                    console.log(e);
-                    return res.status(500).json({ error: "Could not post comment." })
-                }
-            } else if (context === "severity") {
+            try {
+                const body = req.body;
+                const refreshedReport = await postComment(query.id, body);
+                return res.status(200).json({ status: "success", body: refreshedReport.comments });
+            } catch (e) {
+                console.log(e);
+                return res.status(500).json({ error: "Could not post comment." })
+            }
+
+        case "PATCH":
+            if (!query.id) {
+                return res.status(400).json({ error: "No report ID was sent." })
+            }
+            const context = query.context;
+            if (context === "severity") {
                 try {
                     const body = req.body;
                     const refreshedReport = await updateReportSeverity(query.id, body);
@@ -55,9 +59,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                     console.log(e);
                     return res.status(500).json({ error: "Could not update status." })
                 }
+            } else {
+                return res.status(400).json({ error: "PATCH context was not provided." })
             }
-            // else
-            return res.status(400).json({ error: "POST context was not provided." })
 
         case "GET":
         default:

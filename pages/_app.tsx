@@ -1,12 +1,13 @@
-import '../styles/globals.css'
-import 'bootstrap/dist/css/bootstrap.css'
-import '../styles/bs-custom.scss'
+import "../styles/globals.css"
+import "bootstrap/dist/css/bootstrap.css"
+import "../styles/bs-custom.scss"
+import "nprogress/nprogress.css"
+
 import type { AppProps } from 'next/app'
 import { SessionProvider } from "next-auth/react"
 import { useEffect } from 'react'
 import dbConnect from "../lib/dbConnect"
 import NProgress from "nprogress"
-import "nprogress/nprogress.css"
 import { useRouter } from "next/router"
 
 function MyApp({ Component, pageProps }: AppProps) {

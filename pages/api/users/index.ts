@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 console.log("Error: ", e);
                 return res.status(500).json({ status: "error", message: "Could not create user." })
             }
-            
+
         case "GET":
         default:
             const users = await getUsers();

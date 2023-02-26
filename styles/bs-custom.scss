@@ -19,6 +19,7 @@ $min-contrast-ratio: 3;
 $primary: #1F2937;
 $warning: #E49B0F;
 $danger: #dc3545;
+$secondary: #EBEEF2;
 
 // alerts
 $alert-bg-scale: 0;
@@ -29,4 +30,5 @@ $alert-color-scale: -100;
 $card-border-width: 0;
 
 
+@import "node_modules/bootstrap-icons/font/bootstrap-icons";
 @import "node_modules/bootstrap/scss/bootstrap";
