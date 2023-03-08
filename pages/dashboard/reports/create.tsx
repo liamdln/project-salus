@@ -68,7 +68,6 @@ const CreateReport: NextPage = (props: Record<string, MapMarker>) => {
     // form data
     async function submitReport(event: any) {
         event.preventDefault();
-        let anonReport = false;
         setSubmitButtonLoading(true);
         let report: Report;
 

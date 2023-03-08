@@ -70,8 +70,9 @@ export default NextAuth({
                 name: token.name,
                 email: token.email,
                 id: token.sub || "unknown",
+                _id: token.sub || "unknown",
                 roles: token.userRoles,
-                maxPower: token.userPower
+                maxPower: token.userPower,
             }
             return session;
         },

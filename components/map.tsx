@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Circle, Marker, Popup, FeatureGroup, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import useSWR from "swr";
-import { fetcher } from "../lib/utils"
+import { fetcher } from "../lib/api"
 import { MapMarker, MapProps } from '../types/map';
 import L, { Marker as LeafletMarker } from "leaflet";
 import { useEffect, useMemo, useRef } from 'react';

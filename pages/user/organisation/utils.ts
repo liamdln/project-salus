@@ -96,9 +96,3 @@ export function modifyUserEnabledStatus(user: User, enabled: boolean) {
     })
     return false;
 }
-
-export function editUser(user: User) {
-
-
-    
-}

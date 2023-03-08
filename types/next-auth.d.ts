@@ -1,13 +1,12 @@
-import NextAuth, { DefaultUser, DefaultSession } from "next-auth"
+import NextAuth, { DefaultSession } from "next-auth"
 import { DefaultJWT } from "next-auth/jwt";
 
 declare module "next-auth" {
     interface User {
-        // TODO: make type for roles
         roles: Role[],
         maxPower: number,
         enabled?: boolean,
-        _id?: string
+        _id: string,
     }
     interface Session extends DefaultSession {
         user: User;

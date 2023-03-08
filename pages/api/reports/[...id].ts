@@ -3,7 +3,7 @@ import { getToken } from 'next-auth/jwt';
 import dbConnect from "../../../lib/dbConnect";
 import { getReportsAsync, postComment, updateReportSeverity, updateReportStatus } from '../../../lib/reports';
 import { Report } from '../../../types/reports';
-import { UserPower } from "../../../lib/utils";
+import { UserPower } from "../../../lib/user-utils";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Report | { status: string, body?: string } | { error: string, message?: string }>) {
 

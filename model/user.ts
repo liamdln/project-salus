@@ -1,5 +1,21 @@
 import mongoose from "mongoose";
 
+const roleSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    colour: {
+        type: String,
+        required: true
+    },
+    power: {
+        type: Number,
+        required: true
+    },
+
+})
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -24,23 +40,7 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: false
     },
-    roles: {
-        type: [{
-            name: {
-                type: String,
-                required: true
-            },
-            colour: {
-                type: String,
-                required: true
-            },
-            power: {
-                type: Number,
-                required: true
-            }
-        }],
-        required: true,
-    }
+    roles: [roleSchema],
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

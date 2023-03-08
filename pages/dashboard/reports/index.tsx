@@ -10,7 +10,7 @@ import Loading from "../../../components/loading";
 import Link from "next/link";
 import { getCardColourAndSeverity, getStatus, getType } from "../../../lib/reportCards";
 import Head from "next/head";
-import { shortenString } from "../../../lib/utils";
+import { shortenString } from "../../../lib/string-utils";
 
 const messageLimit = 200;
 

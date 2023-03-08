@@ -3,7 +3,7 @@ import { getToken } from 'next-auth/jwt'
 import { readSettings, saveSettings } from '../../../config/settings'
 import dbConnect from '../../../lib/dbConnect'
 import { Settings } from '../../../types/settings'
-import { UserPower } from "../../../lib/utils"
+import { UserPower } from "../../../lib/user-utils"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Settings | Record<string, any>>) {
 

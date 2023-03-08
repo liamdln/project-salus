@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 import dbConnect from "../lib/dbConnect"
 import NProgress from "nprogress"
 import { useRouter } from "next/router"
+import { checkEnvVariables } from "../lib/global-utils"
 
 function MyApp({ Component, pageProps }: AppProps) {
 
@@ -48,6 +49,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 }
 
 export async function getServerSideProps() {
+    checkEnvVariables();
     await dbConnect();
     return;
 } 

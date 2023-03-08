@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { signOut, useSession } from "next-auth/react"
-import { capitalizeFirstLetter } from "../lib/utils";
+import { capitalizeFirstLetter } from "../lib/string-utils";
 import { useRouter } from "next/router";
 import { FormEvent } from "react";
 

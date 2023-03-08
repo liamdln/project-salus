@@ -93,3 +93,7 @@ a {
     background-color: #F7F8F9;
     padding: 1rem 1rem;
 }
+
+.btn.salus-disable-button:disabled {
+    border: 0;
+}

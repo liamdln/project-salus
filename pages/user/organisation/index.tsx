@@ -8,11 +8,11 @@ import { readSettings } from "../../../config/settings";
 import { Settings } from "../../../types/settings";
 import dynamic from "next/dynamic";
 import LoadingMap from "../../../components/loading-map";
-import { useState } from "react";
-import { UserPower } from "../../../lib/utils";
+import { useEffect, useState } from "react";
+import { UserPower } from "../../../lib/user-utils";
 import { User } from "next-auth";
 import { getUsers } from "../../../lib/users";
-import { editUser, modifyUserEnabledStatus, saveSettings } from "./utils";
+import { modifyUserEnabledStatus, saveSettings } from "./utils";
 import { UserEditModal } from "../../../components/user-edit-modal";
 
 const Map = dynamic(
@@ -24,6 +24,8 @@ const Organisation: NextPage<{ settingsStr: string, usersStr: string }> = ({ set
 
     const [saveButtonLoading, setSaveButtonLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalContext, setModalContext] = useState("edit" as "edit" | "create");
+    const [modalUser, setModalUser] = useState<User | undefined>(undefined);
 
     const router = useRouter();
     const session = useSession();
@@ -35,7 +37,6 @@ const Organisation: NextPage<{ settingsStr: string, usersStr: string }> = ({ set
 
     let settings: Settings = JSON.parse(settingsStr);
     let users: User[] = JSON.parse(usersStr);
-    
 
     function ChangeSettingsCard() {
         return (
@@ -121,7 +122,12 @@ const Organisation: NextPage<{ settingsStr: string, usersStr: string }> = ({ set
                     <div className="d-flex justify-content-center position-relative">
                         <span style={{ fontSize: "1.5rem" }}>User Management</span>
                         <div className="position-absolute d-flex justify-content-end" style={{ width: "100%" }}>
-                            <button className="btn btn-light">
+                            <button className="btn btn-light"
+                                onClick={() => {
+                                    setModalVisible(true);
+                                    setModalContext("create");
+                                    setModalUser(undefined);
+                                }}>
                                 Create User
                             </button>
                         </div>
@@ -185,19 +191,26 @@ const Organisation: NextPage<{ settingsStr: string, usersStr: string }> = ({ set
                                         <td>{!user.enabled ? <span className="text-danger"><em>Disabled</em></span> : <></>}</td>
                                         <td>
                                             {user.enabled ?
-                                                <button type="button" className="btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Disable User" onClick={() => {
+                                                <button type="button" className="btn salus-disable-button" data-bs-toggle="tooltip" data-bs-placement="top" title="Disable User"
+                                                    disabled={session.data?.user._id === user._id} onClick={() => {
                                                     modifyUserEnabledStatus(user, false);
                                                 }}>
                                                     <i className="bi bi-slash-circle"></i>
                                                 </button>
                                                 :
-                                                <button type="button" className="btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Enable User" onClick={() => {
+                                                <button type="button" className="btn salus-edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="Enable User" onClick={() => {
                                                     modifyUserEnabledStatus(user, true);
                                                 }}>
                                                     <i className="bi bi-check-circle"></i>
                                                 </button>
                                             }
-                                            <button type="button" className="btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" onClick={() => editUser(user)}>
+                                            <button type="button" className="btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User"
+                                                onClick={() => {
+                                                    setModalVisible(true);
+                                                    setModalContext("edit");
+                                                    setModalUser(user);
+                                                }
+                                                }>
                                                 <i className="bi bi-pencil-square"></i>
                                             </button>
                                         </td>
@@ -259,7 +272,7 @@ const Organisation: NextPage<{ settingsStr: string, usersStr: string }> = ({ set
                     </div>
                     <div className="mt-3 mb-5">
                         <ManagementCards />
-                        <UserEditModal context="edit" user={users[0]} setModalVisible={setModalVisible} />
+                        <UserEditModal context={modalContext} modalVisible={modalVisible} user={modalUser} setModalVisible={setModalVisible} />
                     </div>
                 </div>
             </Layout>

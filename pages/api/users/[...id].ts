@@ -3,7 +3,9 @@ import { User } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import dbConnect from "../../../lib/dbConnect";
 import { getUsers, updateUser } from '../../../lib/users';
-import { UserPower } from "../../../lib/utils";
+import { UserPower } from "../../../lib/user-utils";
+import { hash } from "bcrypt";
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<User | { status: string, body?: string } | { error: string }>) {
 
@@ -27,13 +29,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 return res.status(403).json({ error: "You are not authorized to access this endpoint." })
             }
             const body = req.body;
-            try {
-                const updatedUser = await updateUser(body.userId, body.payload)
-                return res.status(200).json({ status: "success", body: updatedUser })
-            } catch (e) {
-                console.log("Error: ", e);
-                return res.status(500).json({ error: "Could not update user." })
+            if (body.password) {
+                const saltRounds = process.env.PASSWORD_SALT_ROUNDS || "10";
+                hash(body.password, parseInt(saltRounds), async (err, hash) => {
+                    if (err) {
+                        return res.status(500).json({ error: "Could not update user." });
+                    }
+                    body.encryptedPassword = hash;
+                    delete body.password;
+                    await tryUpdateUser(res, body);
+                })
+            } else {
+                await tryUpdateUser(res, body);
             }
+            
+            
             
         case "GET":
         default:
@@ -47,4 +57,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     }
 
+}
+
+async function tryUpdateUser(res: NextApiResponse<User | { status: string, body?: string } | { error: string }>, body: Record<string, any>) {
+    try {
+        const updatedUser = await updateUser(body.userId, body.payload);
+        return res.status(200).json({ status: "success", body: updatedUser });
+    } catch (e) {
+        console.log("Error: ", e);
+        return res.status(500).json({ error: "Could not update user." });
+    }
 }

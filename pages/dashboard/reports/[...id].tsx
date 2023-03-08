@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import Layout from "../../../components/layout";
 import useSWR from "swr";
-import { fetcher } from "../../../lib/utils"
+import { fetcher } from "../../../lib/string-utils"
 import Swal from "sweetalert2";
 import Loading from "../../../components/loading";
 import { getCardColourAndSeverity, getStatus, getType } from "../../../lib/reportCards";
@@ -13,7 +13,7 @@ import LoadingMap from "../../../components/loading-map";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { UserPower } from "../../../lib/utils";
+import { UserPower } from "../../../lib/user-utils";
 import Head from "next/head";
 
 const Map = dynamic(
