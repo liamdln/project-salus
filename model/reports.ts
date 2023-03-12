@@ -70,6 +70,10 @@ const report = new mongoose.Schema({
         }],
         default: [],
         required: false
+    },
+    imageDirectories: {
+        type: [String],
+        required: false
     }
 });
 

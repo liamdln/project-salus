@@ -39,13 +39,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             }
 
         case "GET":
-        default:
             const settings = await readSettings();
             if (!settings) {
                 return res.status(500).json({ error: "Settings could not be loaded." })
             }
 
             return res.status(200).json(settings);
+        
+        default:
+            return res.status(405).json({ error: `${req.method} request not allowed on this endpoint.` });
 
     }  
 

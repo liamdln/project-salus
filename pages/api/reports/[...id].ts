@@ -5,6 +5,8 @@ import { getReportsAsync, postComment, updateReportSeverity, updateReportStatus 
 import { Report } from '../../../types/reports';
 import { UserPower } from "../../../lib/user-utils";
 
+
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Report | { status: string, body?: string } | { error: string, message?: string }>) {
 
     // check logged in
@@ -64,13 +66,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             }
 
         case "GET":
-        default:
             try {
                 const report = await getReportsAsync({ _id: query.id });
                 return res.status(200).json(report[0]);
             } catch (e) {
                 return res.status(404).json({ error: `Could not find report id ${query.id}` })
             }
+
+        default:
+            return res.status(405).json({ error: `${req.method} request not allowed on this endpoint.` });
 
     }
 

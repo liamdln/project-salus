@@ -47,6 +47,7 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
 
         for (const role of roles) {
             if (userRoles.includes(role.name.toLowerCase())) {
+                // self note: push okay here as not involved in state
                 rolesToAdd.push(role);
             }
         }
@@ -165,14 +166,13 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
 
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={(e) => closeModal()}>Close</button>
+                                <button type="button" className="btn btn-light" onClick={(e) => closeModal()}>Close</button>
                                 {
                                     props.context === "create" ?
                                         <button type="submit" className="btn btn-primary"
                                             disabled={name === "" || email === "" || password === "" ||
                                                 ((!userRoles.includes("member")) && (!userRoles.includes("manager")) && (!userRoles.includes("admin")))}>Create User</button>
                                         :
-                                        // TODO: sort this shit out:
                                         <button type="submit" className="btn btn-primary"
                                             disabled={name === props.user?.name && email === props.user?.email && password === "" &&
                                         JSON.stringify(userRoles.sort()) === JSON.stringify(originalRoles.sort()) }>Save Changes</button>

@@ -11,7 +11,6 @@ export async function getUsers(filter?: Record<string, any>, returnFilter?: stri
         returnFilter = "-encryptedPassword"
     }
     return await User.find(filter || {}, returnFilter).then((docs: any) => {
-        
         return docs;
     }).catch(err => {
         console.log(err);

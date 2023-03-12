@@ -46,7 +46,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             
             
         case "GET":
-        default:
             const query = req.query
             try {
                 const user = await getUsers({ _id: query.id });
@@ -54,6 +53,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             } catch (e) {
                 return res.status(404).json({ error: `Could not find user with id ${query.id}` })
             }
+
+        default:
+            return res.status(405).json({ error: `${req.method} request not allowed on this endpoint.` });
 
     }
 

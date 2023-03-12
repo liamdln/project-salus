@@ -10,6 +10,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         return res.status(401).json({ error: "You are not logged in." })
     }
 
+    if (req.method !== "POST") {
+        return res.status(405).json({ error: `${req.method} request not allowed on this endpoint.` });
+    }
     const body = JSON.parse(req.body);
     
     // permissions, make sure user is either admin or the user themselves
@@ -22,13 +25,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     switch (req.method) {
 
         case "POST":
-        default:
             try {
                 return res.status(200).json({ status: "success" })
             } catch (e) {
                 console.log("Error: ", e);
                 return res.status(500).json({ status: "error", message: "Could not delete user." })
             }
+
+        default:
+            return res.status(405).json({ error: `${req.method} request not allowed on this endpoint.` });
         
     }
 

@@ -38,6 +38,7 @@ const Dashboard: NextPage = ({ reports }: any) => {
     JSON.parse(reports).forEach((report: Report) => {
         const intensity = ((report.severity + 1) / 2);
         // lat, lng, intensity
+        // TODO: don't use push
         heatmapPoints.push([report.lat, report.lng, intensity])
         markers.push({ lat: report.lat, lng: report.lng, popupMessage: <><Link href={`/dashboard/reports/${report._id}`}>View Report</Link></> })
     })

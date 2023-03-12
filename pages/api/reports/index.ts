@@ -1,42 +1,50 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getToken } from 'next-auth/jwt';
 import dbConnect from "../../../lib/dbConnect";
 import { getReportsAsync, submitReport } from '../../../lib/reports';
-import { Report } from '../../../types/reports';
 import { UserPower } from "../../../lib/user-utils";
+import nc from "next-connect";
+import { checkInvalidPermissions } from "../../../lib/api";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Report[] | Report | { status: string, message?: string } | { error: string }>) {
-
-    // check user is logged in
-    const token = await getToken({ req })
-    if (!token) {
-        return res.status(401).json({ error: "You are not logged in." })
+const handler = nc<NextApiRequest, NextApiResponse>({
+    onError: (err, _, res) => {
+        console.error(err);
+        return res.status(500).json({ error: "Could not create report." });
+    },
+    onNoMatch: (req, res) => {
+        return res.status(405).json({ error: `${req.method} request not allowed on this endpoint.` });
     }
-    
-    // permissions
-    if ((token.userPower || 0) < UserPower.MEMBER) {
-        return res.status(403).json({ error: "You are not authorized to access this endpoint." })
+})
+
+// permissions
+handler.all(async (req, res, next) => {
+    // check if user is logged in and permissions
+    const invalidPermissions = await checkInvalidPermissions(req, UserPower.MEMBER)
+    if (invalidPermissions) {
+        return res.status(invalidPermissions.status).json({ error: invalidPermissions.message })
     }
 
+    // connect to the database
     await dbConnect();
 
-    switch (req.method) {
+    // once handled, move onto the request (or no match handler)
+    next();
+})
 
-        case "POST":
-            const body = JSON.parse(req.body);
-            try {
-                await submitReport(body);
-                return res.status(200).json({ status: "success" })
-            } catch (e) {
-                console.log("Error: ", e);
-                return res.status(500).json({ status: "error", message: "Could not create report." })
-            }
-            
-        case "GET":
-        default:
-            const reports = await getReportsAsync();
-            return res.status(200).json(reports);
+handler.get(async (_, res) => {
+    const reports = await getReportsAsync();
+    return res.status(200).json(reports);
+})
 
+handler.post(async (req, res) => {
+    const body = JSON.parse(req.body);
+    try {
+        await submitReport(body);
+        return res.status(200).json({ status: "success" })
+    } catch (e) {
+        console.log("Error: ", e);
+        throw e
+        // return res.status(500).json({ status: "error", message: "Could not create report." })
     }
+})
 
-}
+export default handler;

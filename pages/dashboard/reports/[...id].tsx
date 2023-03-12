@@ -2,11 +2,11 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import Layout from "../../../components/layout";
 import useSWR from "swr";
-import { fetcher } from "../../../lib/string-utils"
+import { fetcher } from "../../../lib/api"
 import Swal from "sweetalert2";
 import Loading from "../../../components/loading";
 import { getCardColourAndSeverity, getStatus, getType } from "../../../lib/reportCards";
-import { Comment, Report as ReportType } from "../../../types/reports";
+import { Comment, FileUploadRes, Report as ReportType } from "../../../types/reports";
 import moment from "moment";
 import dynamic from "next/dynamic";
 import LoadingMap from "../../../components/loading-map";
@@ -15,13 +15,15 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { UserPower } from "../../../lib/user-utils";
 import Head from "next/head";
+import { shortenString } from "../../../lib/string-utils";
+import { PhotoViewer } from "../../../components/photo-viewer";
 
 const Map = dynamic(
     () => import("../../../components/map"),
     { ssr: false, loading: () => <LoadingMap /> }
 )
 
-const Report: NextPage = () => {
+export function Report() {
 
     const [postAnonymously, setPostAnonymously] = useState(false);
     const [commentContent, setCommentContent] = useState("");
@@ -29,7 +31,8 @@ const Report: NextPage = () => {
     const [updatedSeverity, setUpdatedSeverity] = useState(0);
     const [updateStatusButtonLoading, setUpdateStatusButtonLoading] = useState(false);
     const [updateSeverityButtonLoading, setUpdateSeverityButtonLoading] = useState(false);
-    
+    const [showImageModal, setShowImageModal] = useState(false);
+
     const router = useRouter()
     const session = useSession();
     const query = router.query;
@@ -57,7 +60,7 @@ const Report: NextPage = () => {
     let reportDetails = getCardColourAndSeverity(report)
     let reportStatus = getStatus(report.status, true);
 
-    function postComment() {
+    const postComment = () => {
         const comment: Comment = {
             author: {
                 name: postAnonymously ? "Anonymous" : session.data?.user.name || "Unknown",
@@ -86,7 +89,7 @@ const Report: NextPage = () => {
         })
     }
 
-    function updateStatus() {
+    const updateStatus = () => {
         setUpdateStatusButtonLoading(true)
         const data = { status: updatedStatus }
         axios({
@@ -110,7 +113,7 @@ const Report: NextPage = () => {
         })
     }
 
-    function updateSeverity() {
+    const updateSeverity = () => {
         setUpdateSeverityButtonLoading(true);
         const data = { severity: updatedSeverity }
         axios({
@@ -134,7 +137,7 @@ const Report: NextPage = () => {
         })
     }
 
-    function Comments(props: { comments: Comment[] }) {
+    const Comments = (props: { comments: Comment[] }) => {
         // comment ids need to be returned by the server
         return (
             <>
@@ -167,6 +170,7 @@ const Report: NextPage = () => {
                 <title>Report View - ProjectSalus</title>
             </Head>
             <Layout>
+                <PhotoViewer imageLocations={report.imageDirectories || []} visible={showImageModal} setShowImageModal={setShowImageModal} />
                 <div className="container text-center mb-3">
                     <div className="card">
                         <div className={`card-header bg-${reportDetails.cardColour || "primary"} text-white text-start d-flex justify-content-between`}>
@@ -183,9 +187,14 @@ const Report: NextPage = () => {
                             <span className="d-inline"><strong>Status:</strong> <span className={reportStatus.className}>{reportStatus.content}</span></span>
                             <span className="d-inline"> | </span>
                             <span className="d-inline"><strong>Urgency: </strong><span className={`text-${reportDetails.cardColour || "black"}`}>{reportDetails.severity || "Not urgent"}</span></span>
-                            <div className="text-start mt-3">
-                                <span><strong>Description: </strong></span>
-                                <span>{report.description}</span>
+                            <div className="d-flex flex-column gap-3">
+                                <div className="text-center mt-3">
+                                    <h3>Description</h3>
+                                    <span>{report.description}</span>
+                                </div>
+                                <div className="align-self-center">
+                                    <button className="btn btn-primary" style={{ width: "15rem" }} onClick={() => setShowImageModal(true)}>View Evidence</button>
+                                </div>
                             </div>
                             <div className={report.author.id === session.data?.user.id || (session.data?.user.maxPower || 0) >= UserPower.MANAGER ? "text-center mt-3" : "d-none"} >
                                 <h3>Actions</h3>

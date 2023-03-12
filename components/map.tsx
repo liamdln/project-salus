@@ -42,8 +42,8 @@ export default function Map(props: MapProps) {
         const mapSettings = data["map"];
 
         let DefaultIcon = L.icon({
-            iconUrl: "/images/leaflet/marker-icon.png",
-            shadowUrl: "/images/leaflet/marker-shadow.png",
+            iconUrl: "/restricted/images/leaflet/marker-icon.png",
+            shadowUrl: "/restricted/images/leaflet/marker-shadow.png",
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             popupAnchor: [0, -41]

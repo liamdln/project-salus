@@ -47,9 +47,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             
 
         case "GET":
-        default:
             const users = await getUsers();
             return res.status(200).json(users);
+        
+        default:
+            return res.status(405).json({ error: `${req.method} request not allowed on this endpoint.` });
 
     }
 

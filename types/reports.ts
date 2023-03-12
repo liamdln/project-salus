@@ -8,7 +8,8 @@ export type Report = {
     lng: number,
     date: Date,
     author: ReportAuthor,
-    comments?: Comment[]
+    comments?: Comment[],
+    imageDirectories?: string[]
 }
 
 export type Comment = {
@@ -21,6 +22,12 @@ export type Comment = {
 export type ReportAuthor = {
     name: string
     id?: string
+}
+
+export type FileUploadRes = {
+    originalFileName: string;
+    newFileName: string;
+    serverDir: string;
 }
 
 // Severity:
