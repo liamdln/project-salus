@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Layout from "../../../components/layout";
 import { MapArea, MapMarker } from "../../../types/map";
-import { readSettings } from "../../../config/settings";
+import { readSettings } from "../../../lib/settings";
 import { FileUploadRes, Report } from "../../../types/reports";
 import { useSession } from "next-auth/react";
 import { useRouter } from 'next/router'
@@ -201,9 +201,9 @@ export function CreateReport(props: Record<string, MapMarker>) {
                 <title>Create Report - ProjectSalus</title>
             </Head>
             <Layout>
-                <div className="container text-center">
+                <div className="container container-md text-center">
                     <h1>Create a Report</h1>
-                    <div className="text-start" style={{ width: "75%", margin: "auto" }}>
+                    <div className="text-start">
                         <div className="card mt-3 mb-3">
                             <div className="card-body">
                                 <div className="mb-3">

@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import Layout from "../../components/layout";
 import { useSession } from "next-auth/react";
 import Loading from "../../components/loading";
-import { readSettings } from "../../config/settings";
+import { readSettings } from "../../lib/settings";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
 import Head from "next/head";

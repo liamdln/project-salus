@@ -1,11 +1,10 @@
 import { User } from "next-auth";
-import { UserPower } from "../lib/user-utils";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { roles } from "../config/roles";
 import axios from "axios";
 import Swal from "sweetalert2";
-import router from "next/router";
+import { UserPower } from "../config/user";
 
 export function UserEditModal(props: { context: "edit" | "create", setModalVisible: any, modalVisible: boolean, user?: User }) {
     const session = useSession();

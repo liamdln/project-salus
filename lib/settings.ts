@@ -1,4 +1,4 @@
-import dbConnect from "../lib/dbConnect";
+import dbConnect from "./dbConnect";
 import { SettingsData } from "../model/settings";
 import { Settings } from "../types/settings";
 

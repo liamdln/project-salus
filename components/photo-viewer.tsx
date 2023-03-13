@@ -1,5 +1,3 @@
-import useSWR from "swr";
-import { fetcher } from "../lib/api";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
@@ -40,7 +38,7 @@ export function PhotoViewer(props: { imageLocations: string[], visible: boolean,
                     <div className="modal-body text-center">
                         <div className="d-flex justify-content-center" style={{ height: "700px" }}>
                             {filteredImageDirs.length > 0 ?
-                                <img src={`/${filteredImageDirs[currentImage]}`} style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "scale-down" }} alt={`Supporting image #${currentImage + 1}.`} />
+                                <Image src={`/${filteredImageDirs[currentImage]}`} style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "scale-down" }} alt={`Supporting image #${currentImage + 1}.`} />
                                 :
                                 <div className="d-flex align-items-center"><em>There are no images associated with this report.</em></div>
                              }

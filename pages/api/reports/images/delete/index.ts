@@ -5,7 +5,7 @@ import path from "path";
 import fs from "fs/promises"
 import { JWT, getToken } from "next-auth/jwt";
 import { checkInvalidPermissions } from "../../../../../lib/api";
-import { UserPower } from "../../../../../lib/user-utils";
+import { UserPower } from "../../../../../config/user";
 
 const handler = nc<NextApiRequest, NextApiResponse>({
     onError: (err, _, res) => {

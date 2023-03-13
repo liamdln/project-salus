@@ -97,3 +97,36 @@ a {
 .btn.salus-disable-button:disabled {
     border: 0;
 }
+
+.salus-login {
+    width: 55%;
+    margin: auto;
+}
+
+.salus-report-actions-box {
+    width: 55%;
+    margin: auto;
+}
+
+.salus-org-user-management-create-button {
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+@media only screen and (max-device-width: 600px) {
+    .salus-login {
+        width: 100%
+    }
+
+    .salus-report-actions-box {
+        width: 100%;
+    }
+
+    .salus-org-user-management-create-button {
+        position: relative;
+        display: flex;
+        justify-content: flex-end;
+    }
+}

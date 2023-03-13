@@ -1,22 +1,20 @@
-import { NextPage } from "next";
 import { useRouter } from "next/router";
 import Layout from "../../../components/layout";
 import useSWR from "swr";
 import { fetcher } from "../../../lib/api"
 import Swal from "sweetalert2";
 import Loading from "../../../components/loading";
-import { getCardColourAndSeverity, getStatus, getType } from "../../../lib/reportCards";
-import { Comment, FileUploadRes, Report as ReportType } from "../../../types/reports";
+import { getCardColourAndSeverity, getStatus, getType } from "../../../lib/report-card-utils";
+import { Comment, Report as ReportType } from "../../../types/reports";
 import moment from "moment";
 import dynamic from "next/dynamic";
 import LoadingMap from "../../../components/loading-map";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { UserPower } from "../../../lib/user-utils";
 import Head from "next/head";
-import { shortenString } from "../../../lib/string-utils";
 import { PhotoViewer } from "../../../components/photo-viewer";
+import { UserPower } from "../../../config/user";
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -197,28 +195,30 @@ export function Report() {
                                 </div>
                             </div>
                             <div className={report.author.id === session.data?.user.id || (session.data?.user.maxPower || 0) >= UserPower.MANAGER ? "text-center mt-3" : "d-none"} >
-                                <h3>Actions</h3>
-                                <div className="mt-2 d-flex justify-content-center">
-                                    <select onChange={(e) => setUpdatedStatus(+e.currentTarget.value)} defaultValue={report.status} className="form-select" aria-label="Change status" style={{ width: "25%" }}>
-                                        <option value="0">Open</option>
-                                        <option value="1">In Review</option>
-                                        <option value="2">Closed</option>
-                                        <option value="3">Archived</option>
-                                        <option value="4">Revoked</option>
-                                    </select>
-                                    <button onClick={() => updateStatus()} className="btn btn-primary ms-2" disabled={updateStatusButtonLoading} style={{ width: "15%" }}>
-                                        {updateStatusButtonLoading ? "Loading..." : "Update Status"}
-                                    </button>
-                                </div>
-                                <div className="mt-2 d-flex justify-content-center">
-                                    <select onChange={(e) => setUpdatedSeverity(+e.currentTarget.value)} defaultValue={report.severity} className="form-select" aria-label="Change severity" style={{ width: "25%" }}>
-                                        <option value="0">None</option>
-                                        <option value="1">Danger to Operations</option>
-                                        <option value="2">Danger to Life</option>
-                                    </select>
-                                    <button onClick={() => updateSeverity()} className="btn btn-primary ms-2" disabled={updateSeverityButtonLoading} style={{ width: "15%" }}>
-                                        {updateSeverityButtonLoading ? "Loading..." : "Update Urgency"}
-                                    </button>
+                                <div className="mt-2 d-flex flex-column salus-report-actions-box">
+                                    <h3>Actions</h3>
+                                    <div className="d-flex justify-content-center">
+                                        <select onChange={(e) => setUpdatedStatus(+e.currentTarget.value)} defaultValue={report.status} className="form-select align-self-center" aria-label="Change status">
+                                            <option value="0">Open</option>
+                                            <option value="1">In Review</option>
+                                            <option value="2">Closed</option>
+                                            <option value="3">Archived</option>
+                                            <option value="4">Revoked</option>
+                                        </select>
+                                        <button onClick={() => updateStatus()} className="btn btn-primary ms-2 align-self-center" disabled={updateStatusButtonLoading} style={{ width: "10rem" }}>
+                                            {updateStatusButtonLoading ? "Loading..." : "Update Status"}
+                                        </button>
+                                    </div>
+                                    <div className="d-flex justify-content-center mt-2">
+                                        <select onChange={(e) => setUpdatedSeverity(+e.currentTarget.value)} defaultValue={report.severity} className="form-select align-self-center" aria-label="Change severity">
+                                            <option value="0">None</option>
+                                            <option value="1">Danger to Operations</option>
+                                            <option value="2">Danger to Life</option>
+                                        </select>
+                                        <button onClick={() => updateSeverity()} className="btn btn-primary ms-2 align-self-center" disabled={updateSeverityButtonLoading} style={{ width: "10rem" }}>
+                                            {updateSeverityButtonLoading ? "Loading..." : "Update Urgency"}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

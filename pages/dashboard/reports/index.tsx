@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import moment from "moment";
 import Loading from "../../../components/loading";
 import Link from "next/link";
-import { getCardColourAndSeverity, getStatus, getType } from "../../../lib/reportCards";
+import { getCardColourAndSeverity, getStatus, getType } from "../../../lib/report-card-utils";
 import Head from "next/head";
 import { shortenString } from "../../../lib/string-utils";
 

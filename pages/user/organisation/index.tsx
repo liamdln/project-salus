@@ -4,16 +4,16 @@ import { useSession } from "next-auth/react";
 import Loading from "../../../components/loading";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { readSettings } from "../../../config/settings";
+import { readSettings } from "../../../lib/settings";
 import { Settings } from "../../../types/settings";
 import dynamic from "next/dynamic";
 import LoadingMap from "../../../components/loading-map";
-import { useEffect, useState } from "react";
-import { UserPower } from "../../../lib/user-utils";
+import { useState } from "react";
 import { User } from "next-auth";
 import { getUsers } from "../../../lib/users";
 import { modifyUserEnabledStatus, saveSettings } from "./utils";
 import { UserEditModal } from "../../../components/user-edit-modal";
+import { UserPower } from "../../../config/user";
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -117,11 +117,11 @@ const Organisation: NextPage<{ settingsStr: string, usersStr: string }> = ({ set
 
     function UsersCard() {
         return (
-            <div className="card">
+            <div className="card" style={{ overflow: "scroll" }}>
                 <div className="card-header bg-primary text-white">
                     <div className="d-flex justify-content-center position-relative">
                         <span style={{ fontSize: "1.5rem" }}>User Management</span>
-                        <div className="position-absolute d-flex justify-content-end" style={{ width: "100%" }}>
+                        <div className="salus-org-user-management-create-button" style={{ width: "100%" }}>
                             <button className="btn btn-light"
                                 onClick={() => {
                                     setModalVisible(true);

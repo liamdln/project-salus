@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getToken } from 'next-auth/jwt';
 import dbConnect from "../../../lib/dbConnect";
-import { UserPower } from "../../../lib/user-utils";
+import { UserPower } from "../../../config/user";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Record<string, any>>) {
 

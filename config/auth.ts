@@ -1,0 +1,5 @@
+export enum LoginError {
+    INVALID_CREDENTIALS = 0,
+    DATABASE_CONNECTION_FAILED = 1,
+    ACCOUNT_DISABLED = 2
+}

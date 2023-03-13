@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getToken } from 'next-auth/jwt'
-import { readSettings, saveSettings } from '../../../config/settings'
+import { readSettings, saveSettings } from '../../../lib/settings'
 import dbConnect from '../../../lib/dbConnect'
 import { Settings } from '../../../types/settings'
-import { UserPower } from "../../../lib/user-utils"
+import { UserPower } from "../../../config/user"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Settings | Record<string, any>>) {
 

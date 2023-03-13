@@ -5,12 +5,7 @@ import clientPromise from "../../../lib/mongodb-adaptor";
 import dbConnect from "../../../lib/dbConnect";
 import User from "../../../model/user";
 import { compare } from "bcrypt";
-
-export enum LoginError {
-    INVALID_CREDENTIALS = 0,
-    DATABASE_CONNECTION_FAILED = 1,
-    ACCOUNT_DISABLED = 2
-}
+import { LoginError } from "../../../config/auth";
 
 export default NextAuth({
     adapter: MongoDBAdapter(clientPromise),

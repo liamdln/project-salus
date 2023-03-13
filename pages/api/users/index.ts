@@ -3,8 +3,8 @@ import { User } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import dbConnect from "../../../lib/dbConnect";
 import { createUser, getUsers } from '../../../lib/users';
-import { UserPower } from "../../../lib/user-utils";
 import { hash } from "bcrypt";
+import { UserPower } from "../../../config/user";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<User | User[] | { status: string, body?: string } | { error: string }>) {

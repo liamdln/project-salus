@@ -9,7 +9,7 @@ import { useEffect } from 'react'
 import dbConnect from "../lib/dbConnect"
 import NProgress from "nprogress"
 import { useRouter } from "next/router"
-import { checkEnvVariables } from "../lib/global-utils"
+import { checkEnvVariables } from "../lib/database-utils"
 
 function MyApp({ Component, pageProps }: AppProps) {
 

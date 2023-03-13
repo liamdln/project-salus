@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import dbConnect from "../../../lib/dbConnect";
 import { getReportsAsync, submitReport } from '../../../lib/reports';
-import { UserPower } from "../../../lib/user-utils";
 import nc from "next-connect";
 import { checkInvalidPermissions } from "../../../lib/api";
+import { UserPower } from "../../../config/user";
 
 const handler = nc<NextApiRequest, NextApiResponse>({
     onError: (err, _, res) => {

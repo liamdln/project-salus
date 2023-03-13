@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import nc from "next-connect";
 import dbConnect from "../../../../lib/dbConnect";
-import { UserPower } from "../../../../lib/user-utils";
 import { checkInvalidPermissions } from "../../../../lib/api";
 import formidable from "formidable";
 import path from "path";
 import moment from "moment";
 import fs from "fs/promises"
 import { JWT, getToken } from "next-auth/jwt";
+import { UserPower } from "../../../../config/user";
 
 const validFileTypes = ["apng", "avif", "gif", "jpg", "jpeg", "jfif", "pjpeg", "pjp", "png", "svg", "webp"]
 

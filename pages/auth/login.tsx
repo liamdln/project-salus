@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import Loading from "../../components/loading";
 import Swal from "sweetalert2";
 import Head from "next/head";
+import { LoginError } from "../../config/auth";
 
 const Login: NextPage = () => {
 
@@ -30,21 +31,21 @@ const Login: NextPage = () => {
         signIn("credentials", { email, password, redirect: false, callbackUrl: callbackUrl }).then((res: any) => {
             if (!res.ok) {
                 switch (JSON.parse(res.error).errorCode) {
-                    case 2:
+                    case LoginError.ACCOUNT_DISABLED:
                         Swal.fire({
                             icon: "error",
                             title: "That hasn't gone well!",
                             text: "This account is disabled. If you believe this is an error, please contact the site admin.",
                         })
                         break;
-                    case 1:
+                    case LoginError.DATABASE_CONNECTION_FAILED:
                         Swal.fire({
                             icon: "error",
                             title: "That hasn't gone well!",
                             text: "There's been an error connecting to the database. Please report this to the site admin.",
                         })
                         break;
-                    case 0:
+                    case LoginError.INVALID_CREDENTIALS:
                     default:
                         Swal.fire({
                             icon: "error",
@@ -61,12 +62,12 @@ const Login: NextPage = () => {
         });
     }
 
-    let loginForm;
+    let loginButton;
 
     if (session.status === "loading") {
-        loginForm = (
+        loginButton = (
             <>
-                <button type="button" className="btn btn-primary me-10 disabled">
+                <button type="submit" className="btn btn-primary me-10 disabled">
                     <span>
                         Please wait... <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
                     </span>
@@ -74,9 +75,9 @@ const Login: NextPage = () => {
             </>
         )
     } else {
-        loginForm = (
+        loginButton = (
             <>
-                <button type="button" onClick={() => { login() }} className={signInButtonLoading ? "btn btn-primary me-10 w-50 disabled" : "btn btn-primary w-50 me-10"}>
+                <button type="submit" onClick={() => { login() }} className={signInButtonLoading ? "btn btn-primary me-10 w-50 disabled" : "btn btn-primary w-50 me-10"}>
                     {!signInButtonLoading ? (
                         <span>
                             Sign In
@@ -94,7 +95,7 @@ const Login: NextPage = () => {
     let signInHtml = (
         <>
             <div className="d-flex justify-content-center">
-                <form style={{ width: "75%" }}>
+                <form style={{ width: "75%" }} onSubmit={(e) => e.preventDefault()}>
                     <div className="mb-3">
                         <label htmlFor="emailBox" className="form-label mb-0">Email</label>
                         <input type="email" value={email} onChange={(e) => { setEmail(e.currentTarget.value) }} className="form-control" id="emailBox" required />
@@ -103,7 +104,7 @@ const Login: NextPage = () => {
                         <label htmlFor="passwordBox" className="form-label mb-0">Password</label>
                         <input type="password" value={password} onChange={(e) => { setPassword(e.currentTarget.value) }} className="form-control" id="passwordBox" required />
                     </div>
-                    {loginForm}
+                    {loginButton}
                 </form>
             </div>
         </>
@@ -118,7 +119,7 @@ const Login: NextPage = () => {
                 <div style={{ backgroundImage: "url(/images/runway.jpg)", backgroundRepeat: "no-repeat", backgroundSize: "cover", height: "100vh" }}>
                     <div style={{ backgroundColor: "rgba(0,0,0,0.6)", height: "100vh" }}>
                         <div className="container d-flex flex-column justify-content-center text-center" style={{ height: "100vh" }}>
-                            <div className="card">
+                            <div className="card salus-login">
                                 {/* <div className="card-header bg-primary text-white">
                                     <h1 className="my-1">Project<strong>Salus</strong></h1>
                                 </div> */}
