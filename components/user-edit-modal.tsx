@@ -5,9 +5,11 @@ import { roles } from "../config/roles";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { UserPower } from "../config/user";
+import { useRouter } from "next/router";
 
 export function UserEditModal(props: { context: "edit" | "create", setModalVisible: any, modalVisible: boolean, user?: User }) {
     const session = useSession();
+    const router = useRouter();
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -22,9 +24,9 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
         setName(props.user?.name || "")
         setEmail(props.user?.email || "")
         setPassword("")
-    }, [props.user])
+    }, [props.user, props.modalVisible])
 
-    function handleRoleChange(roleName: string) {
+    const handleRoleChange = (roleName: string) => {
         if (userRoles.includes(roleName)) {
             setUserRoles(userRoles.filter((role) => role != roleName))
         } else {
@@ -32,12 +34,12 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
         }
     }
 
-    function closeModal() {
+    const closeModal = () => {
         setPassword("")
         props.setModalVisible(false);
     }
 
-    function handleSubmit(e: any) {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
 
         let rolesToAdd = [];
