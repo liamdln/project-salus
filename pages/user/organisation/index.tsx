@@ -11,7 +11,7 @@ import LoadingMap from "../../../components/loading-map";
 import { useState } from "react";
 import { User } from "next-auth";
 import { getUsers } from "../../../lib/users";
-import { modifyUserEnabledStatus, saveSettings } from "./utils";
+import { modifyUserEnabledStatus, saveSettings } from "../../../lib/org-utils";
 import { UserEditModal } from "../../../components/user-edit-modal";
 import { UserPower } from "../../../config/user";
 

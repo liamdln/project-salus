@@ -1,7 +1,7 @@
 import axios from "axios";
 import router from "next/router";
 import Swal from "sweetalert2";
-import { Settings } from "../../../types/settings";
+import { Settings } from "../types/settings";
 import { User } from "next-auth";
 
 export function saveSettings(e: any, settingsId: string) {

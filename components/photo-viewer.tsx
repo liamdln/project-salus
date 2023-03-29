@@ -38,10 +38,12 @@ export function PhotoViewer(props: { imageLocations: string[], visible: boolean,
                     <div className="modal-body text-center">
                         <div className="d-flex justify-content-center" style={{ height: "700px" }}>
                             {filteredImageDirs.length > 0 ?
-                                <img src={`/${filteredImageDirs[currentImage]}`} style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "scale-down" }} alt={`Supporting image #${currentImage + 1}.`} />
+                                <picture>
+                                    <img src={`/${filteredImageDirs[currentImage]}`} style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "scale-down" }} alt={`Supporting image #${currentImage + 1}.`} />
+                                </picture>
                                 :
                                 <div className="d-flex align-items-center"><em>There are no images associated with this report.</em></div>
-                             }
+                            }
                         </div>
                         <div className="btn-group mt-3">
                             <button type="button" disabled={currentImage <= 0} onClick={() => moveImage(-1)} className="btn btn-light" style={{ width: "5rem" }}><i className="bi bi-arrow-left"></i></button>
