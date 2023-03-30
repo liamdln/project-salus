@@ -152,7 +152,11 @@ export function CreateReport(props: Record<string, MapMarker>) {
             lat: reportMarker.lat,
             lng: reportMarker.lng,
             date: new Date(),
-            imageDirectories: files.map((file: FileUploadRes) => file.serverDir)
+            imageDirectories: files.map((file: FileUploadRes) => {
+                // return the directory from the file but slice off everything up to /restricted.
+                // so /salus/public/restricted/images/... would return /restricted/images/...
+                return file.serverDir.slice(file.serverDir.indexOf("restricted"), file.serverDir.length);
+            })
         }
 
         if (submitAnonymously) {

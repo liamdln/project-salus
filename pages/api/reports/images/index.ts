@@ -43,9 +43,11 @@ handler.post(async (req, res) => {
 
     // ensure the uploads directory is there
     try {
-        await fs.readdir(path.join(process.cwd() + "/public", "/restricted", "/uploads", String(jwt.sub || "")));
+        await fs.readdir(path.join(process.cwd(), "/public", "/restricted", "uploads"))
+        await fs.readdir(path.join(process.cwd(), "/public", "/restricted", "/uploads", String(jwt.sub || "")));
     } catch (_) {
-        await fs.mkdir(path.join(process.cwd() + "/public", "/restricted", "/uploads", String(jwt.sub || "")));
+        await fs.mkdir(path.join(process.cwd(), "/public", "/restricted", "uploads"))
+        await fs.mkdir(path.join(process.cwd(), "/public", "/restricted", "/uploads", String(jwt.sub || "")));
     }
 
     // save the file

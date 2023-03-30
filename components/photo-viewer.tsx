@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
 export function PhotoViewer(props: { imageLocations: string[], visible: boolean, setShowImageModal: any }) {
@@ -10,14 +9,14 @@ export function PhotoViewer(props: { imageLocations: string[], visible: boolean,
         setMaxImages(props.imageLocations.length)
     }, [props.imageLocations])
 
-    const filteredImageDirs: string[] = useMemo(() => {
-        const newDirs = []
-        for (const dir of props.imageLocations) {
-            const indexOfPublicFolder = encodeURI(dir).split("%5C").indexOf("public");
-            newDirs.push(encodeURI(dir).split("%5C").slice(indexOfPublicFolder + 1).join("/"))
-        }
-        return newDirs;
-    }, [props.imageLocations])
+    // const filteredImageDirs: string[] = useMemo(() => {
+    //     const newDirs = []
+    //     for (const dir of props.imageLocations) {
+    //         newDirs.push(dir.slice(dir.indexOf("public") + 1, dir.length));
+    //     }
+    //     console.log(newDirs)
+    //     return newDirs;
+    // }, [props.imageLocations])
 
     const moveImage = (shift: number) => {
         setCurrentImage(currentImage + shift);
@@ -37,9 +36,9 @@ export function PhotoViewer(props: { imageLocations: string[], visible: boolean,
                     </div>
                     <div className="modal-body text-center">
                         <div className="d-flex justify-content-center" style={{ height: "700px" }}>
-                            {filteredImageDirs.length > 0 ?
+                            {props.imageLocations.length > 0 ?
                                 <picture>
-                                    <img src={`/${filteredImageDirs[currentImage]}`} style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "scale-down" }} alt={`Supporting image #${currentImage + 1}.`} />
+                                    <img src={`/${props.imageLocations[currentImage]}`} style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "scale-down" }} alt={`Supporting image #${currentImage + 1}.`} />
                                 </picture>
                                 :
                                 <div className="d-flex align-items-center"><em>There are no images associated with this report.</em></div>
