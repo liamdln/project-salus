@@ -116,7 +116,7 @@ const Login: NextPage = () => {
                 <title>Auth - ProjectSalus</title>
             </Head>
             {session.status === "loading" ? <><div className="container text-center"><Loading /></div></> : <>
-                <div style={{ backgroundImage: "url(/images/runway.jpg)", backgroundRepeat: "no-repeat", backgroundSize: "cover", height: "100vh" }}>
+                <div style={{ backgroundImage: "url(/images/login-bg.jpg)", backgroundRepeat: "no-repeat", backgroundSize: "cover", height: "100vh" }}>
                     <div style={{ backgroundColor: "rgba(0,0,0,0.6)", height: "100vh" }}>
                         <div className="container d-flex flex-column justify-content-center text-center" style={{ height: "100vh" }}>
                             <div className="card salus-login">
