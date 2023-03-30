@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Loading from "../../components/loading";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
@@ -8,6 +8,8 @@ const Logout: NextPage = () => {
 
     const session = useSession();
     const router = useRouter();
+
+    signOut();
 
     if (session.status === "authenticated" || session.status === "loading") {
         return (
