@@ -3,7 +3,7 @@ import { User } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import dbConnect from "../../../lib/dbConnect";
 import { createUser, getUsers } from '../../../lib/users';
-import { hash } from "bcrypt";
+import bcrypt from "bcrypt";
 import { UserPower } from "../../../config/user";
 
 
@@ -30,26 +30,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             }
             const body = req.body;
             const saltRounds = process.env.PASSWORD_SALT_ROUNDS || "10";
-            hash(body.password, parseInt(saltRounds), async (err, hash) => {
-                if (err) {
-                    return res.status(500).json({ error: "Could not create user." });
-                }
-                body.encryptedPassword = hash;
-                delete body.password
-                try {
-                    await createUser(body);
-                    return res.status(200).json({ status: "success" })
-                } catch (e) {
-                    console.error("Error: ", e);
-                    return res.status(500).json({ error: "Could not create user." })
-                }
-            })
-            
+            await bcrypt.hash(body.payload.password, saltRounds)
+                .then((hash) => {
+                    body.encryptedPassword = hash;
+                    delete body.password;
+                })
+                .catch(() => res.status(500).json({ error: "Could not update user." }));
+
+            try {
+                await createUser(body);
+                return res.status(200).json({ status: "success" })
+            } catch (e) {
+                console.error("Error: ", e);
+                return res.status(500).json({ error: "Could not create user." })
+            }
 
         case "GET":
             const users = await getUsers();
             return res.status(200).json(users);
-        
+
         default:
             return res.status(405).json({ error: `${req.method} request not allowed on this endpoint.` });
 

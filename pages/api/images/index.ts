@@ -44,7 +44,7 @@ handler.post(async (req, res) => {
     try {
         await fs.readdir(path.join(process.cwd(), "/uploads", String(jwt.sub || "")));
     } catch (_) {
-        await fs.mkdir(path.join(process.cwd(), "/uploads", String(jwt.sub || "")));
+        await fs.mkdir(path.join(process.cwd(), "/uploads", String(jwt.sub || "")), { recursive: true });
     }
 
     // save the file
