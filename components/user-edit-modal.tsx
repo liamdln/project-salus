@@ -45,7 +45,7 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
 
         let rolesToAdd = [];
         let url;
-        let method;
+        let method: string;
 
         for (const role of roles) {
             if (userRoles.includes(role.name.toLowerCase())) {
@@ -106,7 +106,7 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
                 icon: "error",
                 title: "That hasn't gone well!",
                 text: "Could not create or edit the user. Please try again later, or contact the website administrator.",
-                footer: "Error: Failed to POST."
+                footer: `Error: Failed to ${method}.`
             })
         })
 

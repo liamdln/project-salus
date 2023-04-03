@@ -17,10 +17,10 @@ MONGODB_NAME=
 NEXTAUTH_SECRET=
 NEXTAUTH_URL=
 
-NODE_ENV=development
-
 PASSWORD_SALT_ROUNDS=10
 ```
+
+*Note: Development/Production environments are configured by Next, so they don't need to be set in the `.env` file.*
 
 ### User Creation
 
