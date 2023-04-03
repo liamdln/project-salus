@@ -14,6 +14,7 @@ import { getUsers } from "../../../lib/users";
 import { modifyUserEnabledStatus, saveSettings } from "../../../lib/org-utils";
 import { UserEditModal } from "../../../components/user-edit-modal";
 import { UserPower } from "../../../config/user";
+import Swal from "sweetalert2";
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -209,6 +210,12 @@ const Organisation: NextPage<{ settingsStr: string, usersStr: string }> = ({ set
                                                     setModalVisible(true);
                                                     setModalContext("edit");
                                                     setModalUser(user);
+                                                    if (user?._id === session.data?.user._id) {
+                                                        Swal.fire({
+                                                            icon: "info",
+                                                            text: "You will be logged out after editing your profile.",
+                                                        })
+                                                    }
                                                 }
                                                 }>
                                                 <i className="bi bi-pencil-square"></i>

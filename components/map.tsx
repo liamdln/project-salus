@@ -15,11 +15,12 @@ export default function Map(props: MapProps) {
             dragend() {
                 const marker = markerRef.current
                 if (marker != null) {
+                    console.log(marker)
                     props.updateMarkerPosFunction(marker.getLatLng())
                 }
             },
         }),
-        [],
+        [props],
     )
 
     // TODO: only get map settings?
@@ -129,7 +130,7 @@ export default function Map(props: MapProps) {
                     L.heatLayer(props.heatmapPoints, { radius: 15 }).addTo(map);
                     handleHeatmapPointsAddedState();
                 }
-            }, [])
+            }, [map])
             return (<></>)
         }
 

@@ -1,5 +1,5 @@
 import { User } from "next-auth";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { roles } from "../config/roles";
 import axios from "axios";
@@ -24,6 +24,7 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
         setName(props.user?.name || "")
         setEmail(props.user?.email || "")
         setPassword("")
+
     }, [props.user, props.modalVisible])
 
     const handleRoleChange = (roleName: string) => {
@@ -88,11 +89,16 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
             url,
             data: user
         }).then(() => {
-            // router.replace(router.asPath);
-            closeModal()
             Swal.fire({
                 icon: "success",
                 text: props.context === "create" ? "User has been created." : "User has been edited.",
+            }).then(() => {
+                closeModal()
+                if (props.user?._id === session.data?.user._id) {
+                    signOut();
+                } else {
+                    router.replace(router.asPath);
+                }
             })
         }).catch((err) => {
             console.log(err)
