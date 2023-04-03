@@ -1,7 +1,5 @@
 import { useRouter } from "next/router";
 import Layout from "../../../components/layout";
-import useSWR from "swr";
-import { fetcher } from "../../../lib/api"
 import Swal from "sweetalert2";
 import Loading from "../../../components/loading";
 import { getCardColourAndSeverity, getStatus, getType } from "../../../lib/report-card-utils";
@@ -9,12 +7,14 @@ import { Comment, Report as ReportType } from "../../../types/reports";
 import moment from "moment";
 import dynamic from "next/dynamic";
 import LoadingMap from "../../../components/loading-map";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import Head from "next/head";
 import { PhotoViewer } from "../../../components/photo-viewer";
 import { UserPower } from "../../../config/user";
+import useSWR from "swr";
+import { fetcher } from "../../../lib/api";
 
 const Map = dynamic(
     () => import("../../../components/map"),
@@ -30,30 +30,40 @@ export function Report() {
     const [updateStatusButtonLoading, setUpdateStatusButtonLoading] = useState(false);
     const [updateSeverityButtonLoading, setUpdateSeverityButtonLoading] = useState(false);
     const [showImageModal, setShowImageModal] = useState(false);
+    const [report, setReport] = useState<ReportType>();
 
     const router = useRouter()
     const session = useSession();
-    const query = router.query;
+    const { filter } = router.query;
 
-    const { data, error, isLoading } = useSWR(`/api/reports/${query.id}`, fetcher)
+    useEffect(() => {
+        if (!router.isReady) return;
+        getReport(router.query.id);
+    }, [router.isReady])
 
-    if (isLoading) {
-        return (
-            <Loading />
-        )
-    } else if (error) {
-        Swal.fire({
-            icon: "error",
-            title: "That hasn't gone well!",
-            text: `The report with ID ${query.id || "Unknown"} does not exist.`,
+    const getReport = (reportId: string | string[] | undefined) => {
+        fetcher(`/api/reports/${reportId}`).then((report) => {
+            setReport(report);
+        }).catch((err) => {
+            Swal.fire({
+                icon: "error",
+                title: "That hasn't gone well!",
+                text: `The report with ID ${router.query.id || "Unknown"} does not exist.`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    router.push(`/dashboard/reports${router.query.filter ? "?filter=own" : ""}`)
+                }
+            })
+            return (
+                <Loading />
+            )
         })
-        router.push(`/dashboard/reports${query.filter ? "?filter=own" : ""}`)
-        return (
-            <Loading />
-        )
     }
 
-    const report: ReportType = data;
+    if (!report) {
+        return (<Loading />)
+    }
+
     let reportDetails = getCardColourAndSeverity(report)
     let reportStatus = getStatus(report.status, true);
 
@@ -173,7 +183,7 @@ export function Report() {
                                 <h2 style={{ fontSize: "16px" }} className="mb-0">Submitted by {report.author.name} on {moment(report.date).format("DD/MM/YYYY")} at {moment(report.date).format("HH:mm")} </h2>
                             </div>
                             <div className="d-flex flex-column justify-content-center">
-                                <button onClick={() => { router.push(`/dashboard/reports${query.filter ? "?filter=own" : ""}`) }} className={`btn btn-${reportDetails.cardColour} text-white`} style={{ width: "200px", height: "100%" }}>Back to Reports</button>
+                                <button onClick={() => { router.push(`/dashboard/reports${filter ? "?filter=own" : ""}`) }} className={`btn btn-${reportDetails.cardColour} text-white`} style={{ width: "200px", height: "100%" }}>Back to Reports</button>
                             </div>
                         </div>
                         <div className="card-body">
