@@ -53,7 +53,7 @@ handler.post(async (req, res) => {
         filename: (_, __, part) => {
             return `${moment().format("DD-MM-YYYY-HH-mm-ss")}-${part.originalFilename?.replace(" ", "_")}`;
         },
-        maxFileSize: 10 * 1024 * 1024, // 10MB
+        maxFileSize: 3 * 1024 * 1024, // 3MB
         multiples: false,
         allowEmptyFiles: false
     })

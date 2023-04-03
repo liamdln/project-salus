@@ -245,7 +245,7 @@ export function CreateReport(props: Record<string, MapMarker>) {
                                             <em>No files selected.</em>
                                         }
                                     </div>
-                                    <span className="text-secondary d-block"><em>Image size must not exceed 10MB</em></span>
+                                    <span className="text-secondary d-block"><em>Image size must not exceed 3MB</em></span>
                                     <label className="btn btn-primary mt-2" htmlFor="img-upload">Upload Image</label>
                                     <input type="file" accept="image/*" name="evidence" id="img-upload" onChange={(e) => handleImageUpload(e)} hidden />
                                 </div>
