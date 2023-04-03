@@ -67,6 +67,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         case "GET":
             try {
                 const report = await getReportsAsync({ _id: query.id });
+                if (report.length < 1) {
+                    throw new Error(`No reports found with ID ${query.id}.`);
+                }
                 return res.status(200).json(report[0]);
             } catch (e) {
                 return res.status(404).json({ error: `Could not find report id ${query.id}` })

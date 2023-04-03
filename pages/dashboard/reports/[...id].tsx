@@ -35,14 +35,13 @@ export function Report() {
     const session = useSession();
     const query = router.query;
 
-    const { data, error, isLoading } = useSWR(query.id ? `/api/reports/${query.id}` : null, fetcher)
+    const { data, error, isLoading } = useSWR(`/api/reports/${query.id}`, fetcher)
 
-    // error getting the data
-    if (!router.isReady || (error && !router.isReady) || isLoading) {
+    if (isLoading) {
         return (
             <Loading />
         )
-    } else if (error && router.isReady) {
+    } else if (error) {
         Swal.fire({
             icon: "error",
             title: "That hasn't gone well!",
@@ -55,6 +54,7 @@ export function Report() {
     }
 
     const report: ReportType = data;
+    console.log("REPORT: ", report);
     let reportDetails = getCardColourAndSeverity(report)
     let reportStatus = getStatus(report.status, true);
 
