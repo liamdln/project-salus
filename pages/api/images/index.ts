@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import nc from "next-connect";
-import dbConnect from "../../../../lib/dbConnect";
-import { checkInvalidPermissions } from "../../../../lib/api";
+import dbConnect from "../../../lib/dbConnect";
+import { checkInvalidPermissions } from "../../../lib/api";
 import formidable from "formidable";
 import path from "path";
 import moment from "moment";
 import fs from "fs/promises"
 import { JWT, getToken } from "next-auth/jwt";
-import { UserPower } from "../../../../config/user";
+import { UserPower } from "../../../config/user";
 
 const validFileTypes = ["apng", "avif", "gif", "jpg", "jpeg", "jfif", "pjpeg", "pjp", "png", "svg", "webp"]
 
@@ -40,25 +40,18 @@ handler.post(async (req, res) => {
     // we know the JWT won't be null as it's checked in "handler.all".
     const jwt = await getToken({ req }) as JWT;
 
-    // ensure the uploads directory is there
-    try {
-        await fs.readdir(path.join(process.cwd(), "/public", "/restricted", "uploads"))
-    } catch (_) {
-        await fs.mkdir(path.join(process.cwd(), "/public", "/restricted", "uploads"))
-    }
-
     // ensure there is a folder for the user.
     try {
-        await fs.readdir(path.join(process.cwd(), "/public", "/restricted", "/uploads", String(jwt.sub || "")));
+        await fs.readdir(path.join(process.cwd(), "/uploads", String(jwt.sub || "")));
     } catch (_) {
-        await fs.mkdir(path.join(process.cwd(), "/public", "/restricted", "/uploads", String(jwt.sub || "")));
+        await fs.mkdir(path.join(process.cwd(), "/uploads", String(jwt.sub || "")));
     }
 
     // save the file
     const form = formidable({
-        uploadDir: path.join(process.cwd(), `/public/restricted/uploads/${jwt.sub || "unknown"}`),
+        uploadDir: path.join(process.cwd(), `/uploads/${jwt.sub || "unknown"}`),
         filename: (_, __, part) => {
-            return `${moment().format("DD-MM-YYYY-HH-mm-ss")}-${part.originalFilename}`;
+            return `${moment().format("DD-MM-YYYY-HH-mm-ss")}-${part.originalFilename?.replace(" ", "_")}`;
         },
         maxFileSize: 10 * 1024 * 1024, // 10MB
         multiples: false,
@@ -85,9 +78,28 @@ handler.post(async (req, res) => {
 
 })
 
+handler.delete(async (req, res) => {
+
+    const name = req.query.name;
+    if (!name) { return res.status(400).json({ error: "Photo name was not present as a query parameter." }) }
+
+    // we know the JWT won't be null as it's checked in "handler.all".
+    const jwt = await getToken({ req }) as JWT;
+
+    await fs.unlink(path.join(process.cwd() + "/uploads", `/${jwt.sub}`, `/${name}`))
+        .then(() => {
+            return res.status(200).json({ status: "success" })
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).json({ error: "Could not delete image." })
+        })
+
+})
+
 export default handler;
 export const config = {
     api: {
-        bodyParser: false,
+        bodyParser: false
     },
 };

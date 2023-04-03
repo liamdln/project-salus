@@ -18,7 +18,6 @@ export async function getReportsAsync(filter?: Record<string, any>, returnFilter
 }
 
 export async function submitReport(report: Report) {
-    console.error(report);
     await dbConnect();
     const newReport = new ReportModel(report);
     try {

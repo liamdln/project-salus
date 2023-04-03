@@ -38,7 +38,7 @@ export function PhotoViewer(props: { imageLocations: string[], visible: boolean,
                         <div className="d-flex justify-content-center" style={{ height: "700px" }}>
                             {props.imageLocations.length > 0 ?
                                 <picture>
-                                    <img src={`/${props.imageLocations[currentImage]}`} style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "scale-down" }} alt={`Supporting image #${currentImage + 1}.`} />
+                                    <img src={`/api/images/${props.imageLocations[currentImage]}`} style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "scale-down" }} alt={`Supporting image #${currentImage + 1}.`} />
                                 </picture>
                                 :
                                 <div className="d-flex align-items-center"><em>There are no images associated with this report.</em></div>

@@ -1,4 +1,3 @@
-import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -60,11 +59,12 @@ export function CreateReport(props: Record<string, MapMarker>) {
         formData.append(e.target.name, e.target.files[0])
 
         // TODO: move to common api lib
-        axios("/api/reports/images", {
+        axios("/api/images", {
             method: "POST",
             data: formData,
             headers: { "content-type": "multipart/form-data" }
         }).then((res) => {
+            console.log(res.data.payload.filepath)
             setFiles([...files, {
                 originalFileName: res.data.payload.originalFilename,
                 newFileName: res.data.payload.newFilename,
@@ -81,7 +81,7 @@ export function CreateReport(props: Record<string, MapMarker>) {
 
     const removeFile = (fileIndex: number) => {
         // TODO: move to common api lib
-        axios(`/api/reports/images/delete?name=${files[fileIndex].newFileName}`, {
+        axios(`/api/images?name=${files[fileIndex].newFileName}`, {
             method: "DELETE",
         }).then(() => {
             // see https://beta.reactjs.org/learn/updating-arrays-in-state#updating-arrays-without-mutation
@@ -154,8 +154,8 @@ export function CreateReport(props: Record<string, MapMarker>) {
             date: new Date(),
             imageDirectories: files.map((file: FileUploadRes) => {
                 // return the directory from the file but slice off everything up to /restricted.
-                // so /salus/public/restricted/images/... would return /restricted/images/...
-                return file.serverDir.slice(file.serverDir.indexOf("restricted"), file.serverDir.length);
+                // so /salus/uploads/userid/image/png would return /userid/image.png
+                return file.serverDir.slice(file.serverDir.indexOf(session.data.user._id), file.serverDir.length);
             })
         }
 
