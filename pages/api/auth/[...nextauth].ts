@@ -73,6 +73,7 @@ export default NextAuth({
         },
         async jwt({ token, user }) {
             if (user) {
+                console.log("USER: ", user)
                 const rolePowers: number[] = []
                 for (const role of user.roles) {
                     rolePowers.push(role.power || 0);
@@ -80,6 +81,7 @@ export default NextAuth({
                 const maxPower = Math.max(...rolePowers)
                 token.userRoles = user.roles
                 token.userPower = maxPower
+                token.userEnabled = user.enabled
             }
             return token
         },

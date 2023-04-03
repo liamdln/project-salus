@@ -1,7 +1,6 @@
 import axios from "axios";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest } from "next";
 import { getToken } from "next-auth/jwt";
-import dbConnect from "./dbConnect";
 
 export const fetcher = async (url: string) => {
     return await axios(url).then((res) => {
@@ -19,6 +18,13 @@ export const checkInvalidPermissions = async (req: NextApiRequest, requiredPower
         return {
             status: 401,
             message: "You are not logged in."
+        }
+    }
+
+    if (!token.userEnabled) {
+        return {
+            status: 403,
+            message: "Your account has been disabled."
         }
     }
 

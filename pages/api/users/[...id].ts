@@ -29,6 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 return res.status(403).json({ error: "You are not authorized to access this endpoint." })
             }
             const body = req.body;
+            let hashError = false;
 
             if (body.payload.password) {
                 const saltRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS || "10");
@@ -37,9 +38,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                         body.payload.encryptedPassword = hash;
                         delete body.payload.password;
                     })
-                    .catch(() => res.status(500).json({ error: "Could not update user." }));
+                    .catch((err) => {
+                        console.error(err);
+                        hashError = true;
+                    });
             }
-            return await tryUpdateUser(res, body);
+            if (!hashError) return await tryUpdateUser(res, body);
+            else return res.status(500).json({ error: "Could not hash user's password." })
 
         case "GET":
             const query = req.query

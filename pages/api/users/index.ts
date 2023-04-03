@@ -29,21 +29,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 return res.status(403).json({ error: "You are not authorized to access this endpoint." })
             }
             const body = req.body;
-            const saltRounds = process.env.PASSWORD_SALT_ROUNDS || "10";
-            await bcrypt.hash(body.payload.password, saltRounds)
+            let hashError = false;
+
+            const saltRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS || "10");
+            await bcrypt.hash(body.password, saltRounds)
                 .then((hash) => {
                     body.encryptedPassword = hash;
                     delete body.password;
                 })
-                .catch(() => res.status(500).json({ error: "Could not update user." }));
+                .catch((err) => {
+                    console.error(err);
+                    hashError = true;
+                });
 
-            try {
-                await createUser(body);
-                return res.status(200).json({ status: "success" })
-            } catch (e) {
-                console.error("Error: ", e);
-                return res.status(500).json({ error: "Could not create user." })
+            if (!hashError) {
+                return createUser(body)
+                    .then(() => res.status(200).json({ status: "success" }))
+                    .catch((err) => {
+                        console.error(err);
+                        return res.status(500).json({ error: "Could not create user." })
+                    })
+            } else {
+                return res.status(500).json({ error: "Could not hash user's password." })
             }
+            
 
         case "GET":
             const users = await getUsers();
