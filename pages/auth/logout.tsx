@@ -9,8 +9,6 @@ const Logout: NextPage = () => {
     const session = useSession();
     const router = useRouter();
 
-    signOut();
-
     if (session.status === "authenticated" || session.status === "loading") {
         return (
             <>
