@@ -1,6 +1,7 @@
 import axios from "axios";
 import { NextApiRequest } from "next";
 import { getToken } from "next-auth/jwt";
+import { signOut } from "next-auth/react";
 
 export const fetcher = async (url: string) => {
     return await axios(url).then((res) => {
@@ -22,6 +23,7 @@ export const checkInvalidPermissions = async (req: NextApiRequest, requiredPower
     }
 
     if (!token.userEnabled) {
+        signOut();
         return {
             status: 403,
             message: "Your account has been disabled."

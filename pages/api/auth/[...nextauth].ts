@@ -81,7 +81,7 @@ export default NextAuth({
                 const maxPower = Math.max(...rolePowers)
                 token.userRoles = user.roles
                 token.userPower = maxPower
-                token.userEnabled = user.enabled
+                token.userEnabled = user.enabled || false;
             }
             return token
         },

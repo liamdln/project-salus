@@ -1,5 +1,6 @@
 import express, { RequestHandler } from "express"
 import { JWT, getToken } from "next-auth/jwt";
+import { signOut } from "next-auth/react";
 
 const authVerification: RequestHandler = async function (req, res, next) {
     const jwt = await getToken({ req }) as JWT;
@@ -7,6 +8,7 @@ const authVerification: RequestHandler = async function (req, res, next) {
         return res.status(401).json({ error: "You must be logged in to view this file." })
     } else if (jwt.userPower < 10 || !jwt.userEnabled) {
         // user is not a member (member power = 10) or their account is disabled
+        signOut();
         return res.status(403).json({ error: "Your account is either disabled or you are not a member of this organisation." })
     }
     next();
