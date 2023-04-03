@@ -44,7 +44,7 @@ export function saveSettings(e: any, settingsId: string) {
             text: "Settings have been saved.",
         })
     }).catch((err) => {
-        console.log(err)
+        console.error(err)
         Swal.fire({
             icon: "error",
             title: "That hasn't gone well!",
@@ -84,7 +84,7 @@ export function modifyUserEnabledStatus(user: User, enabled: boolean) {
                     text: enabled ? "User has been enabled." : "User has been disabled.",
                 })
             }).catch((err) => {
-                console.log(err)
+                console.error(err)
                 Swal.fire({
                     icon: "error",
                     title: "That hasn't gone well!",

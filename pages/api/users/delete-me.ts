@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             try {
                 return res.status(200).json({ status: "success" })
             } catch (e) {
-                console.log("Error: ", e);
+                console.error("Error: ", e);
                 return res.status(500).json({ status: "error", message: "Could not delete user." })
             }
 

@@ -24,7 +24,7 @@ export default NextAuth({
                 try {
                     await dbConnect();
                 } catch (e) {
-                    console.log("Error connecting to the database.")
+                    console.error("Error connecting to the database.")
                     throw new Error(JSON.stringify({ errorCode: LoginError.DATABASE_CONNECTION_FAILED }));
                 }
                 const user = await User.findOne({

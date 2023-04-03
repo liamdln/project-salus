@@ -101,7 +101,6 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
                 }
             })
         }).catch((err) => {
-            console.log(err)
             Swal.fire({
                 icon: "error",
                 title: "That hasn't gone well!",

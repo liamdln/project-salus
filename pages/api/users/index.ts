@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                     await createUser(body);
                     return res.status(200).json({ status: "success" })
                 } catch (e) {
-                    console.log("Error: ", e);
+                    console.error("Error: ", e);
                     return res.status(500).json({ error: "Could not create user." })
                 }
             })

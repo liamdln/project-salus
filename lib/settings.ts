@@ -25,7 +25,7 @@ export async function readSettings(returnFilter?: string) {
             // settings = res;
             return res[0];
         }).catch(err => {
-            console.log(err);
+            console.error(err);
             throw new Error("Settings could not be read.");
         });
 
@@ -36,7 +36,7 @@ export async function saveSettings(id: any, settings: Settings) {
     return await SettingsData.findByIdAndUpdate({ _id: id }, { $set: settings }, { new: true }).then((res: any) => {
         return res;
     }).catch((err) => {
-        console.log(err);
+        console.error(err);
         throw new Error("Could not save settings.")
     })
 

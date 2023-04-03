@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 const refreshedReport = await postComment(query.id, body);
                 return res.status(200).json({ status: "success", body: refreshedReport.comments });
             } catch (e) {
-                console.log(e);
+                console.error(e);
                 return res.status(500).json({ error: "Could not post comment." })
             }
 
@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                     const refreshedReport = await updateReportSeverity(query.id, body);
                     return res.status(200).json({ status: "success", body: refreshedReport.severity });
                 } catch (e) {
-                    console.log(e);
+                    console.error(e);
                     return res.status(500).json({ error: "Could not update severity." })
                 }
             } else if (context === "status") {
@@ -57,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                     const refreshedReport = await updateReportStatus(query.id, body);
                     return res.status(200).json({ status: "success", body: refreshedReport.status });
                 } catch (e) {
-                    console.log(e);
+                    console.error(e);
                     return res.status(500).json({ error: "Could not update status." })
                 }
             } else {

@@ -41,7 +41,7 @@ handler.post(async (req, res) => {
         await submitReport(body);
         return res.status(200).json({ status: "success" })
     } catch (e) {
-        console.log("Error: ", e);
+        console.error("Error: ", e);
         throw e
         // return res.status(500).json({ status: "error", message: "Could not create report." })
     }

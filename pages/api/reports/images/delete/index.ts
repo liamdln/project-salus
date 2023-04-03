@@ -13,7 +13,6 @@ const handler = nc<NextApiRequest, NextApiResponse>({
         return res.status(500).json({ error: "Could not upload image." });
     },
     onNoMatch: (req, res) => {
-        console.log("tried to call a non delete method here")
         return res.status(405).json({ error: `${req.method} request not allowed on this endpoint.` });
     }
 })

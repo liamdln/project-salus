@@ -54,7 +54,6 @@ export function Report() {
     }
 
     const report: ReportType = data;
-    console.log("REPORT: ", report);
     let reportDetails = getCardColourAndSeverity(report)
     let reportStatus = getStatus(report.status, true);
 
@@ -77,7 +76,6 @@ export function Report() {
             const refreshedComments: Comment[] = res.data.body;
             report.comments = refreshedComments;
         }).catch((err) => {
-            console.log(err)
             Swal.fire({
                 icon: "error",
                 title: "That hasn't gone well!",
@@ -100,7 +98,6 @@ export function Report() {
             reportDetails = getCardColourAndSeverity(report)
             setUpdateStatusButtonLoading(false)
         }).catch((err) => {
-            console.log(err)
             Swal.fire({
                 icon: "error",
                 title: "That hasn't gone well!",
@@ -124,7 +121,6 @@ export function Report() {
             reportDetails = getCardColourAndSeverity(report)
             setUpdateSeverityButtonLoading(false);
         }).catch((err) => {
-            console.log(err)
             Swal.fire({
                 icon: "error",
                 title: "That hasn't gone well!",

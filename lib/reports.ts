@@ -12,13 +12,13 @@ export async function getReportsAsync(filter?: Record<string, any>, returnFilter
     return await ReportModel.find(filter || {}, returnFilter).then((res: any) => {
         return res;
     }).catch(err => {
-        console.log(err);
+        console.error(err);
         throw new Error("Reports could not be read.");
     });
 }
 
 export async function submitReport(report: Report) {
-    console.log(report);
+    console.error(report);
     await dbConnect();
     const newReport = new ReportModel(report);
     try {
@@ -33,7 +33,7 @@ export async function updateReportStatus(reportId: string | string[], update: { 
     return await ReportModel.findByIdAndUpdate({ _id: reportId }, { $set: update }, { new: true }).then((res: any) => {
         return res;
     }).catch((err) => {
-        console.log(err);
+        console.error(err);
         throw new Error("Could not update report status.")
     })
 }
@@ -43,7 +43,7 @@ export async function updateReportSeverity(reportId: string | string[], update: 
     return await ReportModel.findByIdAndUpdate({ _id: reportId }, { $set: update }, { new: true }).then((res: any) => {
         return res;
     }).catch((err) => {
-        console.log(err);
+        console.error(err);
         throw new Error("Could not update report severity.")
     })
 }
@@ -53,7 +53,7 @@ export async function postComment(reportId: string | string[], comment: Comment)
     return await ReportModel.findByIdAndUpdate({ _id: reportId }, { $push: { comments: comment } }, { new: true }).then((res: any) => {
         return res;
     }).catch((err) => {
-        console.log(err);
+        console.error(err);
         throw new Error("Could not post comment.")
     })
 }

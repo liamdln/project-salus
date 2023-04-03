@@ -187,7 +187,6 @@ export function CreateReport(props: Record<string, MapMarker>) {
                 }
             })
         }).catch((err) => {
-            console.log(err)
             setSubmitButtonLoading(false);
             Swal.fire({
                 icon: "error",

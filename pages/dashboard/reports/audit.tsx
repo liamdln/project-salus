@@ -43,7 +43,7 @@ const Audit: NextPage = ({ reports }: any) => {
                 break;
 
             default:
-                console.log(`Error getting type of report: ${JSON.stringify(report)}`)
+                console.error(`Error getting type of report: ${JSON.stringify(report)}`)
                 break;
         }
 
@@ -62,7 +62,7 @@ const Audit: NextPage = ({ reports }: any) => {
                 break;
 
             default:
-                console.log(`Error getting type of report: ${JSON.stringify(report)}`)
+                console.error(`Error getting type of report: ${JSON.stringify(report)}`)
                 break;
         }
 
@@ -89,7 +89,7 @@ const Audit: NextPage = ({ reports }: any) => {
                 break;
 
             default:
-                console.log(`Error getting type of report: ${JSON.stringify(report)}`)
+                console.error(`Error getting type of report: ${JSON.stringify(report)}`)
                 break;
         }
 
@@ -98,7 +98,6 @@ const Audit: NextPage = ({ reports }: any) => {
 
     }
 
-    console.log(reportsData)
 
     const reportTypes = {
         labels: ["Foreign Object Debris (FOD)", "Wildlife"],

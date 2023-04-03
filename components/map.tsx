@@ -15,7 +15,6 @@ export default function Map(props: MapProps) {
             dragend() {
                 const marker = markerRef.current
                 if (marker != null) {
-                    console.log(marker)
                     props.updateMarkerPosFunction(marker.getLatLng())
                 }
             },

@@ -13,7 +13,7 @@ export async function getUsers(filter?: Record<string, any>, returnFilter?: stri
     return await User.find(filter || {}, returnFilter).then((docs: any) => {
         return docs;
     }).catch(err => {
-        console.log(err);
+        console.error(err);
         throw new Error("Users could not be read.");
     });
 }
@@ -33,7 +33,7 @@ export async function updateUser(userId: string, update: Record<string, any>) {
     return await User.findByIdAndUpdate({ _id: userId }, { $set: update }, { new: true }).then((res: any) => {
         return res;
     }).catch((err) => {
-        console.log(err);
+        console.error(err);
         throw new Error("Could not update user.")
     })
 }

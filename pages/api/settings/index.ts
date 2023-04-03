@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 const newSettings = await saveSettings(body.id, body.payload);
                 return res.status(200).json({ status: "success", body: newSettings });
             } catch (e) {
-                console.log(e);
+                console.error(e);
                 return res.status(500).json({ error: "Could not post settings." })
             }
 
