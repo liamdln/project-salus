@@ -135,7 +135,10 @@ export default function Map(props: MapProps) {
 
         return (
             <>
-                <MapContainer center={[props.mapCenter?.lat || mapSettings.xAxisCenter, props.mapCenter?.lng || mapSettings.yAxisCenter]} zoom={mapSettings.zoomLevel} scrollWheelZoom={true} style={{ height: `${props.mapHeightPx || `700`}px`, width: "100%", margin: "auto", color: "#000" }}>
+                <MapContainer center={[props.mapCenter?.lat || mapSettings.xAxisCenter, props.mapCenter?.lng || mapSettings.yAxisCenter]}
+                    zoom={mapSettings.zoomLevel}
+                    scrollWheelZoom={true}
+                    style={{ height: `${props.mapHeightPx || `700`}px`, width: "100%", margin: "auto", color: "#000" }}>
                     {/* Map Tiles */}
                     <TileLayer
                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -143,7 +146,9 @@ export default function Map(props: MapProps) {
                     />
 
                     {/* Circle the airport */}
-                    <Circle center={[mapSettings.xAxisCenter, mapSettings.yAxisCenter]} pathOptions={{ color: "green", fillColor: "none" }} radius={mapSettings.circleRadius} />
+                    <Circle center={[mapSettings.xAxisCenter, mapSettings.yAxisCenter]}
+                        pathOptions={{ color: "green", fillColor: "none" }}
+                        radius={mapSettings.circleRadius} />
                     {/* End airport circle */}
 
                     {/* User Location Area (approx) */}

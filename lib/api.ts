@@ -12,26 +12,24 @@ export const fetcher = async (url: string) => {
     })
 }
 
-export const checkInvalidPermissions = async (req: NextApiRequest, requiredPower: number) => {
-    // check user is logged in
+export const checkToken = async (req: NextApiRequest, requiredPower: number) => {
     const token = await getToken({ req })
+
     if (!token) {
+        // user is not logged in
         return {
             status: 401,
             message: "You are not logged in."
         }
-    }
-
-    if (!token.userEnabled) {
+    } else if (!token.userEnabled) {
+        // account is disabled but token valid, so dispose of token
         signOut();
         return {
             status: 403,
             message: "Your account has been disabled."
         }
-    }
-
-    // check permissions
-    if ((token.userPower || 0) < requiredPower) {
+    } else if ((token.userPower || 0) < requiredPower) {
+        // check the user has correct permissions to make the request
         return {
             status: 403,
             message: "You are not authorized to access this endpoint."

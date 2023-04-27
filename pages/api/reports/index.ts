@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import dbConnect from "../../../lib/dbConnect";
 import { getReportsAsync, submitReport } from '../../../lib/reports';
 import nc from "next-connect";
-import { checkInvalidPermissions } from "../../../lib/api";
+import { checkToken } from "../../../lib/api";
 import { UserPower } from "../../../config/user";
 
 const handler = nc<NextApiRequest, NextApiResponse>({
@@ -18,9 +18,9 @@ const handler = nc<NextApiRequest, NextApiResponse>({
 // permissions
 handler.all(async (req, res, next) => {
     // check if user is logged in and permissions
-    const invalidPermissions = await checkInvalidPermissions(req, UserPower.MEMBER)
-    if (invalidPermissions) {
-        return res.status(invalidPermissions.status).json({ error: invalidPermissions.message })
+    const tokenInvalid = await checkToken(req, UserPower.MEMBER)
+    if (tokenInvalid) {
+        return res.status(tokenInvalid.status).json({ error: tokenInvalid.message })
     }
 
     // connect to the database

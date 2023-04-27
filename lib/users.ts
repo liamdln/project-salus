@@ -3,14 +3,15 @@ import User from "../model/user"
 import dbConnect from "./dbConnect"
 
 
-export async function getUsers(filter?: Record<string, any>, returnFilter?: string): Promise<UserType[]> {
+export async function getUsers(filter?: Record<string, any>, mask?: string): Promise<UserType[]> {
     await dbConnect();
-    if (returnFilter) {
-        returnFilter = "-encryptedPassword " + returnFilter
+    // don't return the password key value pair.
+    if (mask) {
+        mask = "-encryptedPassword " + mask
     } else {
-        returnFilter = "-encryptedPassword"
+        mask = "-encryptedPassword"
     }
-    return await User.find(filter || {}, returnFilter).then((docs: any) => {
+    return await User.find(filter || {}, mask).then((docs: any) => {
         return docs;
     }).catch(err => {
         console.error(err);
@@ -20,9 +21,9 @@ export async function getUsers(filter?: Record<string, any>, returnFilter?: stri
 
 export async function createUser(user: UserType) {
     await dbConnect();
-    const newReport = new User(user);
+    const newUser = new User(user);
     try {
-        await newReport.save()
+        await newUser.save()
     } catch (e) {
         throw new Error(`User could not be saved! Stack:\n${e}`)
     }

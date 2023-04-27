@@ -82,7 +82,12 @@ const Dashboard: NextPage = ({ reports }: any) => {
                                     </div> */}
                                 </div>
                             </div>
-                            <Map showHeatmap={true} markers={ showMarkers ? markers : [] } heatmapPoints={heatmapPoints} headMapPointsAdded={heatmapPointsAdded} setHeatmapPointsAdded={setHeatmapPointsAdded} />
+                            <Map showHeatmap={true}
+                                markers={showMarkers ? markers : []}
+                                heatmapPoints={heatmapPoints}
+                                headMapPointsAdded={heatmapPointsAdded}
+                                setHeatmapPointsAdded={setHeatmapPointsAdded}
+                            />
                         </div>
                     </div>
                 </div>

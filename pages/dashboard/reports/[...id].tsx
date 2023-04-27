@@ -13,7 +13,6 @@ import axios from "axios";
 import Head from "next/head";
 import { PhotoViewer } from "../../../components/photo-viewer";
 import { UserPower } from "../../../config/user";
-import useSWR from "swr";
 import { fetcher } from "../../../lib/api";
 
 const Map = dynamic(

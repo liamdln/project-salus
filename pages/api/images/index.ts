@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import nc from "next-connect";
 import dbConnect from "../../../lib/dbConnect";
-import { checkInvalidPermissions } from "../../../lib/api";
+import { checkToken } from "../../../lib/api";
 import formidable from "formidable";
 import path from "path";
 import moment from "moment";
@@ -24,9 +24,9 @@ const handler = nc<NextApiRequest, NextApiResponse>({
 // permissions
 handler.all(async (req, res, next) => {
     // check if user is logged in and permissions
-    const invalidPermissions = await checkInvalidPermissions(req, UserPower.MEMBER)
-    if (invalidPermissions) {
-        return res.status(invalidPermissions.status).json({ error: invalidPermissions.message })
+    const tokenInvalid = await checkToken(req, UserPower.MEMBER)
+    if (tokenInvalid) {
+        return res.status(tokenInvalid.status).json({ error: tokenInvalid.message })
     }
 
     // connect to the database
