@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import dbConnect from "../../../lib/dbConnect";
-import { getReportsAsync, submitReport } from '../../../lib/reports';
+import { getReports, submitReport } from '../../../lib/reports';
 import nc from "next-connect";
 import { checkToken } from "../../../lib/api";
 import { UserPower } from "../../../config/user";
@@ -31,7 +31,7 @@ handler.all(async (req, res, next) => {
 })
 
 handler.get(async (_, res) => {
-    const reports = await getReportsAsync();
+    const reports = await getReports();
     return res.status(200).json(reports);
 })
 

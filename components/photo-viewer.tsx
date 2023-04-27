@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 export function PhotoViewer(props: { imageLocations: string[], visible: boolean, setShowImageModal: any }) {
 
@@ -9,19 +9,11 @@ export function PhotoViewer(props: { imageLocations: string[], visible: boolean,
         setMaxImages(props.imageLocations.length)
     }, [props.imageLocations])
 
-    // const filteredImageDirs: string[] = useMemo(() => {
-    //     const newDirs = []
-    //     for (const dir of props.imageLocations) {
-    //         newDirs.push(dir.slice(dir.indexOf("public") + 1, dir.length));
-    //     }
-    //     console.log(newDirs)
-    //     return newDirs;
-    // }, [props.imageLocations])
-
     const moveImage = (shift: number) => {
         setCurrentImage(currentImage + shift);
     }
 
+    // make the modal invisible
     const closeModal = () => {
         props.setShowImageModal(false);
     }

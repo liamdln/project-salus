@@ -2,12 +2,7 @@ import { ReportModel } from "../model/reports";
 import { Comment, Report } from "../types/reports";
 import dbConnect from "./dbConnect";
 
-// export async function getReports(filter?: Record<string, any>, returnFilter?: string): Promise<Report[]> {
-//     await dbConnect();
-//     return ReportModel.find(filter || {}, returnFilter)
-// }
-
-export async function getReportsAsync(filter?: Record<string, any>, returnFilter?: string): Promise<Report[]> {
+export async function getReports(filter?: Record<string, any>, returnFilter?: string): Promise<Report[]> {
     await dbConnect();
     return await ReportModel.find(filter || {}, returnFilter).then((res: any) => {
         return res;

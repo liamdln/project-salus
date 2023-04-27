@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 import Layout from "../../../components/layout";
-import { getReportsAsync } from "../../../lib/reports";
+import { getReports } from "../../../lib/reports";
 import { Report } from "../../../types/reports";
 import { useSession } from "next-auth/react";
 import moment from "moment";
@@ -87,7 +87,7 @@ const Reports: NextPage = ({ reports }: any) => {
 
 export async function getServerSideProps() {
     // get reports
-    const reports = await getReportsAsync();
+    const reports = await getReports();
 
     // parse the result of the db call into a string.
     const reportsString = JSON.stringify(reports);
@@ -95,79 +95,3 @@ export async function getServerSideProps() {
 }
 
 export default Reports;
-
-// function ReportsTable(props: { reports: Report[] }) {
-    //     if (props.reports.length < 1) {
-    //         return (
-    //             <>
-    //                 <div className="mt-3">
-    //                     {query.filter ? <span style={{ display: "block" }}>You have not made any reports.</span> : <span style={{ display: "block" }}>No reports have been made.</span>}
-    //                 </div>
-    //             </>
-    //         )
-    //     }
-    //     return (
-    //         <table className="table table-hover mt-3">
-    //             <thead>
-    //                 <tr>
-    //                     {/* <th scope="col">#</th> */}
-    //                     <th scope="col">Type</th>
-    //                     <th scope="col">Description</th>
-    //                     <th scope="col">Author</th>
-    //                     {/* <th scope="col">Location</th> */}
-    //                     <th scope="col">Date</th>
-    //                     <th scope="col">Status</th>
-    //                     <th scope="col"></th>
-    //                 </tr>
-    //             </thead>
-    //             <tbody>
-    //                 {props.reports.map((report: Report, index: number) => {
-    //                     // const tableColour = report.severity === 1 ? "table-warning" : report.severity === 2 ? "table-danger" : ""
-    //                     return (
-    //                         <tr key={index}>
-    //                             {/* <th scope="row">{report._id}</th> */}
-    //                             <td>
-    //                                 <TypeAndSeverity severity={report.severity} type={report.type} />
-    //                             </td>
-    //                             <td>{displayMessage(report.description)}</td>
-    //                             <td>{report.author}</td>
-    //                             {/* <td>{report.lat}, {report.lng}</td> */}
-    //                             {/* <td><Map markers={[{ lat: report.lat, lng: report.lng }]} mapHeightPx={200} /></td> */}
-    //                             <td>{moment(report.date).format("DD/MM/YYYY HH:mm")}</td>
-    //                             <td><ReportStatus showColour={ true } status={report.status} /></td>
-    //                             <td><button className="btn btn-primary">View</button></td>
-    //                         </tr>
-    //                     );
-    //                 })}
-    //             </tbody>
-    //         </table>
-    //     )
-    // }
-
-// function TypeAndSeverity(props: { severity: number, type: string }) {
-//     // Severity:
-//     // 0: None
-//     // 1: Danger to operations
-//     // 2: Danger to life
-//     if (props.severity === 1) {
-//         return (
-//             <div className="d-flex flex-column">
-//                 {getType(props.type)}
-//                 <strong className="text-warning">(Danger to Operations)</strong>
-//             </div>
-//         )
-//     } else if (props.severity === 2) {
-//         return (
-//             <div className="d-flex flex-column">
-//                 {getType(props.type)}
-//                 <strong className="text-danger">(Danger to Life)</strong>
-//             </div>
-//         )
-//     } else {
-//         return (
-//             <div className="d-flex flex-column">
-//                 {getType(props.type)}
-//             </div>
-//         )
-//     }
-// }

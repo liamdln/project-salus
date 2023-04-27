@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
 import LoadingMap from "../../components/loading-map";
-import { getReportsAsync } from "../../lib/reports";
+import { getReports } from "../../lib/reports";
 import { Report } from "../../types/reports";
 import Layout from "../../components/layout";
 import Loading from "../../components/loading";
@@ -38,7 +38,6 @@ const Dashboard: NextPage = ({ reports }: any) => {
     JSON.parse(reports).forEach((report: Report) => {
         const intensity = ((report.severity + 1) / 2);
         // lat, lng, intensity
-        // TODO: don't use push
         heatmapPoints.push([report.lat, report.lng, intensity])
         markers.push({ lat: report.lat, lng: report.lng, popupMessage: <><Link href={`/dashboard/reports/${report._id}`}>View Report</Link></> })
     })
@@ -101,7 +100,7 @@ export default Dashboard;
 
 export async function getServerSideProps() {
     // get reports
-    const rawReports = await getReportsAsync();
+    const rawReports = await getReports();
     // parse the result of the db call into a string.
     const reports = JSON.stringify(rawReports);
     return { props: { reports } }

@@ -1,3 +1,4 @@
+// ensure all the required environment variables are correct
 export function checkEnvVariables() {
     return (
         process.env.MONGODB_URI &&

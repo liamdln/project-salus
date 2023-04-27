@@ -3,6 +3,7 @@ export function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
+// shorten long paragraphs adding "..." at the end
 export function shortenString(message: string, messageLimit: number) {
     if (message.length > messageLimit) {
         if (message.substring(messageLimit - 1, messageLimit) === " ") {
@@ -15,6 +16,7 @@ export function shortenString(message: string, messageLimit: number) {
     }
 }
 
+// replace characters with another, or a *
 export function obfuscateString(string: string, ignoredChars?: string[], returnCharacter?: string) {
     const obfuscatedString = [];
     for (const letter of string.split("")) {

@@ -20,6 +20,7 @@ export function saveSettings(e: any, settingsId: string) {
         }
     }
 
+    // ensure correct data types have been inserted
     if (isNaN(newSettings.map.zoomLevel) ||
         isNaN(newSettings.map.circleRadius) ||
         isNaN(newSettings.map.xAxisCenter) ||
@@ -38,6 +39,7 @@ export function saveSettings(e: any, settingsId: string) {
         url: `/api/settings`,
         data: { id: settingsId, payload: newSettings }
     }).then(() => {
+        // refresh the page
         router.replace(router.asPath);
         Swal.fire({
             icon: "success",
@@ -71,8 +73,7 @@ export function modifyUserEnabledStatus(user: User, enabled: boolean) {
         cancelButtonText: "No",
     }).then((result) => {
         if (result.isConfirmed) {
-            
-
+            // "yes" clicked - update the database
             axios({
                 method: "PATCH",
                 url: `/api/users/${user._id}`,

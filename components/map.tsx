@@ -9,9 +9,12 @@ import "leaflet.heat";
 
 export default function Map(props: MapProps) {
 
+    // code from React Leaflet: https://react-leaflet.js.org/docs/example-draggable-marker/
+    // adapted for use by Liam P
     const markerRef = useRef<LeafletMarker>(null)
     const eventHandlers = useMemo(
         () => ({
+            // listen for a drag event, once marker is dragged, get coordinates
             dragend() {
                 const marker = markerRef.current
                 if (marker != null) {
@@ -22,15 +25,13 @@ export default function Map(props: MapProps) {
         [props],
     )
 
-    // TODO: only get map settings?
+    // get settings from API
     const { data, error, isLoading } = useSWR('/api/settings', fetcher)
 
     // error getting the data
     if (error) {
-        // TODO: swal
         return <div>Failed to load the map. Please report this to the web administrator.</div>
-    }
-    else if (isLoading) {
+    } else if (isLoading) {
         // waiting for data
         return (
             <div className="spinner-border" role="status">
@@ -41,6 +42,7 @@ export default function Map(props: MapProps) {
         // render map
         const mapSettings = data["map"];
 
+        // marker image config
         let DefaultIcon = L.icon({
             iconUrl: "/restricted/images/leaflet/marker-icon.png",
             shadowUrl: "/restricted/images/leaflet/marker-shadow.png",
@@ -48,8 +50,11 @@ export default function Map(props: MapProps) {
             iconAnchor: [12, 41],
             popupAnchor: [0, -41]
         });
+        // for some reason, the marker doesn't have an image
+        // unless we configure it like the above
         L.Marker.prototype.options.icon = DefaultIcon;
 
+        // Draws a ring around the user's approx location.
         const UserArea = () => {
             if (props.userArea) {
                 return (
@@ -77,6 +82,7 @@ export default function Map(props: MapProps) {
             }
         }
 
+        // Draws a marker for a report.
         const ReportMarker = () => {
             if (props.reportMarker) {
                 return (
@@ -91,6 +97,7 @@ export default function Map(props: MapProps) {
             }
         }
 
+        // Any custom markers that we may add.
         const CustomMarkers = () => {
             if (!props.markers) {
                 return (<></>)
@@ -116,10 +123,13 @@ export default function Map(props: MapProps) {
             )
         }
 
+        // when heatmap points are added, make a note so
+        // that they are not added again when the state changes
         const handleHeatmapPointsAddedState = () => {
             props.setHeatmapPointsAdded(true);
         }
 
+        // Heatmap
         const HeatmapLayer = () => {
             const map = useMap();
             useEffect(() => {

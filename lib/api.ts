@@ -3,6 +3,7 @@ import { NextApiRequest } from "next";
 import { getToken } from "next-auth/jwt";
 import { signOut } from "next-auth/react";
 
+// data fetcher for swr
 export const fetcher = async (url: string) => {
     return await axios(url).then((res) => {
         return res.data;
@@ -12,6 +13,7 @@ export const fetcher = async (url: string) => {
     })
 }
 
+// check a user's token and permissions
 export const checkToken = async (req: NextApiRequest, requiredPower: number) => {
     const token = await getToken({ req })
 

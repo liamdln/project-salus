@@ -18,6 +18,7 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
     const [userRoles, setUserRoles] = useState([""]);
     const [originalRoles, setOriginalRoles] = useState([""])
     useEffect(() => {
+        // reset the forms when the modal becomes visible
         const updatedUserRoles = props.user?.roles.map((role) => role.name.toLowerCase()) || []
         setUserRoles(updatedUserRoles);
         setOriginalRoles(updatedUserRoles);
@@ -27,6 +28,7 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
 
     }, [props.user, props.modalVisible])
 
+    // add or remove roles to or from a user
     const handleRoleChange = (roleName: string) => {
         if (userRoles.includes(roleName)) {
             setUserRoles(userRoles.filter((role) => role != roleName))
@@ -56,6 +58,7 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
 
         let user: Record<string, any>;
 
+        // user exists, so we're updating
         if (props.user) {
             url = `/api/users/${props.user._id}`;
             method = "PATCH";
@@ -68,6 +71,7 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
                 }
             }
         } else {
+            // no user so create a new one
             url = "/api/users";
             method = "POST";
             user = {
@@ -79,10 +83,10 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
             }
         }        
 
+        // payload keys slightly different depending on request
         if (password) {
             props.context === "create" ? user.password = password : user.payload.password = password
         }
-        
 
         axios({
             method,
@@ -95,8 +99,10 @@ export function UserEditModal(props: { context: "edit" | "create", setModalVisib
             }).then(() => {
                 closeModal()
                 if (props.user?._id === session.data?.user._id) {
+                    // sign the user out of they change their own profile
                     signOut();
                 } else {
+                    // refresh the page
                     router.replace(router.asPath);
                 }
             })

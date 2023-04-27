@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getToken } from 'next-auth/jwt';
 import dbConnect from "../../../lib/dbConnect";
-import { getReportsAsync, postComment, updateReportSeverity, updateReportStatus } from '../../../lib/reports';
+import { getReports, postComment, updateReportSeverity, updateReportStatus } from '../../../lib/reports';
 import { Report } from '../../../types/reports';
 import { UserPower } from "../../../config/user";
 
@@ -66,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
         case "GET":
             try {
-                const report = await getReportsAsync({ _id: query.id });
+                const report = await getReports({ _id: query.id });
                 if (report.length < 1) {
                     throw new Error(`No reports found with ID ${query.id}.`);
                 }

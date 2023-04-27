@@ -3,6 +3,8 @@ import { MapMarker } from "../types/map";
 import { Marker as LeafletMarker } from "leaflet";
 import { Marker, Popup } from "react-leaflet";
 
+// possible remove?
+
 export default function DraggableMarker(props: { marker: MapMarker }) {
     const [markerLocation, setMarkerLocation] = useState({ lat: props.marker.lat, lng: props.marker.lng })
 

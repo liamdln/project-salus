@@ -31,28 +31,6 @@ const Profile: NextPage = ({ settingsStr }: any) => {
         return false;
     }
 
-    // function deleteAccount() {
-    //     if (!isAdmin()) {
-    //         Swal.fire({
-    //             icon: "error",
-    //             title: "That hasn't gone well!",
-    //             text: "You cannot delete the admin account."
-    //         })
-    //     } else {
-    //         Swal.fire({
-    //             title: "Are you sure?",
-    //             text: "Once the account has been deleted, it cannot be recovered. All reports created by this account will persist as anonymous reports.",
-    //             showCancelButton: true,
-    //             confirmButtonText: "Delete Account",
-    //             confirmButtonColor: "#dc3545",
-    //         }).then((result) => {
-    //             if (result.isConfirmed) {
-    //                 Swal.fire('Saved!', '', 'success')
-    //             }
-    //         })
-    //     }
-    // }
-
     return (
         <>
             <Head>
@@ -100,7 +78,6 @@ const Profile: NextPage = ({ settingsStr }: any) => {
                                 <div className="d-grid gap-2 d-md-flex justify-content-md-center mt-3">
                                     <button type="button" className="btn btn-primary">Change Name</button>
                                     <button type="button" className="btn btn-primary">Change Email</button>
-                                    <button type="button" className="btn btn-danger" onClick={() => deleteAccount()}>Delete Account</button>
                                 </div>
                             </div> */}
                             </div>

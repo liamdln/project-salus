@@ -1,19 +1,20 @@
 import { Role } from "../types/next-auth";
+import { UserPower } from "./user";
 
 export const roles: Role[] = [
     {
         name: "Member",
         colour: "blue",
-        power: 10
+        power: UserPower.MEMBER
     },
     {
         name: "Manager",
         colour: "green",
-        power: 50
+        power: UserPower.MANAGER
     },
     {
         name: "Admin",
         colour: "red",
-        power: 100
+        power: UserPower.ADMIN
     }
 ]

@@ -10,6 +10,7 @@ export default function Header() {
     const router = useRouter();
     const name = session.data?.user?.name || "Profile";
 
+    // handle the logout submit event
     function logout(e: FormEvent) {
         e.preventDefault();
         signOut();
@@ -19,6 +20,7 @@ export default function Header() {
     let profileButton;
     let reportsButton;
     if (session.status === "authenticated") {
+        // authenticated view
         profileButton = (
             <>
                 <li className="nav-item dropdown">
@@ -50,6 +52,7 @@ export default function Header() {
             </>
         )
     } else {
+        // unauthenticated view
         profileButton = (
             <>
                 <Link className="nav-link" href="/auth/login">Login</Link>

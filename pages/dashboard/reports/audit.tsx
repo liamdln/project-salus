@@ -1,7 +1,7 @@
 import { NextPage } from "next"
 import Head from "next/head";
 import Layout from "../../../components/layout";
-import { getReportsAsync } from "../../../lib/reports";
+import { getReports } from "../../../lib/reports";
 import { Report } from "../../../types/reports";
 import { Line, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title } from 'chart.js';
@@ -220,7 +220,7 @@ const Audit: NextPage = ({ reports }: any) => {
 
 export async function getServerSideProps() {
     // get reports
-    const rawReports = await getReportsAsync();
+    const rawReports = await getReports();
     // parse the result of the db call into a string.
     const reports = JSON.stringify(rawReports);
     return { props: { reports } }

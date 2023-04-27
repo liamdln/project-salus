@@ -61,6 +61,7 @@ export default NextAuth({
     ],
     callbacks: {
         async session({ session, token }) {
+            // store the token data in the session
             session.user = {
                 name: token.name,
                 email: token.email,
@@ -73,7 +74,8 @@ export default NextAuth({
         },
         async jwt({ token, user }) {
             if (user) {
-                console.log("USER: ", user)
+                // store the data from the database into the token
+                // console.log("USER: ", user)
                 const rolePowers: number[] = []
                 for (const role of user.roles) {
                     rolePowers.push(role.power || 0);
